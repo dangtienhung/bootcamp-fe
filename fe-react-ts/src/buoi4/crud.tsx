@@ -17,6 +17,8 @@ const CrudBuoi4 = () => {
 	const [nameProduct, setNameProduct] = useState<string>('');
 	const [priceProduct, setPriceProduct] = useState<number>(0);
 	const [products, setProducts] = useState<Product[]>(arrayData);
+	const [isEdit, setIsEdit] = useState<boolean>(false);
+	const [idProduct, setIdProduct] = useState<number>(0);
 
 	/* tạo sự kiện on change input */
 	const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,13 +32,40 @@ const CrudBuoi4 = () => {
 	};
 	/* tạo sự kiện add product */
 	const handleAddProduct = () => {
-		const newProduct: Product = {
-			id: Math.random(),
-			name: nameProduct,
-			price: priceProduct,
-		};
-		const newData = [...products, newProduct];
-		setProducts(newData);
+		if (isEdit === true) {
+			// sửa
+			const newProduct: Product = {
+				id: idProduct,
+				name: nameProduct,
+				price: priceProduct,
+			};
+			const newData = products.map((itemProduct) => {
+				if (itemProduct.id === idProduct) {
+					return newProduct;
+				}
+				return itemProduct;
+			});
+			setProducts(newData);
+
+			// set lại giá trị ban đầu
+			setNameProduct('');
+			setPriceProduct(0);
+			setIsEdit(false);
+			setIdProduct(0);
+		} else {
+			// theem
+			const newProduct: Product = {
+				id: Math.random(),
+				name: nameProduct,
+				price: priceProduct,
+			};
+			const newData = [...products, newProduct];
+			setProducts(newData);
+
+			// set lại giá trị ban đầu
+			setNameProduct('');
+			setPriceProduct(0);
+		}
 	};
 
 	// tạo sự kiện xóa product
@@ -49,6 +78,21 @@ const CrudBuoi4 = () => {
 		});
 		setProducts(newData1);
 	};
+
+	// sửa sản phẩm
+	const handleUpdateProduct = (product: Product) => {
+		setNameProduct(product.name);
+		setPriceProduct(product.price);
+		setIsEdit(true);
+		setIdProduct(product.id);
+	};
+
+	// if (isEdit === true) {
+	//   'sửa'
+	// } else {
+	//   'thêm'
+	// }
+	// => isEdit === true ? 'sửa' : 'thêm'
 
 	return (
 		<div className="h-screen bg-gray-100 flex justify-center items-center">
@@ -76,7 +120,7 @@ const CrudBuoi4 = () => {
 						onClick={() => handleAddProduct()}
 						className="bg-blue-500 rounded text-white py-2 px-2"
 					>
-						Thêm
+						{isEdit === true ? 'Sửa' : 'Thêm'}
 					</button>
 				</div>
 
@@ -88,7 +132,10 @@ const CrudBuoi4 = () => {
 								<p>${data.price}</p>
 							</div>
 							<div className="flex items-center gap-3">
-								<button className="bg-blue-500 rounded text-white py-2 px-2">
+								<button
+									onClick={() => handleUpdateProduct(data)}
+									className="bg-blue-500 rounded text-white py-2 px-2"
+								>
 									Sửa
 								</button>
 								<button
