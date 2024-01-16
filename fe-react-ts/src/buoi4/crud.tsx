@@ -39,6 +39,17 @@ const CrudBuoi4 = () => {
 		setProducts(newData);
 	};
 
+	// tạo sự kiện xóa product
+	const handleDeleteProduct = (product: Product) => {
+		const newData1 = products.filter((item) => {
+			// unique: không trùng lặp
+			if (item.id !== product.id) {
+				return item;
+			}
+		});
+		setProducts(newData1);
+	};
+
 	return (
 		<div className="h-screen bg-gray-100 flex justify-center items-center">
 			<div className="w-[500px] bg-white">
@@ -80,7 +91,10 @@ const CrudBuoi4 = () => {
 								<button className="bg-blue-500 rounded text-white py-2 px-2">
 									Sửa
 								</button>
-								<button className="bg-red-500 rounded text-white py-2 px-2">
+								<button
+									onClick={() => handleDeleteProduct(data)}
+									className="bg-red-500 rounded text-white py-2 px-2"
+								>
 									Xóa
 								</button>
 							</div>
