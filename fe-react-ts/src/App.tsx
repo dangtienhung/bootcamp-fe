@@ -1,6 +1,7 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import AddProductPage from './pages/add-product-page';
+import CountBuoi5 from './components/buoi5/count';
 import EditProductPage from './pages/edit-product-page';
 import LayoutDefault from './layouts/LayoutDefault';
 import ListProductPage from './pages/list-product-page';
@@ -23,6 +24,10 @@ const App = () => {
 				{
 					path: '/edit-product',
 					element: <EditProductPage />,
+				},
+				{
+					path: '/count-number',
+					element: <CountBuoi5 />,
 				},
 			],
 		},

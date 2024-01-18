@@ -1,15 +1,20 @@
+import { Link } from 'react-router-dom';
+
 const Header = () => {
 	return (
 		<div className="w-full py-10 px-10 bg-blue-200 flex items-center gap-10">
-			<a href="/" className="cursor-pointer">
+			<Link to="/" className="cursor-pointer">
 				Danh sách sản phẩm
-			</a>
-			<a href="/add-product" className="cursor-pointer">
+			</Link>
+			<Link to="/add-product" className="cursor-pointer">
 				Thêm sản phẩm
-			</a>
-			<a href="/edit-product" className="cursor-pointer">
+			</Link>
+			<Link to="/edit-product" className="cursor-pointer">
 				Sửa sản phẩm
-			</a>
+			</Link>
+			<Link to="/count-number" className="cursor-pointer">
+				Đếm số
+			</Link>
 		</div>
 	);
 };
