@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
+
 import ProductItem from '../components/buoi5/product-item';
-import { useState } from 'react';
 
 export interface IProduct {
 	id: number;
@@ -16,35 +17,43 @@ export interface ICourse {
 }
 
 const ListProductPage = () => {
-	const coursesList: ICourse[] = [
-		{
-			id: 1,
-			name: 'ReactJS',
-			price: 100,
-			description: 'ReactJS là một thư viện JavaScript',
-			createAt: '2021-09-22',
-		},
-		{
-			id: 2,
-			name: 'NodeJS',
-			price: 200,
-			description: 'NodeJS là một thư viện JavaScript',
-			createAt: '2021-09-22',
-		},
-		{
-			id: 3,
-			name: 'Angular',
-			price: 300,
-			description: 'Angular là một thư viện JavaScript',
-			createAt: '2021-09-22',
-		},
-	];
+	useEffect(() => {
+		console.log('456');
+		const fetchData = async () => {
+			try {
+				// call api thành công
+				const response = await fetch('http://localhost:3000/products');
+				const products = await response.json();
+				setLists(products);
+			} catch (error) {
+				console.log('🚀 ~ fetchData ~ error:', error);
+				// call api thất bại
+			}
+		};
+		fetchData();
+	}, []);
 
-	const [lists, setLists] = useState<ICourse[]>(coursesList);
+	console.log('123');
+	const [lists, setLists] = useState<IProduct[]>([]);
 	return (
 		<div className="">
 			{lists.map((value) => {
-				return <ItemProduct product={value} key={value.id} />;
+				return (
+					<div
+						key={value.id}
+						className="mb-10 border  boder-b border-b-red-400"
+					>
+						<p>id:{value.id}</p>
+						<p>
+							name:
+							{value.name}
+						</p>
+						<p>
+							price:
+							{value.price}
+						</p>
+					</div>
+				);
 			})}
 		</div>
 	);
