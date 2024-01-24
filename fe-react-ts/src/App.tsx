@@ -5,6 +5,7 @@ import CountBuoi5 from './components/buoi5/count';
 import EditProductPage from './pages/edit-product-page';
 import LayoutDefault from './layouts/LayoutDefault';
 import ListProductPage from './pages/list-product-page';
+import TestCss from './pages/test-css';
 
 const App = () => {
 	// cách 2
@@ -30,6 +31,10 @@ const App = () => {
 					element: <CountBuoi5 />,
 				},
 			],
+		},
+		{
+			path: '/ahihi',
+			element: <TestCss />,
 		},
 	]);
 

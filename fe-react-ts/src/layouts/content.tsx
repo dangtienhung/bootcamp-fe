@@ -1,9 +1,11 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom';
 
 const Content = () => {
-	return <div>
-		<Outlet/>
-	</div>;
+	return (
+		<div className="p-10">
+			<Outlet />
+		</div>
+	);
 };
 
 export default Content;

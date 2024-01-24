@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import ProductItem from '../components/buoi5/product-item';
-
 export interface IProduct {
 	id: number;
 	name: string;
