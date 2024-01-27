@@ -5,6 +5,7 @@ import CountBuoi5 from './components/buoi5/count';
 import EditProductPage from './pages/edit-product-page';
 import LayoutDefault from './layouts/LayoutDefault';
 import ListProductPage from './pages/list-product-page';
+import LoginPage from './pages/login-page';
 import TestCss from './pages/test-css';
 
 const App = () => {
@@ -33,6 +34,7 @@ const App = () => {
 				},
 			],
 		},
+		{ path: '/login', element: <LoginPage /> },
 		{
 			path: '/ahihi',
 			element: <TestCss />,
