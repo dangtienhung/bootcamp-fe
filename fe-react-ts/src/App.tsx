@@ -23,7 +23,8 @@ const App = () => {
 					element: <AddProductPage />,
 				},
 				{
-					path: '/edit-product',
+					// path: '/edit-product/3',
+					path: '/edit-product/:id',
 					element: <EditProductPage />,
 				},
 				{

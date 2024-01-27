@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { Link } from 'react-router-dom';
+
 export interface IProduct {
 	id: number;
 	name: string;
@@ -70,6 +72,12 @@ const ListProductPage = () => {
 						</div>
 
 						<div>
+							<Link
+								to={`/edit-product/${value.id}`}
+								className="bg-blue-400 py-2 px-4 rounded"
+							>
+								EDIT
+							</Link>
 							<button
 								onClick={() => handleDeleteProduct(value.id)}
 								className="bg-red-400 py-2 px-4 rounded"

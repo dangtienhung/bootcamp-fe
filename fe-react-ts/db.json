@@ -4,6 +4,16 @@
       "id": 1,
       "name": "Product 1",
       "price": 100
+    },
+    {
+      "id": 2,
+      "name": "sản phẩm 2 update update update kdjf;akj;dfja;sdjf;aksdjf;ajsdl;fasjdf",
+      "price": 590
+    },
+    {
+      "name": "sản phẩm 3",
+      "price": 3562,
+      "id": 3
     }
   ],
   "user": {
