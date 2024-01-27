@@ -16,7 +16,6 @@ export interface ICourse {
 
 const ListProductPage = () => {
 	useEffect(() => {
-		console.log('456');
 		const fetchData = async () => {
 			try {
 				// call api thành công
@@ -31,45 +30,57 @@ const ListProductPage = () => {
 		fetchData();
 	}, []);
 
-	console.log('123');
 	const [lists, setLists] = useState<IProduct[]>([]);
+
+	const handleDeleteProduct = async (idProduct: number) => {
+		try {
+			const response = await fetch(
+				`http://localhost:3000/products/${idProduct}`,
+				{
+					method: 'DELETE',
+				}
+			);
+			const products = await response.json();
+			console.log('🚀 ~ handleDeleteProduct ~ products:', products);
+			const newLists = lists.filter((value) => value.id !== idProduct);
+			setLists(newLists);
+		} catch (error) {
+			console.log('🚀 ~ handleDeleteProduct ~ error:', error);
+		}
+	};
+
 	return (
 		<div className="">
 			{lists.map((value) => {
 				return (
 					<div
 						key={value.id}
-						className="mb-10 border  boder-b border-b-red-400"
+						className="mb-10 border  boder-b border-b-red-400 flex items-center justify-between"
 					>
-						<p>id:{value.id}</p>
-						<p>
-							name:
-							{value.name}
-						</p>
-						<p>
-							price:
-							{value.price}
-						</p>
+						<div>
+							<p>id:{value.id}</p>
+							<p>
+								name:
+								{value.name}
+							</p>
+							<p>
+								price:
+								{value.price}
+							</p>
+						</div>
+
+						<div>
+							<button
+								onClick={() => handleDeleteProduct(value.id)}
+								className="bg-red-400 py-2 px-4 rounded"
+							>
+								DELETE
+							</button>
+						</div>
 					</div>
 				);
 			})}
 		</div>
 	);
 };
-
-interface ItemProductProps {
-	product: ICourse;
-}
-const ItemProduct = ({ product }: ItemProductProps) => {
-	return (
-		<div>
-			<div>{product.id}</div>
-			<div>{product.name}</div>
-			<div>{product.price}</div>
-			<div>{product.description}</div>
-			<div>{product.createAt}</div>
-		</div>
-	);
-};
-
 export default ListProductPage;
