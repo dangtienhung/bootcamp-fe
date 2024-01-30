@@ -7,3 +7,9 @@
 { password }
 5. delete -> dùng để xóa dữ liệu trên server
 */
+
+import axios from 'axios';
+
+export const instance = axios.create({
+	baseURL: import.meta.env.VITE_BASE_URL,
+});

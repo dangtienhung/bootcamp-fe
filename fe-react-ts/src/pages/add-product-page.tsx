@@ -1,3 +1,4 @@
+import { createProduct } from '../apis/products.api';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -30,14 +31,7 @@ const AddProductPage = () => {
 				name: nameProduct,
 				price: priceProduct,
 			};
-			const response = await fetch('http://localhost:3000/products', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(newProduct),
-			});
-			await response.json();
+			await createProduct(newProduct);
 			// sau khi gửi dữ liệu thành công thì sẽ chuyển hướng về trang list-product
 			router('/');
 		} catch (error) {

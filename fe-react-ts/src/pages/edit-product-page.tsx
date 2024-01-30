@@ -1,3 +1,4 @@
+import { getProductById, updateProduct } from '../apis/products.api';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -17,24 +18,19 @@ const EditProductPage = () => {
 		price: 0,
 	});
 
-	console.log('🚀 ~ EditProductPage ~ productDetail:', productDetail);
 	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await fetch(
-					`http://localhost:3000/products/${idParam}`,
-					{
-						method: 'GET',
-					}
-				);
-				const product = await response.json();
-				setProductDetail(product);
-			} catch (error) {
-				console.log('🚀 ~ fetchData ~ error:', error);
-			}
-		};
-		fetchData();
-	}, []);
+		if (idParam) {
+			const fetchData = async () => {
+				try {
+					const response = await getProductById(idParam);
+					setProductDetail(response.data);
+				} catch (error) {
+					console.log('🚀 ~ fetchData ~ error:', error);
+				}
+			};
+			fetchData();
+		}
+	}, [idParam]);
 
 	const handleNameProduct = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
@@ -61,17 +57,8 @@ const EditProductPage = () => {
 				price: productDetail.price,
 			};
 			console.log('🚀 ~ handleSubmitForm ~ newProduct:', newProduct);
-			const response = await fetch(
-				`http://localhost:3000/products/${idParam}`,
-				{
-					method: 'PUT',
-					headers: {
-						'Content-Type': 'application/json', // kiểu dữ liệu gửi lên server
-					},
-					body: JSON.stringify(newProduct),
-				}
-			);
-			await response.json();
+			const response = await updateProduct(newProduct);
+			console.log('🚀 ~ handleSubmitForm ~ response:', response);
 			// sau khi gửi dữ liệu thành công thì sẽ chuyển hướng về trang list-product
 			router('/');
 		} catch (error) {
@@ -80,6 +67,7 @@ const EditProductPage = () => {
 	};
 
 	return (
+		// tsx
 		<div className="h-screen bg-gray-300 flex justify-center items-center">
 			<div className="flex flex-col items-center gap-4">
 				<h2 className="text-2xl font-bold">Sửa sản phẩm</h2>
