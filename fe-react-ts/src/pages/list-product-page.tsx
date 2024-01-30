@@ -40,6 +40,17 @@ const ListProductPage = () => {
 		}
 	};
 
+	// fetch api => axios
+
+	// cal api Promise
+	getAllProducts()
+		.then((response) => {
+			console.log('🚀 ~ getAllProducts ~ response:', response);
+		})
+		.catch((error) => {
+			console.log('🚀 ~ getAllProducts ~ error:', error);
+		});
+
 	return (
 		<div className="">
 			{lists &&

@@ -1,4 +1,6 @@
+import { AxiosError } from 'axios';
 import { createProduct } from '../apis/products.api';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -32,10 +34,12 @@ const AddProductPage = () => {
 				price: priceProduct,
 			};
 			await createProduct(newProduct);
+			toast.success('Wow so easy!');
 			// sau khi gửi dữ liệu thành công thì sẽ chuyển hướng về trang list-product
 			router('/');
 		} catch (error) {
 			console.log('🚀 ~ handleSubmitForm ~ error:', error);
+			toast.error((error as AxiosError).message);
 		}
 	};
 

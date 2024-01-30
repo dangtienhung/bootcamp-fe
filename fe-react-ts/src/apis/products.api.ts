@@ -26,3 +26,16 @@ export const updateProduct = async (product: IProduct) => {
 export const deleteProduct = async (id: number) => {
 	return await instance.delete(`/products/${id}`);
 };
+
+// tailwindcss
+
+/*
+BA:
+SQL -> MySQL, SQL Server, Oracle, PostgreSQL, MariaDB, SQLite
+Figma, Adobe XD, Adobe Photoshop, Adobe Illustrator
+ăn nói
+tiếng anh
+
+// php: backend -> laravel
+// nodejs: backend -> nestjs -> react native
+*/
