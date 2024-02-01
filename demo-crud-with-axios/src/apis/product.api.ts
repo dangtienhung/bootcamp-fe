@@ -4,3 +4,8 @@ import { instances } from './instances';
 export const getAllProducts = async () => {
 	return await instances.get('/products');
 };
+
+// xóa một sản phẩm
+export const deleteProduct = async (id: number) => {
+	return await instances.delete(`/products/${id}`);
+};
