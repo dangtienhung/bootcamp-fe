@@ -1,0 +1,16 @@
+{
+	"products": [
+		{
+			"id": 1,
+			"name": "Giày Air Jordan 1 Low SE Year of the Dragon (WMNS) FJ5735-100",
+			"price": 4000000,
+			"description": "Giày(WMNS) Air Jordan 1 Low SE Year of the Dragon FJ5735-100 là một đôi giày thể thao nữ được thiết kế để tôn vinh năm con Rồng 2024. Nó nổi bật với phối màu bắt mắt và chất liệu cao cấp, chắc chắn sẽ thu hút sự chú ý của mọi người.",
+			"quantity": 129,
+			"images": [
+				"https://sneakerdaily.vn/wp-content/uploads/2024/01/Giay-WMNS-Air-Jordan-1-Low-SE-Year-of-the-Dragon-FJ5735-100.jpg.webp",
+				"https://sneakerdaily.vn/wp-content/uploads/2024/01/68.jpg.webp"
+			],
+			"category": "Giày thể thao"
+		}
+	]
+}
