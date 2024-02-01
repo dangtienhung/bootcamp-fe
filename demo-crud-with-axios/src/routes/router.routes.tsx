@@ -1,5 +1,7 @@
 import { Outlet, createBrowserRouter } from 'react-router-dom';
 
+import CreateProductPage from '../pages/products/create-product.page';
+import EditProductPage from '../pages/products/edit-product.page';
 import LayoutClient from '../layouts/clients/layout-client';
 import ProductsPage from '../pages/products/product.page';
 
@@ -14,7 +16,11 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: 'create',
-				element: <div>ProductCreatePage</div>,
+				element: <CreateProductPage />,
+			},
+			{
+				path: 'edit/:id',
+				element: <EditProductPage />,
 			},
 		],
 	},

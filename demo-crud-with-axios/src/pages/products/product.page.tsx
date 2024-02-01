@@ -2,6 +2,7 @@ import { deleteProduct, getAllProducts } from '../../apis/product.api';
 import { useEffect, useState } from 'react';
 
 import { IProduct } from '../../interfaces/product.interface';
+import { Link } from 'react-router-dom';
 
 const ProductsPage = () => {
 	const [products, setProducts] = useState<IProduct[]>([]);
@@ -63,6 +64,7 @@ const ProductsPage = () => {
 									<button onClick={() => handleDeleteProduct(product.id)}>
 										xóa
 									</button>
+									<Link to={`/products/edit/${product.id}`}>Edit</Link>
 								</td>
 							</tr>
 						))}

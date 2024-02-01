@@ -1,3 +1,15 @@
 {
-  "products": []
+  "products": [
+    {
+      "id": 2,
+      "name": "test proudct update",
+      "price": 100,
+      "quantity": 10,
+      "images": [
+        "https://via.placeholder.com/150"
+      ],
+      "description": "test description",
+      "category": "test category update"
+    }
+  ]
 }
