@@ -21,3 +21,6 @@ images.image1
 images.image2
 images.image3
 images.image4
+
+1. children
+2. props

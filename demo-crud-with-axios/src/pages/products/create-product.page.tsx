@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import FormGroup from '../../components/forms/form-group';
+import FormInput from '../../components/forms/form-input';
 import { IProduct } from '../../interfaces/product.interface';
 import { addProduct } from '../../apis/product.api';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +21,7 @@ const CreateProductPage = () => {
 
 	const [newProduct, setNewProduct] =
 		useState<Omit<IProduct, 'id'>>(initialProduct);
+	console.log('🚀 ~ CreateProductPage ~ newProduct:', newProduct);
 
 	const handleChange = (
 		e:
@@ -33,7 +38,7 @@ const CreateProductPage = () => {
 		e.preventDefault();
 		try {
 			console.log(newProduct);
-			const images = [newProduct.images];
+			const images = [newProduct.images] as any;
 			await addProduct({
 				...newProduct,
 				images: images,
@@ -46,32 +51,23 @@ const CreateProductPage = () => {
 	return (
 		<div className="flex-1 p-5">
 			<form onSubmit={(e) => handleSubmit(e)}>
-				<div className="mb-6">
-					<label htmlFor="email" className="block mb-2 font-medium">
-						Tên sản phẩm
-					</label>
-					<input
-						type="text"
-						className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						placeholder="Tên sản phẩm"
+				<FormGroup title="Tên sản phẩm" id="name">
+					<FormInput
 						name="name"
 						value={newProduct.name}
-						onChange={(e) => handleChange(e)}
+						placeholder="Tên sản phẩm"
+						handleChange={(e) => handleChange(e)}
+						className="boder border-red-500"
 					/>
-				</div>
-				<div className="mb-6">
-					<label htmlFor="email" className="block mb-2 font-medium">
-						Giá của sản phẩm
-					</label>
-					<input
-						type="number"
-						className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						placeholder="Giá sản phẩm"
+				</FormGroup>
+				<FormGroup title="Giá của sản phẩm" id="price">
+					<FormInput
 						name="price"
 						value={newProduct.price}
-						onChange={(e) => handleChange(e)}
+						placeholder="Giá sản phẩm"
+						handleChange={(e) => handleChange(e)}
 					/>
-				</div>
+				</FormGroup>
 				<div className="mb-6">
 					<label htmlFor="email" className="block mb-2 font-medium">
 						Số lượng sản phẩm
@@ -111,20 +107,15 @@ const CreateProductPage = () => {
 						onChange={(e) => handleChange(e)}
 					/>
 				</div>
-				<div className="mb-6">
-					<label htmlFor="email" className="block mb-2 font-medium">
-						Mô tả sản phẩm
-					</label>
-					<textarea
-						placeholder="Mô tả sản phẩm"
-						className="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 md:p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-						cols={30}
+				<FormGroup title="Mô tả sản phẩm" id="description">
+					<FormInput
 						name="description"
-						rows={10}
 						value={newProduct.description}
-						onChange={(e) => handleChange(e)}
-					></textarea>
-				</div>
+						placeholder="Mô tả sản phẩm"
+						handleChange={(e) => handleChange(e)}
+						className="boder border-red-500"
+					/>
+				</FormGroup>
 
 				<button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
 					Thêm sản phẩm

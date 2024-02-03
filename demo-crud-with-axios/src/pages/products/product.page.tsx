@@ -7,7 +7,6 @@ import ProductLine from './components/product-line';
 
 const ProductsPage = () => {
 	const [products, setProducts] = useState<IProduct[]>([]);
-	console.log('🚀 ~ ProductsPage ~ products:', products);
 
 	useEffect(() => {
 		const fetchProducts = async () => {

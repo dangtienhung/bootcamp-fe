@@ -10,6 +10,17 @@
       ],
       "description": "test description",
       "category": "test category update"
+    },
+    {
+      "name": "Giày New Balance 530 ‘Beige Angora’ MR530AA",
+      "price": "3.090.000₫",
+      "quantity": "1000",
+      "images": [
+        "https://sneakerdaily.vn/wp-content/uploads/2023/08/giay-new-balance-530-beige-angora-mr530aa.jpg.webp"
+      ],
+      "description": "Không có",
+      "category": "Giày",
+      "id": 3
     }
   ]
 }
