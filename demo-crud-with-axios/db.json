@@ -21,6 +21,17 @@
       "description": "Không có",
       "category": "Giày",
       "id": 3
+    },
+    {
+      "name": "san pham 1 udpate",
+      "price": "1234",
+      "quantity": "44",
+      "images": [
+        "https://sneakerdaily.vn/wp-content/uploads/2023/08/giay-new-balance-530-beige-angora-mr530aa.jpg.webp"
+      ],
+      "description": "Không có",
+      "category": "danh mục abcabc",
+      "id": 6
     }
   ]
 }
