@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { IProduct } from '../../interfaces/product.interface';
 import { Link } from 'react-router-dom';
+import ProductLine from './components/product-line';
 
 const ProductsPage = () => {
 	const [products, setProducts] = useState<IProduct[]>([]);
@@ -33,43 +34,49 @@ const ProductsPage = () => {
 
 	return (
 		<div className="h-full w-full">
-			<table className="table-auto">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Name</th>
-						<th>Price</th>
-						<th>Quantity</th>
-						<th>Images</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					{products &&
-						products.length > 0 &&
-						products.map((product) => (
-							<tr key={product.id}>
-								<td>{product.id}</td>
-								<td>{product.name}</td>
-								<td>{product.price}</td>
-								<td>{product.quantity}</td>
-								<td>
-									<img
-										src={product.images[0]}
-										alt=""
-										className="h-[100px] w-[100px]"
-									/>
-								</td>
-								<td>
-									<button onClick={() => handleDeleteProduct(product.id)}>
-										xóa
-									</button>
-									<Link to={`/products/edit/${product.id}`}>Edit</Link>
-								</td>
-							</tr>
-						))}
-				</tbody>
-			</table>
+			<div className="flex items-center my-10 px-5">
+				<Link to={`/products/create`}>
+					<button className="group relative h-12 w-48 overflow-hidden rounded-lg bg-white text-lg shadow">
+						<div className="absolute inset-0 w-3 bg-amber-400 transition-all duration-[250ms] ease-out group-hover:w-full" />
+						<span className="relative text-black group-hover:text-white">
+							Add Product
+						</span>
+					</button>
+				</Link>
+			</div>
+
+			<div className="overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
+				<table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
+					<thead className="bg-gray-50">
+						<tr>
+							<th scope="col" className="px-6 py-4 font-medium text-gray-900">
+								Product Name
+							</th>
+							<th scope="col" className="px-6 py-4 font-medium text-gray-900">
+								Price
+							</th>
+							<th scope="col" className="px-6 py-4 font-medium text-gray-900">
+								Quantity
+							</th>
+							<th
+								scope="col"
+								className="px-6 py-4 font-medium text-gray-900 text-right"
+							></th>
+						</tr>
+					</thead>
+					<tbody className="divide-y divide-gray-100 border-t border-gray-100">
+						{products &&
+							products.length > 0 &&
+							products.map((product) => (
+								<ProductLine
+									product={product}
+									key={product.id}
+									handleDeleteProduct={handleDeleteProduct}
+								/>
+							))}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	);
 };
