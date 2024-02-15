@@ -14,6 +14,8 @@ export default {
 				},
 				gray: {
 					l10: '#023668',
+					l1: '#eeeeee',
+					l9: '#999999',
 					DEFAULT: '#212529',
 				},
 				yellow: {
