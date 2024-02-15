@@ -1,4 +1,5 @@
-import {Input} from '@/components';
+import {Button, Input} from '@/components';
+
 import Logo from '../../../public/logo.svg';
 
 const SigninPage = () => {
@@ -25,11 +26,6 @@ const SigninPage = () => {
 							action=""
 							className="flex flex-col gap-10">
 							<div className="flex flex-col gap-2">
-								<label
-									htmlFor="username"
-									className="text-sm font-semibold">
-									Username
-								</label>
 								<Input
 									id="username"
 									placeholder="Username"
@@ -38,11 +34,6 @@ const SigninPage = () => {
 							</div>
 
 							<div className="flex flex-col gap-2">
-								<label
-									htmlFor="password"
-									className="text-sm font-semibold">
-									Password
-								</label>
 								<Input
 									id="password"
 									placeholder="Password"
@@ -50,11 +41,7 @@ const SigninPage = () => {
 								/>
 							</div>
 
-							<button
-								type="submit"
-								className="bg-red text-white font-semibold py-3 rounded-md w-full max-w-[300px] mx-auto">
-								Login
-							</button>
+							<Button className="bg-red text-white max-w-[300px] mx-auto ">Login</Button>
 						</form>
 					</div>
 				</div>
