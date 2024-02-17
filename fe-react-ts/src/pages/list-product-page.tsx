@@ -59,7 +59,7 @@ const ListProductPage = () => {
 					return (
 						<div
 							key={value.id}
-							className="mb-10 border  boder-b border-b-red-400 flex items-center justify-between"
+							className="flex items-center justify-between mb-10 border boder-b border-b-red-400"
 						>
 							<div>
 								<p>id:{value.id}</p>
@@ -76,13 +76,13 @@ const ListProductPage = () => {
 							<div>
 								<Link
 									to={`/edit-product/${value.id}`}
-									className="bg-blue-400 py-2 px-4 rounded"
+									className="px-4 py-2 bg-blue-400 rounded"
 								>
 									EDIT
 								</Link>
 								<button
 									onClick={() => handleDeleteProduct(value.id)}
-									className="bg-red-400 py-2 px-4 rounded"
+									className="px-4 py-2 bg-red-400 rounded"
 								>
 									DELETE
 								</button>
