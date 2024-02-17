@@ -87,3 +87,13 @@ alias: {
     "lint:fix": "eslint --fix src --ext ts,tsx",
     "prettier": "prettier --check \"src/**/(_.tsx|_.ts|_.css|_.scss)\"",
     "format:fix": "prettier --write \"src/**/(_.tsx|_.ts|_.css|_.scss)\"",
+
+13. cài thư viện
+    npm i react-router-dom axios react-toastify sweetalert2
+
+14. cài thư viện tailwindcss
+    npm install -D tailwindcss postcss autoprefixer
+    npx tailwindcss init -p
+    docs: https://tailwindcss.com/docs/guides/vite
+
+15. cài thư viện: npm i clsx tailwind-merge
