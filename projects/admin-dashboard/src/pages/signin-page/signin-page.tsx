@@ -1,6 +1,7 @@
-import { FormGroup, Input } from '@/components'
+import { Button, FormGroup, Input, PlusIcon } from '@/components'
 
 import Logo from '../../../public/logo.svg'
+import { EButtonVariant } from '@/types'
 
 const SigninPage = () => {
   return (
@@ -27,9 +28,13 @@ const SigninPage = () => {
                 <Input placeholder='Password' type='password' />
               </FormGroup>
 
-              <button className='w-full py-3 font-semibold rounded-md bg-red text-white max-w-[300px] mx-auto'>
+              <Button
+                variant={EButtonVariant.PRIMARY}
+                className='max-w-[300px] mx-auto flex items-center justify-center'
+              >
                 Login
-              </button>
+                <PlusIcon />
+              </Button>
             </form>
           </div>
         </div>
