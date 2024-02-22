@@ -8,8 +8,8 @@ const LayoutClient = () => {
       {/* header */}
       <Ahihi />
 
-      <div className='flex'>
-        <div>SidebarLayout</div>
+      <div className='flex gap-5'>
+        <SidebarLayout />
         <Outlet />
       </div>
     </div>

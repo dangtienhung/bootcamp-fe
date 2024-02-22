@@ -17,7 +17,9 @@ export default {
           l10: '#023668',
           l1: '#eeeeee',
           l9: '#999999',
-          DEFAULT: '#212529'
+          DEFAULT: '#212529',
+          d1: '#b2b2b2',
+          d2: '#5f5f5f'
         },
         yellow: {
           DEFAULT: '#ffc107'
