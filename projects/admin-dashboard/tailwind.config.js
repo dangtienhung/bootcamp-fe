@@ -23,6 +23,10 @@ export default {
         },
         yellow: {
           DEFAULT: '#ffc107'
+        },
+        black: {
+          l1: '#212529',
+          DEFAULT: '#000000'
         }
       }
     }

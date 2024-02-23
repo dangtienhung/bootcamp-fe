@@ -1,6 +1,7 @@
-import Logo from '../../../../public/logo.svg'
 import { ArrowIcon, Button, UserIconSolid } from '@/components'
+
 import { EButtonVariant } from '@/types'
+import Logo from '../../../../public/logo.svg'
 
 export const HeaderLayout = () => {
   return (
