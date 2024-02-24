@@ -1,15 +1,19 @@
-import { AdminPage, DashboardPage, SigninPage } from '@/pages'
+import { AdminPage, DashboardPage, ExecutivePage, SigninPage } from '@/pages'
+import { Navigate, createBrowserRouter } from 'react-router-dom'
 
 import { LayoutClient } from '@/layouts'
-import { createBrowserRouter } from 'react-router-dom'
+
+// useNavigate
 
 export const routers = createBrowserRouter([
   {
     path: '/',
     element: <LayoutClient />,
     children: [
-      { path: '/', element: <DashboardPage /> },
-      { path: 'admin', element: <AdminPage /> }
+      { path: '/', element: <Navigate to='/dashboard' /> },
+      { path: 'dashboard', element: <DashboardPage /> },
+      { path: 'admin', element: <AdminPage /> },
+      { path: 'executive', element: <ExecutivePage /> }
     ]
   },
   {

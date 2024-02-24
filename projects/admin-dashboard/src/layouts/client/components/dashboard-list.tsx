@@ -1,6 +1,7 @@
 import { IActiveDasboard, IDashboard } from '@/types'
 
 import { clsxm } from '@/utils'
+import { Link } from 'react-router-dom'
 
 interface DashboardListProps {
   title: string
@@ -17,7 +18,8 @@ export const DashboardList = ({ title, data, active }: DashboardListProps) => {
       <h2 className='pb-2 mb-2 text-base font-medium border-b border-b-gray-300'>{title}</h2>
       <div className='flex flex-col gap-1'>
         {data.map((dashboard) => (
-          <div
+          <Link
+            to={`/${dashboard.title.toLowerCase()}`}
             key={dashboard.id}
             className={clsxm(
               `flex items-center gap-2 py-3 pl-3 border-l-4 rounded-tr-xl rounded-br-xl border-l-black cursor-pointer`,
@@ -28,7 +30,7 @@ export const DashboardList = ({ title, data, active }: DashboardListProps) => {
           >
             <span>{dashboard.icons}</span>
             <span>{dashboard.title}</span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

@@ -11,7 +11,6 @@ interface IButtonProps {
 }
 
 export const Button = ({ children, className, variant, icon, href }: IButtonProps) => {
-  console.log('🚀 ~ Button ~ icon:', icon)
   if (href) {
     return (
       <Link
