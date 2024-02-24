@@ -5,18 +5,24 @@ export default {
     extend: {
       colors: {
         primary: '#F60621',
+        // red: {
+        //   l1: '#fa9e93',
+        //   l10: '#f25869',
+        //   DEFAULT: '#F60621'
+        // },
         red: {
-          l1: '#fa9e93',
-          l10: '#f25869',
-          DEFAULT: '#F60621'
+          l1: '#fa9e93', // light
+          DEFAULT: '#F60621', // bg-red
+          d1: '#f00' // dark
         },
-        blu: {
+        blue: {
           DEFAULT: '#28a745'
         },
         gray: {
           l10: '#023668',
           l1: '#eeeeee',
           l9: '#999999',
+          l11: '#212592',
           DEFAULT: '#212529',
           d1: '#b2b2b2',
           d2: '#5f5f5f'
