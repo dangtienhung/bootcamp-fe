@@ -1,5 +1,4 @@
 import { HeaderLayout, SidebarLayout } from './components'
-
 import { Link, Outlet, useLocation } from 'react-router-dom'
 
 const LayoutClient = () => {
@@ -25,7 +24,7 @@ const LayoutClient = () => {
       {/* header */}
       <HeaderLayout />
 
-      <div className='flex gap-5 pr-5'>
+      <div className='flex h-screen gap-5 pr-5'>
         <SidebarLayout />
 
         <div className='flex flex-col w-full gap-5 py-5 '>

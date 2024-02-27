@@ -1,7 +1,8 @@
 import { Button, Title } from '@/components'
-import { initialData } from './init'
-import { clsxm } from '@/utils'
+
 import { Link } from 'react-router-dom'
+import { clsxm } from '@/utils'
+import { initialData } from './init'
 
 const DashboardPage = () => {
   return (
