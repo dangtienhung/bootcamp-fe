@@ -1,6 +1,5 @@
 import { Button, PlusIcon, Title } from '@/components'
 
-import { Fragment } from 'react'
 import { clsxm } from '@/utils'
 
 const AdminPage = () => {
@@ -8,7 +7,7 @@ const AdminPage = () => {
     <div className='w-full h-full'>
       <div className='flex gap-3'>
         <Title title='Users' />
-        <Button className='px-10 text-white w-fit bg-gray-l10' icon={<PlusIcon />}>
+        <Button href='/admin/add-user' className='px-10 text-white w-fit bg-gray-l10' icon={<PlusIcon />}>
           Add New
         </Button>
       </div>
@@ -34,7 +33,7 @@ const AdminPage = () => {
           key={index}
           className='grid py-[5px] px-[3px] grid-cols-13 mt-[14px] gap-y-2.5 p-[3px] py-2.5 flex-shrink border-b'
         >
-          <div className={clsxm('col-span-1 text-center border-r')}>1</div>
+          <div className={clsxm('col-span-1 text-center border-r')}>{index + 1}</div>
           <div title='User1 asdfasdfkjlasdflasdkl' className={clsxm('col-span-2 text-left border-r truncate')}>
             User1 asdfasdfkjlasdflasdkl
           </div>

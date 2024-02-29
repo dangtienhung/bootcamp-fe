@@ -27,7 +27,7 @@ const LayoutClient = () => {
       <div className='flex h-screen gap-5 pr-5'>
         <SidebarLayout />
 
-        <div className='flex flex-col w-full gap-5 py-5 '>
+        <div className='flex flex-col w-full min-h-screen gap-5 py-5'>
           <div className='w-full p-3 border border-b rounded-md bg-gray-l1 border-gray-l9 border-b-gray-l9'>
             <Link to={`/`} className='text-base font-medium text-primary'>
               Home

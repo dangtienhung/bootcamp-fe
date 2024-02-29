@@ -19,6 +19,7 @@ export default {
           d1: '#f00' // dark
         },
         blue: {
+          l1: '#28a785',
           DEFAULT: '#28a745'
         },
         gray: {
