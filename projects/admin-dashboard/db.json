@@ -1,28 +1,14 @@
 {
   "users": [
     {
+      "Password": "1234",
       "name": "đặng hưng",
       "mobileNumber": "0946937769",
       "email": "dangtienhung.dev@gmail.com",
-      "Password": "123456",
-      "status": false,
-      "id": 1
-    },
-    {
-      "name": "đặng hưng3 45",
-      "mobileNumber": "12345",
-      "email": "dangtienhung.dev@gmail.com",
-      "Password": "456",
       "status": true,
-      "id": 2
-    },
-    {
-      "Password": "123456",
-      "name": "đặng hưng",
-      "mobileNumber": "0946937769",
-      "email": "dangtienhung.dev@gmail.com",
-      "status": false,
-      "id": 3
+      "created_at": "2024-03-02T14:56:12.028Z",
+      "updated_at": "2024-03-02T14:56:12.028Z",
+      "id": 1
     }
   ]
 }

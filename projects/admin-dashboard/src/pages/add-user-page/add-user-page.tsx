@@ -2,9 +2,12 @@ import * as yup from 'yup'
 
 import { Button, FormGroup, Input, Label, Status, Title } from '@/components'
 
+import { IUserCreate } from '@/types'
 import axios from 'axios'
 import { clsxm } from '@/utils'
+import { createUser } from '@/apis'
 import { initialData } from './init'
+import { toast } from 'react-toastify'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -40,17 +43,21 @@ const AddUserPage = () => {
   } = useForm({
     resolver: yupResolver(schema)
   })
+  console.log('🚀 ~ AddUserPage ~ register:', register)
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: IUserCreate) => {
     try {
       const userInfo = {
         ...data,
-        status: status
+        status: status,
+        created_at: new Date(),
+        updated_at: new Date()
       }
-      const response = await axios.post(`http://localhost:4200/users`, userInfo)
+      await createUser(userInfo)
       navigate('/admin')
+      toast.success('Add user successfully')
     } catch (error) {
-      console.log('🚀 ~ onSubmit ~ error:', error)
+      toast.error('Add user failed')
     }
   }
 
