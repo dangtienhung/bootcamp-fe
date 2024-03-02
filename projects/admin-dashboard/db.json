@@ -15,6 +15,14 @@
       "Password": "456",
       "status": true,
       "id": 2
+    },
+    {
+      "Password": "123456",
+      "name": "đặng hưng",
+      "mobileNumber": "0946937769",
+      "email": "dangtienhung.dev@gmail.com",
+      "status": false,
+      "id": 3
     }
   ]
 }

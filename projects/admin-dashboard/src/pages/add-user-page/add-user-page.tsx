@@ -14,7 +14,7 @@ const schema = yup
   .object({
     name: yup.string().required('Name is required'),
     mobileNumber: yup.string().required('Mobile number is required'),
-    email: yup.string().required('Email is required'),
+    email: yup.string().email('Không đúng định dạng email').required('Email is required'),
     Password: yup.string().required('Password is required')
   })
   .required()
@@ -35,11 +35,11 @@ const AddUserPage = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(schema)
   })
-  console.log('🚀 ~ AddUserPage ~ errors:', errors)
 
   const onSubmit = async (data: any) => {
     try {
@@ -60,57 +60,13 @@ const AddUserPage = () => {
 
       <div className='mt-[30px] pb-10'>
         <form className='w-[450px] flex flex-col gap-[30px]' autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-          {/* {initialData.map((data) => (
+          {initialData.map((data) => (
             <FormGroup key={data.id}>
               <Label className='capitalize'>{data.title}:</Label>
-              <Input
-                className='placeholder:capitalize'
-                {...register(data.id)}
-                placeholder={data.placeholder}
-                id={data.id}
-              />
-              {errors.name && <p className='text-red'>{errors.name.message}</p>}
+              <Input className='placeholder:capitalize' placeholder={data.placeholder} id={data.id} control={control} />
+              {(errors as any)[data.id] && <p className='text-red'>{(errors as any)[data.id].message}</p>}
             </FormGroup>
-          ))} */}
-          <FormGroup>
-            <Label className='capitalize' htmlFor='Password'>
-              Name:
-            </Label>
-            <input
-              type='text'
-              placeholder='name'
-              id='name'
-              className='p-2 border rounded-md outline-none border-gray-l2 focus:border-gray-100'
-              {...register('name')}
-            />
-            {errors.name && <p className='text-red'>{errors.name.message}</p>}
-          </FormGroup>
-          <FormGroup>
-            <Label className='capitalize' htmlFor='Password'>
-              Mobile Number:
-            </Label>
-            <input
-              type='text'
-              placeholder='Mobile Number'
-              id='mobileNumber'
-              className='p-2 border rounded-md outline-none border-gray-l2 focus:border-gray-100'
-              {...register('mobileNumber')}
-            />
-            {errors.mobileNumber && <p className='text-red'>{errors.mobileNumber.message}</p>}
-          </FormGroup>
-          <FormGroup>
-            <Label className='capitalize' htmlFor='Password'>
-              Email:
-            </Label>
-            <input
-              type='email'
-              placeholder='Email'
-              id='email'
-              className='p-2 border rounded-md outline-none border-gray-l2 focus:border-gray-100'
-              {...register('email')}
-            />
-            {errors.email && <p className='text-red'>{errors.email.message}</p>}
-          </FormGroup>
+          ))}
           <FormGroup>
             <Label className='capitalize' htmlFor='Password'>
               Password:
