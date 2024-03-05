@@ -17,6 +17,18 @@ const AddProductPage = () => {
 	const [nameProduct, setNameProduct] = useState<string>('');
 	const [priceProduct, setPriceProduct] = useState<number>(0);
 
+	const [valueDmeo, setValueDmeo] = useState({
+		name: '',
+		price: 0,
+	});
+
+	const handleDemo = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setValueDmeo({
+			// ...valueDmeo,
+			// [event.target.name]: event.target.value,
+		});
+	};
+
 	const handleNameProduct = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setNameProduct(event.target.value);
 	};
@@ -44,7 +56,7 @@ const AddProductPage = () => {
 	};
 
 	return (
-		<div className="h-screen bg-gray-300 flex justify-center items-center">
+		<div className="flex items-center justify-center h-screen bg-gray-300">
 			<div className="flex flex-col items-center gap-4">
 				<h2 className="text-2xl font-bold">Thêm sản phẩm</h2>
 				<form
@@ -53,19 +65,19 @@ const AddProductPage = () => {
 				>
 					<input
 						type="text"
-						className="border rounded-lg w-full py-2 px-2 outline-none focus:border-gray-400"
+						className="w-full px-2 py-2 border rounded-lg outline-none focus:border-gray-400"
 						placeholder="name product"
 						value={nameProduct}
 						onChange={(event) => handleNameProduct(event)}
 					/>
 					<input
 						type="number"
-						className="border rounded-lg w-full py-2 px-2 outline-none focus:border-gray-400"
+						className="w-full px-2 py-2 border rounded-lg outline-none focus:border-gray-400"
 						placeholder="price product"
 						value={priceProduct}
 						onChange={(event) => handlePriceProduct(event)}
 					/>
-					<button className="bg-blue-500 text-white p-2 w-full rounded-lg hover:bg-purple-500">
+					<button className="w-full p-2 text-white bg-blue-500 rounded-lg hover:bg-purple-500">
 						Thêm sản phẩm
 					</button>
 				</form>
