@@ -9,6 +9,23 @@ import { toast } from 'react-toastify'
 
 const AdminPage = () => {
   const [users, setUsers] = useState<IUser[]>([])
+  console.log('🚀 ~ AdminPage ~ users:', users)
+
+  // sổ users hiển thị trên 1 trang
+  const ursersPerPage = 5
+  // trang hiện tại
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  // lấy ra index của users cuối cùng trên trang hiện tại
+  const indexOfLastUser = currentPage * ursersPerPage
+  // lấy ra index của users đầu tiên trên trang hiện tại
+  const indexOfFirstUser = indexOfLastUser - ursersPerPage
+  // lấy ra users hiện tại
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser)
+  console.log('🚀 ~ AdminPage ~ currentUsers:', currentUsers)
+
+  // total page
+  const totalPage = Math.ceil(users.length / ursersPerPage)
+  console.log('🚀 ~ AdminPage ~ totalPage:', totalPage)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,14 +128,14 @@ const AdminPage = () => {
 
       {users && users.length === 0 && <div className='mt-5 text-center'>No data</div>}
 
-      {users &&
-        users.length > 0 &&
-        users.map((user, index) => (
+      {currentUsers &&
+        currentUsers.length > 0 &&
+        currentUsers.map((user, index) => (
           <div
             key={user.id}
             className='grid py-[5px] px-[3px] grid-cols-13 mt-[14px] gap-y-2.5 p-[3px] flex-shrink border-b'
           >
-            <div className={clsxm('col-span-1 text-center border-r')}>{index + 1}</div>
+            <div className={clsxm('col-span-1 text-center border-r')}>{user.id}</div>
             <div title='User1 asdfasdfkjlasdflasdkl' className={clsxm('col-span-2 text-left border-r truncate')}>
               {user.name}
             </div>
@@ -146,6 +163,21 @@ const AdminPage = () => {
             </div>
           </div>
         ))}
+
+      {/* pagination */}
+      <div className='flex items-center justify-center mt-5'>
+        {Array.from({ length: totalPage }).map((_, index) => (
+          <Button
+            className={clsxm('py-2.5 px-5 mx-2 w-fit ', {
+              'bg-gray-l10 text-white': index + 1 === currentPage
+            })}
+            key={index}
+            onClick={() => setCurrentPage(index + 1)}
+          >
+            {index + 1}
+          </Button>
+        ))}
+      </div>
     </div>
   )
 }

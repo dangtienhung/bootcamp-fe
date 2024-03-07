@@ -107,15 +107,6 @@ array methods
 // console.log('🚀 ~ courses:', courses)
 // console.log(courses.includes('Rust'))
 
-const courses = [
-  { id: 1, name: 'Javascript', price: 100 },
-  { id: 2, name: 'HTML, CSS', price: 200 },
-  { id: 3, name: 'ReactJS', price: 300 },
-  { id: 4, name: 'NodeJS', price: 400 },
-  { id: 5, name: 'Python', price: 500 },
-  { id: 6, name: 'Ruby', price: 500 }
-]
-
 // 19. find => tìm phần tử đầu tiên thỏa mãn điều kiện và trả về phần tử đó
 // const course = courses.find(function (value, index, array) {
 //   // console.log('🚀 ~ course ~ value:', value)
@@ -169,3 +160,63 @@ const numbers = [1, 2, 3, 4, 5]
 // }
 
 // myFunction(myCallback)
+
+const courses = [
+  { id: 1, name: 'Javascript', price: 0 },
+  { id: 2, name: 'HTML, CSS', price: 0 },
+  { id: 3, name: 'ReactJS', price: 0 },
+  { id: 4, name: 'NodeJS', price: 0 },
+  { id: 5, name: 'Python', price: 0 },
+  { id: 6, name: 'Ruby', price: 0 }
+]
+
+/*
+1. some
+2. every
+3. forEach
+*/
+
+// 1. some => kiểm tra xem có phần tử nào thỏa mãn điều kiện không => boolean => chỉ cần 1 phần tử thỏa mãn là trả về true
+// const isFree = courses.some(function (value, index) {
+//   return value.price === 0
+// })
+// console.log('🚀 ~ isFree ~ isFree:', isFree)
+
+// 2. every => kiểm tra xem có phần tử nào không thỏa mãn điều kiện không => boolean => chỉ cần 1 phần tử không thỏa mãn là trả về false
+// const isFree = courses.every(function (value, index) {
+//   console.log('🚀 ~ isFree ~ index:', index)
+//   return value.price === 0
+// })
+// console.log('🚀 ~ isFree ~ isFree:', isFree)
+
+// 3. forEach => duyệt qua từng phần tử trong mảng
+// courses.forEach(function (value, index) {
+//   console.log('🚀 ~ value:', value)
+//   console.log('🚀 ~ value ~ index:', index)
+// })
+
+// for (let index = 0; index < courses.length; index++) {
+//   const course = courses[index]
+//   console.log('🚀 ~ course:', course)
+//   console.log('🚀 ~ index:', index)
+// }
+
+// for-in/for-of
+// for-of: duyệt qua từng phần tử trong mảng => array[]
+// for (const [index, course] of courses.entries()) {
+//   console.log('🚀 ~ index, course:', index, course)
+// }
+
+// for-in: duyệt qua từng phần tử trong object
+// const myObject = {
+//   name: 'Javascript',
+//   price: 100,
+//   free: false,
+//   createdAt: '2021-09-01'
+// }
+
+// // key: value
+
+// for (const key in myObject) {
+//   console.log('🚀 ~ value:', key, myObject[key])
+// }
