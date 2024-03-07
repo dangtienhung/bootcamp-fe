@@ -8,13 +8,22 @@ interface InputProps {
   id?: string
   className?: string
   control?: any
+  defaultValue?: string
 }
 
-export const Input = ({ type = 'text', placeholder = '', id, className, control }: InputProps) => {
+export const Input = ({
+  type = 'text',
+  placeholder = '',
+  id,
+  className,
+  control,
+  defaultValue: defaultValueProp
+}: InputProps) => {
+  console.log('🚀 ~ defaultValueProp:', defaultValueProp)
   const { field } = useController({
     name: id || '',
     control,
-    defaultValue: ''
+    defaultValue: defaultValueProp ? defaultValueProp : ''
   })
 
   return (
@@ -23,6 +32,7 @@ export const Input = ({ type = 'text', placeholder = '', id, className, control 
       placeholder={placeholder}
       id={id}
       {...field}
+      defaultValue={defaultValueProp}
       className={clsxm(`border border-gray-l2 rounded-md p-2 outline-none focus:border-gray-100`, className)}
     />
   )

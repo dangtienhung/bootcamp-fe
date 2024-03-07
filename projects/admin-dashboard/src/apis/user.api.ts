@@ -15,3 +15,13 @@ export const getUsers = async () => {
 export const deleteUser = async (id: number) => {
   return await instance.delete(`/users/${id}`)
 }
+
+// edit user
+export const editUser = async (id: number, data: IUserCreate) => {
+  return await instance.put(`/users/${id}`, data)
+}
+
+// get one user
+export const getOneUser = async (id: number) => {
+  return await instance.get(`/users/${id}`)
+}

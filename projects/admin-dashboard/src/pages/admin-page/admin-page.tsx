@@ -154,7 +154,7 @@ const AdminPage = () => {
             <div className={clsxm('col-span-2 text-center border-r')}>{user.created_at}</div>
             <div className={clsxm('col-span-2 text-center border-r')}>{user.updated_at}</div>
             <div className={clsxm('col-span-1 text-center flex items-center gap-2')}>
-              <Button className='px-2 bg-gray-200 w-fit'>
+              <Button href={`/admin/edit/${user.id}`} className='px-2 bg-gray-200 w-fit'>
                 <PenIcon />
               </Button>
               <Button className='px-2 bg-gray-200 w-fit' onClick={() => handleDelete(user.id)}>

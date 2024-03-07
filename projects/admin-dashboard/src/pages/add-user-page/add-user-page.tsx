@@ -3,7 +3,6 @@ import * as yup from 'yup'
 import { Button, FormGroup, Input, Label, Status, Title } from '@/components'
 
 import { IUserCreate } from '@/types'
-import axios from 'axios'
 import { clsxm } from '@/utils'
 import { createUser } from '@/apis'
 import { initialData } from './init'
