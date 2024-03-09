@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Button, FormGroup, Input, Label, Status, Title } from '@/components'
 
 import { clsxm } from '@/utils'

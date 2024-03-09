@@ -1,68 +1,10 @@
 import { Button, FormGroup, Label, Status, Title } from '@/components'
-import { editUser, getOneUser } from '@/apis'
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
 
-import { IUser } from '@/types'
 import { clsxm } from '@/utils'
-import { toast } from 'react-toastify'
-import { useForm } from 'react-hook-form'
-import { userSchema } from '@/validators'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { useUserForm } from '@/hooks'
 
 const EditUserPage = () => {
-  const { id } = useParams()
-  const [userInfo, setUserInfo] = useState<IUser | null>(null)
-  const [status, setStatus] = useState<boolean>(true)
-  const navigate = useNavigate()
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(userSchema)
-  })
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!id) return
-        const response = await getOneUser(Number(id))
-        setUserInfo(response.data)
-        setStatus(response.data.status)
-
-        // field data vào form
-        setValue('name', response.data.name)
-        setValue('mobileNumber', response.data.mobileNumber)
-        setValue('email', response.data.email)
-        setValue('Password', response.data.Password)
-      } catch (error) {
-        toast.error('Get user failed')
-      }
-    }
-    fetchData()
-  }, [id])
-
-  const onSubmit = async (data: any) => {
-    try {
-      const userEdit = {
-        ...data,
-        status: status,
-        updated_at: new Date()
-      }
-      const response = await editUser(Number(id), userEdit)
-      toast.success('Edit user successfully')
-      navigate('/admin')
-    } catch (error) {
-      toast.error('Edit user failed')
-    }
-  }
-
-  const handleChangeStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStatus(event.target.id === 'Active') // true or false
-  }
+  const { register, handleChangeStatus, handleSubmit, onSubmit, status, userInfo, errors } = useUserForm()
 
   return (
     <div className='min-h-screen'>
@@ -70,18 +12,6 @@ const EditUserPage = () => {
 
       <div className='mt-[30px] pb-10'>
         <form className='w-[450px] flex flex-col gap-[30px]' autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-          {/* {initialData.map((data) => (
-            <FormGroup key={data.id}>
-              <Label className='capitalize'>{data.title}:</Label>
-              <Input
-                className='placeholder:capitalize'
-                control={control}
-                id={data.id}
-                placeholder={data.placeholder}
-                defaultValue={userInfo?.name}
-              />
-            </FormGroup>
-          ))} */}
           <FormGroup>
             <Label className='capitalize' htmlFor='Name'>
               Name:

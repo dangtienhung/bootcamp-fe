@@ -130,7 +130,7 @@ const AdminPage = () => {
 
       {currentUsers &&
         currentUsers.length > 0 &&
-        currentUsers.map((user, index) => (
+        currentUsers.map((user) => (
           <div
             key={user.id}
             className='grid py-[5px] px-[3px] grid-cols-13 mt-[14px] gap-y-2.5 p-[3px] flex-shrink border-b'

@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { clsxm } from '@/utils'
 
 interface INavigateBar {
@@ -16,7 +15,7 @@ interface INavigateBar {
   handleClick: (index: number) => void
 }
 
-export const NavigateBar = ({ icon, name, url, title, className, index, id, handleClick }: INavigateBar) => {
+export const NavigateBar = ({ icon, name, title, className, index, id, handleClick }: INavigateBar) => {
   return (
     <div className='pb-10'>
       <h2 className={clsxm(`text-base font-medium`, className?.classNameTitle)}>{title}</h2>

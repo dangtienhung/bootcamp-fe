@@ -21,7 +21,7 @@ export const PenIcon = ({ className, height, width }: IconProps) => {
   )
 }
 
-export const TrashIcon = ({ className, height, width }: IconProps) => {
+export const TrashIcon = () => {
   return (
     <svg width={22} height={26} viewBox='0 0 22 26' fill='none' xmlns='http://www.w3.org/2000/svg'>
       <path d='M0.428711 4.07617H21.5715V6.17999H0.428711V4.07617Z' fill='#F60621' />

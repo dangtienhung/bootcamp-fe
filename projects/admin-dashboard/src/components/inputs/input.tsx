@@ -1,6 +1,7 @@
-import { UseControllerProps, useController } from 'react-hook-form'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { clsxm } from '@/utils'
+import { useController } from 'react-hook-form'
 
 interface InputProps {
   type?: string
@@ -19,7 +20,6 @@ export const Input = ({
   control,
   defaultValue: defaultValueProp
 }: InputProps) => {
-  console.log('🚀 ~ defaultValueProp:', defaultValueProp)
   const { field } = useController({
     name: id || '',
     control,
