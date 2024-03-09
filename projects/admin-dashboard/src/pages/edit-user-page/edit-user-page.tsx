@@ -1,23 +1,14 @@
+import { Button, FormGroup, Label, Status, Title } from '@/components'
+import { editUser, getOneUser } from '@/apis'
 import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { IUser } from '@/types'
-import { editUser, getOneUser } from '@/apis'
-import { toast } from 'react-toastify'
-import { useNavigate, useParams } from 'react-router-dom'
-import { Button, FormGroup, Input, Label, Status, Title } from '@/components'
 import { clsxm } from '@/utils'
-import * as yup from 'yup'
+import { toast } from 'react-toastify'
 import { useForm } from 'react-hook-form'
+import { userSchema } from '@/validators'
 import { yupResolver } from '@hookform/resolvers/yup'
-
-const schema = yup
-  .object({
-    name: yup.string().required('Name is required'),
-    mobileNumber: yup.string().required('Mobile number is required'),
-    email: yup.string().email('Không đúng định dạng email').required('Email is required'),
-    Password: yup.string().required('Password is required')
-  })
-  .required()
 
 const EditUserPage = () => {
   const { id } = useParams()
@@ -31,7 +22,7 @@ const EditUserPage = () => {
     setValue,
     formState: { errors }
   } = useForm({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(userSchema)
   })
 
   useEffect(() => {
