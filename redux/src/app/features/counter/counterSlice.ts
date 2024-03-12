@@ -1,7 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { RootState } from '../../store';
-
 interface CounterState {
 	count: number;
 }
@@ -19,12 +17,20 @@ export const counterSlice = createSlice({
 	reducers: {
 		increament: (state) => {
 			console.log('🚀 ~ state:', state);
-			state.count += 1;
+			// state.count += 1;
+			state.count = state.count + 1;
+		},
+		decrement: (state) => {
+			state.count -= 1;
+		},
+		incrementByAmount: (state, action: PayloadAction<number>) => {
+			state.count = state.count + action.payload;
 		},
 	},
 });
 
-export const { increament } = counterSlice.actions;
+export const { increament, decrement, incrementByAmount } =
+	counterSlice.actions;
 
 // export const selectCount = (state: RootState) => state.counter.value;
 
