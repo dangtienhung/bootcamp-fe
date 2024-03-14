@@ -2,63 +2,23 @@
   "products": [
     {
       "id": 1,
-      "name": "product 1",
-      "price": 400
+      "name": "Product 77 edited",
+      "price": 57
     },
     {
       "id": 2,
-      "name": "product 2",
-      "price": 300
+      "name": "Product 30 edited",
+      "price": 32
     },
     {
-      "id": 3,
-      "name": "product 3",
-      "price": 500
+      "name": "Product 5",
+      "price": 85,
+      "id": 3
     },
     {
-      "name": "Product 74",
-      "price": 77,
+      "name": "Product 48",
+      "price": 72,
       "id": 4
-    },
-    {
-      "name": "Product 25",
-      "price": 7,
-      "id": 5
-    },
-    {
-      "name": "Product 63",
-      "price": 24,
-      "id": 6
-    },
-    {
-      "name": "Product 59",
-      "price": 13,
-      "id": 7
-    },
-    {
-      "name": "Product 44",
-      "price": 55,
-      "id": 8
-    },
-    {
-      "name": "Product 75",
-      "price": 86,
-      "id": 9
-    },
-    {
-      "name": "Product 15",
-      "price": 91,
-      "id": 10
-    },
-    {
-      "name": "Product 59",
-      "price": 41,
-      "id": 11
-    },
-    {
-      "name": "Product 70",
-      "price": 50,
-      "id": 12
     }
   ]
 }
