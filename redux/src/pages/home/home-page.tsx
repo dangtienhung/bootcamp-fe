@@ -1,4 +1,10 @@
-import { useGetAllProductsQuery } from '../../app/services/products.service';
+import {
+	useDeleteProductMutation,
+	useGetAllProductsQuery,
+	useUpdateProductMutation,
+} from '../../app/services/products.service';
+
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
 	const {
@@ -6,6 +12,10 @@ const HomePage = () => {
 		isLoading: loadingProduct,
 		data: products,
 	} = useGetAllProductsQuery();
+
+	const [handleDeleteProduct, { isLoading, isError }] =
+		useDeleteProductMutation();
+	const [handleUpdateProduct, result] = useUpdateProductMutation();
 
 	if (loadingProduct) return <div>Loading...</div>;
 	if (errorProduct) return <div>Error</div>;
@@ -28,9 +38,26 @@ const HomePage = () => {
 							<h2>Id: {product.id}</h2>
 							<h2> - Name: {product.name}</h2>
 							<h2> - Price: {product.price}</h2>
-							<button>Delete Product</button>
-							<button>Get Product By Id</button>
-							<button>Edit Product</button>
+							{isLoading ? (
+								'Loading ....'
+							) : (
+								<button onClick={() => handleDeleteProduct(product.id)}>
+									Delete Product
+								</button>
+							)}
+							<Link to={`/detail/${product.id}`}>Get Product By Id</Link>
+							<button
+								onClick={() =>
+									handleUpdateProduct({
+										id: product.id,
+										name:
+											'Product ' + Math.ceil(Math.random() * 100) + ' edited',
+										price: Math.ceil(Math.random() * 100),
+									})
+								}
+							>
+								Edit Product
+							</button>
 						</div>
 					))}
 			</div>

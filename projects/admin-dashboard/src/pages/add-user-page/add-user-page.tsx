@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Button, FormGroup, Input, Label, Status, Title1 } from '@/components'
+import { Button, FormGroup, Input, Label, Status, Title } from '@/components'
 
 import { clsxm } from '@/utils'
 import { initialData } from './init'
@@ -11,7 +11,7 @@ const AddUserPage = () => {
 
   return (
     <div className='min-h-screen'>
-      <Title1 title='Add New User' />
+      <Title title='Add New User' />
 
       <div className='mt-[30px] pb-10'>
         <form className='w-[450px] flex flex-col gap-[30px]' autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
