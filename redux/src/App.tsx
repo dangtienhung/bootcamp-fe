@@ -1,5 +1,6 @@
 import {
 	addProduct,
+	createProduct,
 	deleteProduct,
 	editProduct,
 	getProductById,
@@ -44,9 +45,11 @@ function App() {
 					Increment by amount
 				</button>
 
-				<button onClick={() => handleAddProduct(data)}>Add Product</button>
+				<button onClick={() => dispatch(createProduct(data))}>
+					Add Product
+				</button>
 
-				<div className="">
+				{/* <div className="">
 					{products && products.length === 0 && <h2>No products found</h2>}
 					{products &&
 						products.length > 0 &&
@@ -86,7 +89,7 @@ function App() {
 								</button>
 							</div>
 						))}
-				</div>
+				</div> */}
 			</div>
 			<RouterProvider router={router} />
 		</>

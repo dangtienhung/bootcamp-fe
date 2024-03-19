@@ -60,3 +60,6 @@ export const {
 	useUpdateProductMutation,
 	useGetOneProductQuery,
 } = productApi;
+
+// combo react: react + redux (toolkit) + rtk query
+// nextjs: nextjs + swr + react query

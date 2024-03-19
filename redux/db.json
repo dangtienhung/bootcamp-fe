@@ -2,23 +2,23 @@
   "products": [
     {
       "id": 1,
-      "name": "Product 77 edited",
-      "price": 57
+      "name": "Product 93updated",
+      "price": 99
     },
     {
-      "id": 2,
-      "name": "Product 30 edited",
-      "price": 32
+      "name": "Product 73",
+      "price": 51,
+      "id": 6
     },
     {
-      "name": "Product 5",
-      "price": 85,
-      "id": 3
+      "name": "Product 89",
+      "price": 86,
+      "id": 7
     },
     {
-      "name": "Product 48",
-      "price": 72,
-      "id": 4
+      "name": "Product 59",
+      "price": 69,
+      "id": 8
     }
   ]
 }
