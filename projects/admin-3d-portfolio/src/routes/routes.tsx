@@ -4,16 +4,18 @@ import Buttons from '~/pages/UiElements/Buttons';
 import Chart from '~/pages/Chart';
 import FormElements from '~/pages/Form/FormElements';
 import FormLayout from '~/pages/Form/FormLayout';
+import NotFoundPage from '~/pages/NotFound';
 import PageTitle from '~/components/PageTitle';
 import Settings from '~/pages/Settings';
 import SignIn from '~/pages/Authentication/SignIn';
 import SignUp from '~/pages/Authentication/SignUp';
+import SkillPage from '~/pages/SkillPage/SkillPage';
 import Tables from '~/pages/Tables';
 
 export const routes = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/auth/signin" />,
+    element: <Navigate to="/ui/buttons" />,
   },
   {
     path: '/auth/signup',
@@ -86,5 +88,18 @@ export const routes = createBrowserRouter([
         <FormElements />
       </>
     ),
+  },
+  {
+    path: '/skills',
+    element: (
+      <>
+        <PageTitle title="Skill" />
+        <SkillPage />
+      </>
+    ),
+  },
+  {
+    path: '*',
+    element: <NotFoundPage />,
   },
 ]);

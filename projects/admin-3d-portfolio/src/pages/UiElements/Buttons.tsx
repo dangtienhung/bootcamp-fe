@@ -1,16 +1,14 @@
 import { Link } from 'react-router-dom';
-
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
-
+import { motion } from 'framer-motion';
 const Buttons = () => {
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Buttons" />
 
-      {/* <!-- Normal Button Items --> */}
-      <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
+      <div className="mb-10 bg-white border rounded-sm border-stroke shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="py-4 border-b border-stroke px-7 dark:border-strokedark">
           <h3 className="font-medium text-black dark:text-white">
             Normal Button
           </h3>
@@ -20,28 +18,28 @@ const Buttons = () => {
           <div className="mb-7.5 flex flex-wrap gap-5 xl:gap-20">
             <Link
               to="#"
-              className="inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-white bg-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center rounded-md bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-white rounded-md bg-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-white rounded-full bg-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center rounded-md border border-primary py-4 px-10 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center border rounded-md border-primary text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
@@ -50,28 +48,28 @@ const Buttons = () => {
           <div className="mb-7.5 flex flex-wrap gap-5 xl:gap-20">
             <Link
               to="#"
-              className="inline-flex items-center justify-center bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-white bg-meta-3 hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-white rounded-md bg-meta-3 hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center rounded-full bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-white rounded-full bg-meta-3 hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center rounded-md border border-meta-3 py-4 px-10 text-center font-medium text-meta-3 hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center border rounded-md border-meta-3 text-meta-3 hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
@@ -80,41 +78,40 @@ const Buttons = () => {
           <div className="flex flex-wrap gap-5 xl:gap-20">
             <Link
               to="#"
-              className="inline-flex items-center justify-center bg-black py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-white bg-black hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center rounded-md bg-black py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-white bg-black rounded-md hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center rounded-full bg-black py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-white bg-black rounded-full hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center rounded-md border border-black py-4 px-10 text-center font-medium text-black hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center px-10 py-4 font-medium text-center text-black border border-black rounded-md hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               Button
             </Link>
           </div>
         </div>
       </div>
-
       {/* <!-- Button With Icon Items --> */}
-      <div className="mb-10 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
-          <h3 className="font-medium text-black dark:text-white">
+      <div className="mb-10 bg-white border rounded-sm border-stroke shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="py-4 border-b border-stroke px-7 dark:border-strokedark">
+          <motion.h3 className="font-medium text-black dark:text-white">
             Button With Icon
-          </h3>
+          </motion.h3>
         </div>
 
         <div className="p-4 md:p-6 xl:p-9">
