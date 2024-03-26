@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { skillApi } from './services/skill.service';
+import skillReducer from './slice/skill.slice';
 
 export const store = configureStore({
   reducer: {
     [skillApi.reducerPath]: skillApi.reducer,
+    skill: skillReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(skillApi.middleware),

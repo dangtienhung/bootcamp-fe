@@ -27,7 +27,35 @@ export const skillApi = createApi({
       }),
       invalidatesTags: (result, error, id) => [{ type: 'Skill', id }],
     }),
+    addSkill: builder.mutation<ISkill, Partial<ISkill>>({
+      query: (body) => ({
+        url: '/skills',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [{ type: 'Skill', id: 'LIST' }],
+    }),
+    getOneSkill: builder.query<ISkill, string>({
+      query: (id) => {
+        return `/skills/${id}`;
+      },
+      providesTags: (result, error, id) => [{ type: 'Skill', id }],
+    }),
+    updateSkill: builder.mutation<ISkill, Partial<ISkill>>({
+      query: (body) => ({
+        url: `/skills/${body.id}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'Skill', id }],
+    }),
   }),
 });
 
-export const { useGetAllSkillsQuery, useDeleteSkillMutation } = skillApi;
+export const {
+  useGetAllSkillsQuery,
+  useDeleteSkillMutation,
+  useAddSkillMutation,
+  useGetOneSkillQuery,
+  useUpdateSkillMutation,
+} = skillApi;
