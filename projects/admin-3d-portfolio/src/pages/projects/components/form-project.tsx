@@ -1,12 +1,8 @@
-import {
-  Drawer,
-  Button,
-  Typography,
-  IconButton,
-} from '@material-tailwind/react';
-import { useState } from 'react';
+import { Drawer, IconButton, Typography } from '@material-tailwind/react';
+
 import ReactQuill from 'react-quill';
 import SelectGroupOne from '~/components/Forms/SelectGroup/SelectGroupOne';
+import { useState } from 'react';
 
 interface FormProjectProps {
   open: boolean;
@@ -50,41 +46,54 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
           <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
             <div className="w-full xl:w-1/2">
               <label className="mb-2.5 block text-black dark:text-white">
-                First name
+                Tên dự án
               </label>
               <input
                 type="text"
-                placeholder="Enter your first name"
+                placeholder="Nhận tên dự án"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </div>
 
             <div className="w-full xl:w-1/2">
               <label className="mb-2.5 block text-black dark:text-white">
-                Last name
+                Link code
               </label>
               <input
                 type="text"
-                placeholder="Enter your last name"
+                placeholder="Nhập link github"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+            <div className="w-full xl:w-1/2">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Link demo
+              </label>
+              <input
+                type="text"
+                placeholder="Nhận Link demo"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+            </div>
+
+            <div className="w-full xl:w-1/2">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Số thành viên
+              </label>
+              <input
+                type="number"
+                placeholder="Nhập số thành viên"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </div>
           </div>
 
           <div className="mb-4.5">
-            <label className="mb-2.5 block text-black dark:text-white">
-              Email <span className="text-meta-1">*</span>
-            </label>
-            <input
-              type="email"
-              placeholder="Enter your email address"
-              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            />
-          </div>
-
-          <div className="mb-4.5">
             <label className="block mb-3 text-black dark:text-white">
-              Attach file
+              Hình ảnh dự án
             </label>
             <input
               type="file"
@@ -92,22 +101,110 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
             />
           </div>
 
+          <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+            <div className="w-full xl:w-1/2">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Ngày bắt đầu
+              </label>
+              <input
+                type="date"
+                placeholder="Nhận Ngày bắt đầu"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+            </div>
+
+            <div className="w-full xl:w-1/2">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Ngày kết thúc
+              </label>
+              <input
+                type="date"
+                placeholder="Nhập Ngày kết thúc"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+            </div>
+          </div>
+
+          <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+            <div className="w-full xl:w-1/2">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Trạng thái dự án
+              </label>
+              {/* <input
+                type="text"
+                placeholder="Trạng thái dự án"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              /> */}
+              <SelectGroupOne />
+            </div>
+
+            <div className="w-full xl:w-1/2">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Vị trí
+              </label>
+              {/* <input
+                type="number"
+                placeholder="Nhập vị trị dự án"
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              /> */}
+              <SelectGroupOne />
+            </div>
+          </div>
+
           <div className="mb-4.5">
             <label className="mb-2.5 block text-black dark:text-white">
-              Subject
+              Số lượng thành viên
             </label>
             <input
               type="text"
-              placeholder="Select subject"
+              placeholder="Số lượng thành viên"
               className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
           </div>
 
-          <SelectGroupOne />
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">
+              Công nghệ sử dụng fe
+            </label>
+            <input
+              type="text"
+              placeholder="Số lượng thành viên"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+          </div>
+
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">
+              Công nghệ sử dụng be
+            </label>
+            <input
+              type="text"
+              placeholder="Số lượng thành viên"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+          </div>
+
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">
+              Database
+            </label>
+            <input
+              type="text"
+              placeholder="Số lượng thành viên"
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+          </div>
 
           <div className="mb-6">
             <label className="mb-2.5 block text-black dark:text-white">
-              Message
+              Miêu tả ngắn gọn dự án
+            </label>
+            <ReactQuill theme="snow" value={value} onChange={setValue} />
+          </div>
+
+          <div className="mb-6">
+            <label className="mb-2.5 block text-black dark:text-white">
+              Miêu tả chi tiết dự án
             </label>
             <ReactQuill theme="snow" value={value} onChange={setValue} />
           </div>

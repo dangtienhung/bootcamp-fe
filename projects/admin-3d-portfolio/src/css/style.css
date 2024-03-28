@@ -254,6 +254,7 @@ span.flatpickr-weekday,
   display: none !important;
 }
 
+/* custom react quill */
 .quill>* {
   border-color: inherit !important;
   color: inherit !important;

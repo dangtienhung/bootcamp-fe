@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import Breadcrumb from '~/components/Breadcrumbs/Breadcrumb';
 import { Button } from '@material-tailwind/react';
 import DefaultLayout from '~/layout/DefaultLayout';
+import FormProject from './components/form-project';
 import { IProject } from '~/types/project.type';
+import ProjectDetail from './components/project-detail';
 import { motion } from 'framer-motion';
 import { useGetAllProjectsQuery } from '~/store/services/project.service';
-import ProjectDetail from './components/project-detail';
-import FormProject from './components/form-project';
 
 const ProjectPage = () => {
   const { data } = useGetAllProjectsQuery();
@@ -16,7 +16,7 @@ const ProjectPage = () => {
   const [projects, setProjects] = useState<IProject[]>([]);
   const [open, setOpen] = useState({
     detail: false,
-    form: true,
+    form: false,
   });
 
   useEffect(() => {
