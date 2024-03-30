@@ -1,14 +1,18 @@
 import { Drawer, IconButton, Typography } from '@material-tailwind/react';
 
 import ReactQuill from 'react-quill';
-import SelectGroupOne from '~/components/Forms/SelectGroup/SelectGroupOne';
 import { useState } from 'react';
 import { uploadImage } from '../utils/upload-image';
+import SelectV2 from '~/components/Forms/SelectGroup/select-v2';
+// import { memberPosition, statusArray } from '../init';
 
 interface FormProjectProps {
   open: boolean;
   closeDrawer: () => void;
 }
+
+const memberPosition = ['leader', 'member', 'tester']
+const statusArray = ['progress', 'done', 'test']
 
 const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
   const [value, setValue] = useState('');
@@ -22,6 +26,22 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
     const result = await uploadImage(files)
     setImages(result)
   }
+
+  /* select status */
+  const [option, setOption] = useState(statusArray[0]);
+
+  const handleChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setOption(value);
+  };
+
+  /* select position member */
+  const [position, setPosition] = useState(memberPosition[0]);
+
+  const handleChangePosition = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setPosition(value);
+  };
 
   return (
     <Drawer
@@ -152,24 +172,14 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
               <label className="mb-2.5 block text-black dark:text-white">
                 Trạng thái dự án
               </label>
-              {/* <input
-                type="text"
-                placeholder="Trạng thái dự án"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              /> */}
-              <SelectGroupOne />
+              <SelectV2 options={statusArray} selectedOption={option} onChange={handleChangeStatus} />
             </div>
 
             <div className="w-full xl:w-1/2">
               <label className="mb-2.5 block text-black dark:text-white">
                 Vị trí
               </label>
-              {/* <input
-                type="number"
-                placeholder="Nhập vị trị dự án"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              /> */}
-              <SelectGroupOne />
+              <SelectV2 options={memberPosition} onChange={handleChangePosition} selectedOption={position} />
             </div>
           </div>
 
