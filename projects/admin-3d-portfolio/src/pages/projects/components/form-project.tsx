@@ -3,6 +3,7 @@ import { Drawer, IconButton, Typography } from '@material-tailwind/react';
 import ReactQuill from 'react-quill';
 import SelectGroupOne from '~/components/Forms/SelectGroup/SelectGroupOne';
 import { useState } from 'react';
+import { uploadImage } from '../utils/upload-image';
 
 interface FormProjectProps {
   open: boolean;
@@ -11,6 +12,17 @@ interface FormProjectProps {
 
 const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
   const [value, setValue] = useState('');
+  const [images, setImages] = useState<string[]>([]);
+  console.log("🚀 ~ FormProject ~ images:", images)
+
+  const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const result = await uploadImage(files)
+    setImages(result)
+  }
+
   return (
     <Drawer
       open={open}
@@ -91,12 +103,22 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
             </div>
           </div>
 
+          {images.length > 0 && (
+            <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+              {images.map((image, index) => (
+                  <img src={image} alt="image" className="w-[140px] h-[140px] object-cover rounded-full border shadow" />
+              ))}
+            </div>
+          )}
+
           <div className="mb-4.5">
             <label className="block mb-3 text-black dark:text-white">
               Hình ảnh dự án
             </label>
             <input
+              onChange={(e) => handleUploadImage(e)}
               type="file"
+              multiple
               className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
             />
           </div>
