@@ -1,14 +1,15 @@
+import * as yup from 'yup';
+
 import { Drawer, IconButton, Typography } from '@material-tailwind/react';
+import { IProject, IProjectForm } from '~/types/project.type';
+import { useEffect, useState } from 'react';
 
 import ReactQuill from 'react-quill';
-import { useEffect, useState } from 'react';
-import { uploadImage } from '../utils/upload-image';
 import SelectV2 from '~/components/Forms/SelectGroup/select-v2';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
+import { uploadImage } from '../utils/upload-image';
 import { useCreateProjectMutation } from '~/store/services/project.service';
-import { IProject, IProjectForm } from '~/types/project.type';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 interface FormProjectProps {
   open: boolean;
@@ -18,31 +19,33 @@ interface FormProjectProps {
 const memberPosition = ['leader', 'member', 'tester'];
 const statusArray = ['progress', 'done', 'test'];
 
-const schema = yup
-  .object({
-    title: yup.string().required('Title is required'),
-    linkCode: yup.string().required('Link code is required'),
-    linkDemo: yup.string().required('Link demo is required'),
-    teamSize: yup.number().typeError('Team size > 0').required('Team size is required'),
-    startDate: yup.string().required('Start date is required'),
-    endDate: yup.string().required('End date is required'),
-    fe: yup.string().required('Frontend is required'),
-    be: yup.string().required('Backend is required'),
-    db: yup.string().required('Database is required'),
-    // desc: yup.string().required('Description is required'),
-  })
+const schema = yup.object({
+  title: yup.string().required('Title is required'),
+  linkCode: yup.string().required('Link code is required'),
+  linkDemo: yup.string().required('Link demo is required'),
+  teamSize: yup
+    .number()
+    .typeError('Team size > 0')
+    .required('Team size is required'),
+  startDate: yup.string().required('Start date is required'),
+  endDate: yup.string().required('End date is required'),
+  fe: yup.string().required('Frontend is required'),
+  be: yup.string().required('Backend is required'),
+  db: yup.string().required('Database is required'),
+  // desc: yup.string().required('Description is required'),
+});
 
 const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
   const {
     handleSubmit,
-    register,setValue,
-    watch,
+    register,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
- 
-  const [handleCreateProject] = useCreateProjectMutation()
+
+  const [handleCreateProject] = useCreateProjectMutation();
 
   const [sortDesc, setSortDesc] = useState('');
   const [desc, setDesc] = useState('');
@@ -74,26 +77,30 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
 
   // hand submit form
   const onSubmit = async (data: any) => {
-    const {fe, be, db, ...rest} = data;
+    const { fe, be, db, ...rest } = data;
     // convert string to array
-    data.fe = fe.split(', ')
+    data.fe = fe.split(', ');
     data.be = be.split(', ');
     data.db = db.split(', ');
     const techonology = {
       frontend: data.fe,
       backend: data.be,
       database: data.db,
-    }
+    };
     const projectInfo = {
       ...rest,
       sortDesc,
       desc,
       images,
       techonology,
-    } as IProject
+    } as IProject;
     await handleCreateProject(projectInfo).then(() => {
-      closeDrawer()
-    })
+      reset();
+      setSortDesc('');
+      setDesc('');
+      setImages([]);
+      closeDrawer();
+    });
   };
 
   return (
@@ -144,7 +151,9 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
                 placeholder="Nhận tên dự án"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
-              {errors.title && <p className="text-red-500">{errors.title.message}</p>}
+              {errors.title && (
+                <p className="text-red-500">{errors.title.message}</p>
+              )}
             </div>
 
             <div className="w-full xl:w-1/2">
@@ -157,7 +166,9 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
                 placeholder="Nhập link github"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
-              {errors.linkCode && <p className="text-red-500">{errors.linkCode.message}</p>}
+              {errors.linkCode && (
+                <p className="text-red-500">{errors.linkCode.message}</p>
+              )}
             </div>
           </div>
 
@@ -172,7 +183,9 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
                 placeholder="Nhận Link demo"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
-              {errors.linkDemo && <p className="text-red-500">{errors.linkDemo.message}</p>}
+              {errors.linkDemo && (
+                <p className="text-red-500">{errors.linkDemo.message}</p>
+              )}
             </div>
 
             <div className="w-full xl:w-1/2">
@@ -185,7 +198,9 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
                 placeholder="Nhập số thành viên"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
-              {errors.teamSize && <p className="text-red-500">{errors.teamSize.message}</p>}
+              {errors.teamSize && (
+                <p className="text-red-500">{errors.teamSize.message}</p>
+              )}
             </div>
           </div>
 
@@ -211,7 +226,9 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
               multiple
               className="w-full rounded-md border border-stroke p-3 outline-none transition file:mr-4 file:rounded file:border-[0.5px] file:border-stroke file:bg-[#EEEEEE] file:py-1 file:px-2.5 file:text-sm focus:border-primary file:focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-strokedark dark:file:bg-white/30 dark:file:text-white"
             />
-            {images.length === 0 && <p className="text-red-500">This field is required</p>}
+            {images.length === 0 && (
+              <p className="text-red-500">This field is required</p>
+            )}
           </div>
 
           <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -225,7 +242,9 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
                 {...register('startDate')}
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
-              {errors.startDate && <p className="text-red-500">{errors.startDate.message}</p>}
+              {errors.startDate && (
+                <p className="text-red-500">{errors.startDate.message}</p>
+              )}
             </div>
 
             <div className="w-full xl:w-1/2">
@@ -238,7 +257,9 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
                 placeholder="Nhập Ngày kết thúc"
                 className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
-              {errors.endDate && <p className="text-red-500">{errors.endDate.message}</p>}
+              {errors.endDate && (
+                <p className="text-red-500">{errors.endDate.message}</p>
+              )}
             </div>
           </div>
 
@@ -310,16 +331,19 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
               Miêu tả ngắn gọn dự án
             </label>
             <ReactQuill theme="snow" value={sortDesc} onChange={setSortDesc} />
-            {sortDesc.trim().length === 0 && <p className="text-red-500">This field is required</p>}
+            {sortDesc.trim().length === 0 && (
+              <p className="text-red-500">This field is required</p>
+            )}
           </div>
 
           <div className="mb-6">
             <label className="mb-2.5 block text-black dark:text-white">
               Miêu tả chi tiết dự án
             </label>
-            <ReactQuill theme="snow" value={desc} onChange={setDesc } />
-            {desc.trim().length === 0&& <p className="text-red-500">This field is required</p>}
-
+            <ReactQuill theme="snow" value={desc} onChange={setDesc} />
+            {desc.trim().length === 0 && (
+              <p className="text-red-500">This field is required</p>
+            )}
           </div>
 
           <button className="flex justify-center w-full p-3 font-medium rounded bg-primary text-gray hover:bg-opacity-90">

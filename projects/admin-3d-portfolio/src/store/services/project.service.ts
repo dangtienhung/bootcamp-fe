@@ -11,16 +11,14 @@ export const projectApi = createApi({
       providesTags: (result) => {
         return result
           ? [
-              ...result.map(
-                ({ id }) => ({ type: 'Project', id }) as const,
-              ),
+              ...result.map(({ id }) => ({ type: 'Project', id }) as const),
               { type: 'Project', id: 'LIST' },
             ]
           : [{ type: 'Project', id: 'LIST' }];
       },
     }),
-    deleteProject: builder.mutation<void, string>({
-      query: (id: string) => ({
+    deleteProject: builder.mutation<void, number>({
+      query: (id: number) => ({
         url: `/projects/${id}`,
         method: 'DELETE',
       }),
