@@ -2,6 +2,7 @@ import { Navigate, createBrowserRouter } from 'react-router-dom';
 
 import Buttons from '~/pages/UiElements/Buttons';
 import Chart from '~/pages/Chart';
+import ExperiencePage from '~/pages/experience-page/experience-page';
 import FormElements from '~/pages/Form/FormElements';
 import FormLayout from '~/pages/Form/FormLayout';
 import NotFoundPage from '~/pages/NotFound';
@@ -69,6 +70,15 @@ export const routes = createBrowserRouter([
       <>
         <PageTitle title="TailAdmin - Tailwind CSS Admin Dashboard Template" />
         <Tables />
+      </>
+    ),
+  },
+  {
+    path: '/experience',
+    element: (
+      <>
+        <PageTitle title="TailAdmin - Tailwind CSS Admin Dashboard Template" />
+        <ExperiencePage />
       </>
     ),
   },

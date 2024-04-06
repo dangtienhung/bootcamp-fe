@@ -12,10 +12,7 @@ interface ProjectDetailProps {
 }
 
 const ProjectDetail = ({ open, closeDrawer, id }: ProjectDetailProps) => {
-  console.log('🚀 ~ ProjectDetail ~ id:', id);
-
   const { data } = useGetOneProjectQuery(id.toString());
-  console.log('🚀 ~ ProjectDetail ~ data:', data);
 
   if (!data) return <div>Loading...</div>;
 
@@ -114,10 +111,12 @@ const ProjectDetail = ({ open, closeDrawer, id }: ProjectDetailProps) => {
             </span>
           </p>
 
-          <p className="">
-            <span className="font-semibold">Sort desc:</span>
-            <span className="">{data.sortDesc}</span>
-          </p>
+          {data.sortDesc && (
+            <p className="">
+              <span className="font-semibold">Sort desc:</span>
+              <span className="">{parse(data.sortDesc)}</span>
+            </p>
+          )}
 
           <p className="">
             <span className="font-semibold">Description:</span>

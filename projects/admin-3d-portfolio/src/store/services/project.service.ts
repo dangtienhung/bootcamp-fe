@@ -36,6 +36,7 @@ export const projectApi = createApi({
       query: (id) => {
         return `/projects/${id}`;
       },
+
       providesTags: (result, error, id) => [{ type: 'Project', id }],
     }),
     updateProject: builder.mutation<IProject, Partial<IProject>>({

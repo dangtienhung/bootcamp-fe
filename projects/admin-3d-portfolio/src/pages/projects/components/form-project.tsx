@@ -2,12 +2,20 @@ import * as yup from 'yup';
 
 import { Drawer, IconButton, Typography } from '@material-tailwind/react';
 import { IProject, IProjectForm } from '~/types/project.type';
+import { useAppDispatch, useAppSelector } from '~/store/hooks';
+import {
+  useCreateProjectMutation,
+  useGetOneProjectQuery,
+  useUpdateProjectMutation,
+} from '~/store/services/project.service';
 import { useEffect, useState } from 'react';
 
 import ReactQuill from 'react-quill';
+import { RootState } from '~/store/store';
 import SelectV2 from '~/components/Forms/SelectGroup/select-v2';
+import { setProjectId } from '~/store/slice/project.slice';
+import { toast } from 'react-toastify';
 import { uploadImage } from '../utils/upload-image';
-import { useCreateProjectMutation } from '~/store/services/project.service';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -36,16 +44,21 @@ const schema = yup.object({
 });
 
 const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
+  const dispatch = useAppDispatch();
+  const { idProject } = useAppSelector((state: RootState) => state.project);
+
   const {
     handleSubmit,
     register,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
   const [handleCreateProject] = useCreateProjectMutation();
+  const [handleUpdateProject] = useUpdateProjectMutation();
 
   const [sortDesc, setSortDesc] = useState('');
   const [desc, setDesc] = useState('');
@@ -75,6 +88,37 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
     setPosition(value);
   };
 
+  const { data: dataProject } = useGetOneProjectQuery(
+    idProject ? idProject.toString() : '0',
+  );
+
+  useEffect(() => {
+    // reset form when close drawer
+    if (!open) {
+      reset();
+      setSortDesc('');
+      setDesc('');
+      setImages([]);
+    }
+  }, [open, reset]);
+
+  useEffect(() => {
+    if (idProject && dataProject) {
+      setValue('title', dataProject.title);
+      setValue('linkCode', dataProject.linkCode || '');
+      setValue('linkDemo', dataProject.linkDemo || '');
+      setValue('teamSize', dataProject.teamSize || 0);
+      setValue('startDate', dataProject.startDate || '');
+      setValue('endDate', dataProject.endDate || '');
+      setValue('fe', dataProject?.techonology?.frontend?.join(', ') || '');
+      setValue('be', dataProject?.techonology?.backend?.join(', ') || '');
+      setValue('db', dataProject?.techonology?.backend?.join(', ') || '');
+      setSortDesc(dataProject.sortDesc || '');
+      setDesc(dataProject.desc || '');
+      setImages(dataProject.images || []);
+    }
+  }, [idProject, dataProject, setValue]);
+
   // hand submit form
   const onSubmit = async (data: any) => {
     const { fe, be, db, ...rest } = data;
@@ -94,26 +138,54 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
       images,
       techonology,
     } as IProject;
-    await handleCreateProject(projectInfo).then(() => {
-      reset();
-      setSortDesc('');
-      setDesc('');
-      setImages([]);
-      closeDrawer();
-    });
+
+    if (idProject !== null && data) {
+      // const newImages = dataProject?.images !== images ? images : dataProject?.images;
+      let newImages;
+      if (dataProject?.images !== images) {
+        newImages = images;
+      } else {
+        newImages = dataProject?.images;
+      }
+      await handleUpdateProject({
+        ...projectInfo,
+        id: idProject,
+        images: newImages,
+      }).then(() => {
+        reset();
+        setSortDesc('');
+        setDesc('');
+        setImages([]);
+        closeDrawer();
+      });
+      toast.success('Update project success');
+    } else {
+      await handleCreateProject(projectInfo).then(() => {
+        reset();
+        setSortDesc('');
+        setDesc('');
+        setImages([]);
+        closeDrawer();
+      });
+      toast.success('Create project success');
+    }
+    dispatch(setProjectId(null));
   };
 
   return (
     <Drawer
       open={open}
-      onClose={closeDrawer}
+      onClose={() => {
+        closeDrawer();
+        dispatch(setProjectId(null));
+      }}
       className="p-4"
       placement="right"
       size={700}
     >
       <div className="flex items-center justify-between mb-6">
         <Typography variant="h5" color="blue-gray">
-          Create Project
+          {idProject !== null ? 'Update project' : 'Create Project'}
         </Typography>
         <IconButton variant="text" color="blue-gray" onClick={closeDrawer}>
           <svg
@@ -204,6 +276,10 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
             </div>
           </div>
 
+          <label className="block mb-3 text-black dark:text-white">
+            {idProject !== null && 'Giữ lại hình ảnh cũ'}
+          </label>
+
           {images.length > 0 && (
             <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
               {images.map((image, index) => (
@@ -218,7 +294,7 @@ const FormProject = ({ closeDrawer, open }: FormProjectProps) => {
 
           <div className="mb-4.5">
             <label className="block mb-3 text-black dark:text-white">
-              Hình ảnh dự án
+              {idProject !== null ? 'Hoặc thay hình ảnh mới' : 'Hình ảnh dự án'}
             </label>
             <input
               onChange={(e) => handleUploadImage(e)}
