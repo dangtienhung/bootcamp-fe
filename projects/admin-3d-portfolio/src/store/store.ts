@@ -1,11 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { experienceApi } from './services/experience.service';
 import { projectApi } from './services/project.service';
 import projectReducer from './slice/project.slice';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { skillApi } from './services/skill.service';
 import skillReducer from './slice/skill.slice';
 
-const middleware = [skillApi.middleware, projectApi.middleware];
+const middleware = [
+  skillApi.middleware,
+  projectApi.middleware,
+  experienceApi.middleware,
+];
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +20,8 @@ export const store = configureStore({
     // projectApi
     [projectApi.reducerPath]: projectApi.reducer,
     project: projectReducer,
+    // experienceApi
+    [experienceApi.reducerPath]: experienceApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(middleware),
