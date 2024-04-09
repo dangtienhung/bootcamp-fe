@@ -25,7 +25,3 @@ dist-ssr
 
 # git
 .git
-
-# env
-.env
-
