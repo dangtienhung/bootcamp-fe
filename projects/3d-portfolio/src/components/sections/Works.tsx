@@ -1,46 +1,34 @@
 import { Header } from '../atoms/Header'
 import { IProject } from '@/types/project.type'
 import { SectionWrapper } from '../../hoc'
-import { TProject } from '../../types'
 import Tilt from 'react-parallax-tilt'
-import { buildSlice } from 'node_modules/@reduxjs/toolkit/dist/query/core/buildSlice'
 import { config } from '../../constants/config'
 import { fadeIn } from '../../utils/motion'
 import { github } from '../../assets'
 import { motion } from 'framer-motion'
 import parse from 'html-react-parser'
-import { projects } from '../../constants'
 import { useGetAllProjectsQuery } from '../../store/services/project.service'
 
-const ProjectCard: React.FC<{ index: number } & IProject> = ({
-  index,
-  title,
-  desc,
-  techonology,
-  linkCode,
-  linkDemo,
-  sortDesc,
-  images
-}) => {
+const ProjectCard: React.FC<{ index: number } & IProject> = ({ title, techonology, linkCode, sortDesc, images }) => {
   return (
     <motion.div>
       <Tilt>
         <div className='bg-tertiary w-full rounded-2xl p-5 sm:w-[300px] flex flex-col h-[400px]'>
           <div className='relative h-[230px] w-full'>
-            <img src={(images as string[])[0]} alt={title} className='h-full w-full rounded-2xl object-cover' />
-            <div className='card-img_hover absolute inset-0 m-3 flex justify-end'>
-              <div
+            <img src={(images as string[])[0]} alt={title} className='object-cover w-full h-full rounded-2xl' />
+            <div className='absolute inset-0 flex justify-end m-3 card-img_hover'>
+              <button
                 onClick={() => window.open(linkCode, '_blank')}
-                className='black-gradient flex h-10 w-10 cursor-pointer items-center justify-center rounded-full'
+                className='flex items-center justify-center w-10 h-10 rounded-full cursor-pointer black-gradient'
               >
-                <img src={github} alt='github' className='h-1/2 w-1/2 object-contain' />
-              </div>
+                <img src={github} alt='github' className='object-contain w-1/2 h-1/2' />
+              </button>
             </div>
           </div>
           <div className='mt-auto '>
             <h3 className='text-[24px] font-bold text-white'>{title}</h3>
             <p className='text-secondary mt-2 text-[14px] line-clamp-2'>{sortDesc && parse(sortDesc)}</p>
-            <div className='mt-4 flex flex-wrap gap-2 truncate'>
+            <div className='flex flex-wrap gap-2 mt-4 truncate'>
               {techonology &&
                 techonology?.frontend?.slice(0, 3)?.map((tag) => (
                   <p key={tag} className={`text-[14px] capitalize`}>
@@ -72,7 +60,7 @@ const Works = () => {
         </motion.p>
       </div>
 
-      <div className='mt-20 flex flex-wrap gap-7'>
+      <div className='flex flex-wrap mt-20 gap-7'>
         {data &&
           data.length > 0 &&
           data.slice(0, 4).map((project, index) => <ProjectCard key={`project-${index}`} index={index} {...project} />)}
