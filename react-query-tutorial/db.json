@@ -1,19 +1,34 @@
 {
-	"skills": [
-		{
-			"id": 1,
-			"title": "HTML",
-			"desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-		},
-		{
-			"id": 3,
-			"title": "JavaScript",
-			"desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-		},
-		{
-			"id": 4,
-			"title": "React",
-			"desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-		}
-	]
+  "skills": [
+    {
+      "id": "1",
+      "title": "HTML",
+      "desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+    },
+    {
+      "id": "3",
+      "title": "JavaScript",
+      "desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+    },
+    {
+      "id": "4",
+      "title": "React",
+      "desc": "Lorem Ipsum is simply dummy text of the printing and typesetting industry."
+    },
+    {
+      "id": "8401",
+      "title": "kỹ năng tán gái",
+      "desc": "vip pro max"
+    },
+    {
+      "id": "e37a",
+      "title": "kỹ năng tán gái 1",
+      "desc": "vip pro max 1"
+    },
+    {
+      "id": "880d",
+      "title": "dang tien hug",
+      "desc": "abcabc"
+    }
+  ]
 }
