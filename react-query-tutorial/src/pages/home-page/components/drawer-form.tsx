@@ -1,8 +1,7 @@
-import { Button, Drawer, Form, Input, message } from 'antd';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Button, Drawer, Form, Input } from 'antd';
 
 import { ISkill } from '@/interfaces/skill.interface';
-import { createSkill } from '@/apis/skill.api';
+import { useCreateSkill } from '@/hooks/useSkill';
 
 interface DrawerFormProps {
 	open: boolean;
@@ -11,26 +10,14 @@ interface DrawerFormProps {
 
 const DrawerForm = ({ open, onClose }: DrawerFormProps) => {
 	const [form] = Form.useForm();
-	const queryClient = useQueryClient();
-
-	const createSkillMutation = useMutation({
-		mutationFn: (data: Omit<ISkill, 'id'>) => createSkill(data),
-		onSuccess: () => {
-			message.success('Tạo kỹ năng thành công');
-			onClose();
-			queryClient.invalidateQueries({ queryKey: ['skill'] });
-			// reset form
-			form.resetFields();
-		},
-	});
-
-	const onSubmit = (data: Omit<ISkill, 'id'>) => {
-		createSkillMutation.mutate(data);
+	const { onSubmit } = useCreateSkill();
+	const handleSubmit = (data: Omit<ISkill, 'id'>) => {
+		onSubmit(data), onClose(), form.resetFields();
 	};
 
 	return (
 		<Drawer title="Basic Drawer" onClose={onClose} open={open}>
-			<Form form={form} onFinish={onSubmit} layout="vertical">
+			<Form form={form} onFinish={handleSubmit} layout="vertical">
 				<Form.Item
 					label="Tên kỹ năng"
 					name="title"

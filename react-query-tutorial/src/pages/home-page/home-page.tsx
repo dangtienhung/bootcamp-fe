@@ -8,11 +8,9 @@ import {
 	Table,
 	TableProps,
 	Tooltip,
-	message,
 } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { deleteSkill, getAllSkills } from '@/apis/skill.api';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useDeleteSkill, useGetAllSkills } from '@/hooks/useSkill';
 
 import DrawerForm from './components/drawer-form';
 import DrawerFormEdit from './components/drawer-form-edit';
@@ -20,7 +18,20 @@ import { ISkill } from '@/interfaces/skill.interface';
 import { useState } from 'react';
 
 const HomePage = () => {
-	const queryClient = useQueryClient();
+	const { handleDelete } = useDeleteSkill();
+	const { data, isLoading, isError } = useGetAllSkills();
+
+	const [open, setOpen] = useState(false);
+	const [openEdit, setOpenEdit] = useState(false);
+	const [idSkill, setIdSkill] = useState<number | null>(null);
+
+	const showDrawer = () => {
+		setOpen(true);
+	};
+
+	const onClose = () => {
+		setOpen(false);
+	};
 
 	const columns: TableProps<ISkill>['columns'] = [
 		{
@@ -66,40 +77,6 @@ const HomePage = () => {
 			},
 		},
 	];
-
-	const [open, setOpen] = useState(false);
-	const [openEdit, setOpenEdit] = useState(false);
-	const [idSkill, setIdSkill] = useState<number | null>(null);
-
-	const showDrawer = () => {
-		setOpen(true);
-	};
-
-	const onClose = () => {
-		setOpen(false);
-	};
-
-	// lấy dữ liệu với react-query
-	const { data, isError, isLoading } = useQuery<ISkill[]>({
-		queryKey: ['skill'],
-		queryFn: async () => getAllSkills(),
-	});
-
-	// xoá dữ liệu với react-query
-	const deleteMutation = useMutation({
-		mutationFn: (id: number) => deleteSkill(id),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ['skill'] });
-			message.success('Delete success');
-		},
-		onError: () => {
-			message.error('Delete failed');
-		},
-	});
-
-	const handleDelete = (id: number) => {
-		deleteMutation.mutate(id);
-	};
 
 	if (isLoading) {
 		return <Skeleton active />;
