@@ -1,23 +1,28 @@
 import {
 	Button,
 	Col,
-	Drawer,
+	Popconfirm,
 	Row,
 	Skeleton,
 	Space,
 	Table,
 	TableProps,
+	Tooltip,
+	message,
 } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { deleteSkill, getAllSkills } from '@/apis/skill.api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import DrawerForm from './components/drawer-form';
-import { ISkill } from '../../interfaces/skill.interface';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
+import DrawerFormEdit from './components/drawer-form-edit';
+import { ISkill } from '@/interfaces/skill.interface';
 import { useState } from 'react';
 
 const HomePage = () => {
-	const columns: TableProps<ISkill[]>['columns'] = [
+	const queryClient = useQueryClient();
+
+	const columns: TableProps<ISkill>['columns'] = [
 		{
 			title: 'Tiêu đề kỹ năng',
 			dataIndex: 'title',
@@ -32,11 +37,30 @@ const HomePage = () => {
 			title: 'Action',
 			dataIndex: 'actions',
 			key: 'actions',
-			render: (value, record) => {
+			render: (_, record) => {
 				return (
 					<Space size={'small'}>
-						<Button type="text" icon={<EditOutlined />} />
-						<Button type="text" danger icon={<DeleteOutlined />}></Button>
+						<Tooltip title="Edit skill">
+							<Button
+								type="text"
+								icon={<EditOutlined />}
+								onClick={() => {
+									setIdSkill(record.id);
+									setOpenEdit(true);
+								}}
+							/>
+						</Tooltip>
+						<Tooltip title="Delete skill">
+							<Popconfirm
+								title="Delete the skill?"
+								description="Are you sure to delete this skill?"
+								onConfirm={() => handleDelete(record.id)}
+								okText="Yes"
+								cancelText="No"
+							>
+								<Button type="text" danger icon={<DeleteOutlined />}></Button>
+							</Popconfirm>
+						</Tooltip>
 					</Space>
 				);
 			},
@@ -44,6 +68,8 @@ const HomePage = () => {
 	];
 
 	const [open, setOpen] = useState(false);
+	const [openEdit, setOpenEdit] = useState(false);
+	const [idSkill, setIdSkill] = useState<number | null>(null);
 
 	const showDrawer = () => {
 		setOpen(true);
@@ -56,11 +82,24 @@ const HomePage = () => {
 	// lấy dữ liệu với react-query
 	const { data, isError, isLoading } = useQuery<ISkill[]>({
 		queryKey: ['skill'],
-		queryFn: async () => {
-			const response = await axios.get('http://localhost:3000/skills');
-			return response.data;
+		queryFn: async () => getAllSkills(),
+	});
+
+	// xoá dữ liệu với react-query
+	const deleteMutation = useMutation({
+		mutationFn: (id: number) => deleteSkill(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['skill'] });
+			message.success('Delete success');
+		},
+		onError: () => {
+			message.error('Delete failed');
 		},
 	});
+
+	const handleDelete = (id: number) => {
+		deleteMutation.mutate(id);
+	};
 
 	if (isLoading) {
 		return <Skeleton active />;
@@ -102,6 +141,13 @@ const HomePage = () => {
 			</Row>
 
 			<DrawerForm open={open} onClose={onClose} />
+			{idSkill && (
+				<DrawerFormEdit
+					open={openEdit}
+					onClose={() => setOpenEdit(!openEdit)}
+					idSkill={idSkill}
+				/>
+			)}
 		</div>
 	);
 };

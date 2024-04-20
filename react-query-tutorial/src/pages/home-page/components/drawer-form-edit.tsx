@@ -1,35 +1,63 @@
 import { Button, Drawer, Form, Input, message } from 'antd';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getSkillById, updateSkill } from '@/apis/skill.api';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { ISkill } from '@/interfaces/skill.interface';
-import { createSkill } from '@/apis/skill.api';
+import { useEffect } from 'react';
 
-interface DrawerFormProps {
+interface DrawerFormEditProps {
 	open: boolean;
 	onClose: () => void;
+	idSkill: number;
 }
 
-const DrawerForm = ({ open, onClose }: DrawerFormProps) => {
+const DrawerFormEdit = ({ open, onClose, idSkill }: DrawerFormEditProps) => {
 	const [form] = Form.useForm();
 	const queryClient = useQueryClient();
 
-	const createSkillMutation = useMutation({
-		mutationFn: (data: Omit<ISkill, 'id'>) => createSkill(data),
+	const editMutation = useMutation({
+		mutationFn: (data: ISkill) => updateSkill(data),
 		onSuccess: () => {
-			message.success('Tạo kỹ năng thành công');
+			message.success('Cập nhật kỹ năng thành công');
 			onClose();
 			queryClient.invalidateQueries({ queryKey: ['skill'] });
 			// reset form
 			form.resetFields();
 		},
+		onError: () => {
+			message.error('Cập nhật kỹ năng thất bại');
+		},
+	});
+
+	const { data, isLoading, isError, isSuccess } = useQuery({
+		queryKey: ['skill', idSkill],
+		queryFn: () => getSkillById(idSkill),
+		enabled: idSkill !== null || idSkill !== undefined,
 	});
 
 	const onSubmit = (data: Omit<ISkill, 'id'>) => {
-		createSkillMutation.mutate(data);
+		editMutation.mutate({
+			...data,
+			id: idSkill,
+		});
 	};
 
+	useEffect(() => {
+		if (isSuccess) {
+			form.setFieldsValue(data);
+		}
+	}, [data, isSuccess, form]);
+
+	if (isLoading) {
+		return <div>Loading...</div>;
+	}
+
+	if (isError) {
+		return <div>Error...</div>;
+	}
+
 	return (
-		<Drawer title="Basic Drawer" onClose={onClose} open={open}>
+		<Drawer title="Edit" onClose={onClose} open={open}>
 			<Form form={form} onFinish={onSubmit} layout="vertical">
 				<Form.Item
 					label="Tên kỹ năng"
@@ -68,4 +96,4 @@ const DrawerForm = ({ open, onClose }: DrawerFormProps) => {
 	);
 };
 
-export default DrawerForm;
+export default DrawerFormEdit;
