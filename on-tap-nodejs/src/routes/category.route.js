@@ -93,3 +93,11 @@ router.delete('/category/:categoryId', async (req, res) => {
 });
 
 export default router;
+
+// cách nối dữ liệu từ nhiều file
+// phân trang dữ liệu
+// query dữ liệu
+// verify user
+// upload
+// validate dữ liệu đầu vào
+// jwt

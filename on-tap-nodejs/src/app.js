@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import connectDb from './configs/connect-db.config.js';
 import cateoryRoutes from './routes/category.route.js';
+import productRotes from './routes/product.route.js';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ connectDb();
 
 /* =================== routes =================== */
 app.use('/api/v1', cateoryRoutes);
+app.use('/api/v1', productRotes);
 
 const port = process.env.PORT || 3000;
 
