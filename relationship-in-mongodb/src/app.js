@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import connectDb from './configs/connect-db.config.js';
+import authRoutes from './routes/auth.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import productRoutes from './routes/product.routes.js';
 
@@ -15,7 +16,7 @@ app.use(morgan('dev'));
 connectDb();
 
 // router
-app.use('/api/v1', [productRoutes, categoryRoutes]);
+app.use('/api/v1', [productRoutes, categoryRoutes, authRoutes]);
 
 app.listen(port, () => {
 	console.log(`Server is running on port ${port}`);
