@@ -45,7 +45,27 @@ export const createProduct = handleAsync(async (req, res) => {
 
 // lấy ra danh sách sản phẩm
 export const getProduct = handleAsync(async (req, res) => {
-	const products = await Product.find();
+	const { _page = 1, _limit = 10, q } = req.query;
+
+	const options = {
+		page: _page,
+		limit: _limit,
+		populate: [{ path: 'categoryId', select: '-productIds' }],
+	};
+
+	let query = {};
+
+	if (q) {
+		query = {
+			$and: [
+				{
+					$or: [{ name: { $regex: new RegExp(q), $options: 'i' } }],
+				},
+			],
+		};
+	}
+
+	const products = await Product.paginate(query, options);
 
 	if (!products) {
 		return res
@@ -55,14 +75,17 @@ export const getProduct = handleAsync(async (req, res) => {
 
 	return res.status(HTTP_STATUS.OK).json({
 		message: 'Get product sucessfully',
-		data: products,
+		...products,
 	});
 });
 
 // lấy ra sản phẩm theo id
 export const getProductById = handleAsync(async (req, res) => {
 	const { id } = req.params;
-	const product = await Product.findById(id);
+	const product = await Product.findById(id).populate({
+		path: 'categoryId',
+		select: '-productIds',
+	});
 
 	if (!product) {
 		return res.status(HTTP_STATUS.BAD_REQUEST).json({
@@ -223,3 +246,5 @@ children: [
   }
 ]
 */
+
+// techlead/ pm

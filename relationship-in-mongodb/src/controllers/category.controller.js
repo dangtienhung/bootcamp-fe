@@ -21,8 +21,33 @@ export const createCategory = handleAsync(async (req, res) => {
 
 // lấy ra danh sách danh mục
 export const getCategoty = handleAsync(async (req, res) => {
-	const category = await Category.find();
+	const params = req.query;
+	console.log('🚀 ~ getCategoty ~ params:', params);
 
+	const { _page = 1, _limit = 10, q } = params;
+
+	const options = {
+		page: _page,
+		limit: _limit,
+		populate: [{ path: 'productIds', select: '-categoryId -category' }],
+		// select: '-productIds',
+	};
+
+	const query = q
+		? {
+				$and: [
+					// $and là toán tử logic trong mongodb để tìm kiếm theo nhiều điều kiện
+					{
+						$or: [
+							{ nameCategory: { $regex: new RegExp(q), $options: 'i' } }, // regex là biểu thức chính quy dungf để tìm kiếm theo chuỗi
+							{ image: { $regex: new RegExp(q), $options: 'i' } },
+						],
+					},
+				],
+		  }
+		: {};
+
+	const category = await Category.paginate(query, options);
 	if (!category) {
 		return res
 			.status(HTTP_STATUS.BAD_REQUEST)
@@ -31,14 +56,17 @@ export const getCategoty = handleAsync(async (req, res) => {
 
 	return res.status(HTTP_STATUS.OK).json({
 		message: 'get category sucessfully',
-		data: category,
+		...category,
 	});
 });
 
 // lấy ra danh sách danh mục theo id
 export const getCategotyById = handleAsync(async (req, res) => {
 	const { id } = req.params;
-	const category = await Category.findById(id);
+	const category = await Category.findById(id).populate({
+		path: 'productIds',
+		select: '-categoryId -category',
+	});
 
 	if (!category) {
 		return res

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 // Schemas
 const productSchema = new mongoose.Schema(
@@ -41,6 +42,9 @@ const productSchema = new mongoose.Schema(
 		versionKey: false,
 	}
 );
+
+productSchema.plugin(mongoosePaginate);
+
 const Product = mongoose.model('Product', productSchema); // Đang lưu vào collection Product
 
 export default Product;
