@@ -17,12 +17,15 @@ const useSchema = new mongoose.Schema(
 		address: {
 			type: String,
 		},
+		avatar: {
+			type: String,
+		},
 		number: {
 			type: String,
 		},
 		role: {
 			type: String,
-			enum: ['user', 'admin'],
+			enum: ['user', 'admin', 'staff'],
 			default: 'user',
 		},
 	},

@@ -7,6 +7,7 @@ import {
 } from '../controllers/product.controller.js';
 
 import express from 'express';
+import { checkPermission } from '../middlewares/checkPermission.middleware.js';
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ const router = express.Router();
 
 // Tạo ra sản phẩm
 // POST /api/products
-router.post('/products', createProduct);
+router.post('/products', checkPermission, createProduct);
 // Lấy ra danh sách sản phẩm
 // GET /api/products
 router.get('/products', getProduct);
@@ -23,11 +24,11 @@ router.get('/products', getProduct);
 router.get('/products/:id', getProductById);
 // Xóa sản phẩm
 // DELETE /api/products/:id
-router.delete('/products/:id', deleteProduct);
+router.delete('/products/:id', checkPermission, deleteProduct);
 // cập nhật sản phẩm
 // PUT /api/products/:id
-router.put('/products/:id', updateProductById);
+router.put('/products/:id', checkPermission, updateProductById);
 // PATCH /api/products/:id
-router.patch('/products/:id', updateProductById);
+router.patch('/products/:id', checkPermission, updateProductById);
 
 export default router;

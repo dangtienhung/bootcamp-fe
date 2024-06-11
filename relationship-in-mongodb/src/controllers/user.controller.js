@@ -53,7 +53,7 @@ export const userControler = {
 
 			// genenate token
 			const token = jwt.sign({ _id: newUser._id }, process.env.TOKEN_SECRET, {
-				expiresIn: '1m',
+				expiresIn: '1d',
 			});
 
 			return res.status(HTTP_STATUS.CREATED).json({
@@ -115,7 +115,7 @@ export const userControler = {
 					{ _id: isExitsUser._id },
 					process.env.TOKEN_SECRET,
 					{
-						expiresIn: '1m',
+						expiresIn: '1d',
 					}
 				);
 
@@ -126,8 +126,8 @@ export const userControler = {
 					success: true,
 					accessToken: token,
 					email: user.email,
-					role: user.role,
 					id: user._id,
+					avatar: user.avatar,
 				});
 			}
 		} catch (error) {
@@ -136,4 +136,16 @@ export const userControler = {
 				.json({ message: error.message, success: false });
 		}
 	},
+};
+
+export const getDetailUser = async (req, res) => {
+	const id = req.userId;
+
+	const user = await User.findById(id);
+
+	if (!user) {
+		return res.status(404).json({ message: 'User not found' });
+	}
+
+	return res.json(user);
 };
