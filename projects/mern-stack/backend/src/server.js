@@ -1,7 +1,8 @@
 import * as dotenv from 'dotenv';
 
-import connectDB from './configs/connect-db.config.js';
 import express from 'express';
+import connectDB from './configs/connect-db.config.js';
+import rootRoutes from './routes/index.js';
 
 dotenv.config();
 
@@ -16,6 +17,9 @@ app.get('/', (_, res) => {
 
 // connect to MongoDB
 connectDB();
+
+// routes
+app.use(`/api/v1`, rootRoutes);
 
 const port = process.env.PORT || 3000;
 
