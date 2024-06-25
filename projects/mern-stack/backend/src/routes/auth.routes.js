@@ -30,7 +30,5 @@ router.put(
   wrapRequestHandler(validationResetPassword),
   wrapRequestHandler(resetPasswordController),
 );
-// change password
-router.patch('/change-password', wrapRequestHandler(verifyToken));
 
 export default router;
