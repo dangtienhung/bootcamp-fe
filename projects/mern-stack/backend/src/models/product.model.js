@@ -10,57 +10,55 @@ const sizeSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-});
-
-const colorSchema = new mongoose.Schema({
   color: {
     type: String,
     required: true,
   },
-  quantity: {
-    type: Number,
-    required: true,
-  },
 });
 
-const productSchema = new mongoose.Schema({
-  nameProduct: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-  desc: {
-    type: String,
-  },
-  brand: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Brand',
-  },
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
-  },
-  status: {
-    type: String,
-    enum: ['active', 'inactive'],
-    default: 'active',
-  },
-  colors: [colorSchema],
-  sizes: [sizeSchema],
-  images: [
-    {
-      url: {
-        type: String,
-      },
-      public_id: {
-        type: String,
-      },
+const productSchema = new mongoose.Schema(
+  {
+    nameProduct: {
+      type: String,
+      required: true,
     },
-  ],
-});
+    price: {
+      type: Number,
+      required: true,
+    },
+    desc: {
+      type: String,
+    },
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Brand',
+    },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+    },
+    status: {
+      type: String,
+      enum: ['active', 'inactive'],
+      default: 'active',
+    },
+    sizes: [sizeSchema],
+    images: [
+      {
+        url: {
+          type: String,
+        },
+        public_id: {
+          type: String,
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+    versionKey: false,
+  },
+);
 
 productSchema.plugin(mongoosePaginate);
 
