@@ -1,3 +1,5 @@
+import Brand from '../models/brand.model.js';
+import Category from '../models/category.model.js';
 import Product from '../models/product.model.js';
 
 export const productService = {
@@ -21,5 +23,33 @@ export const productService = {
         select: '_id nameBrand image desc',
       },
     ]);
+  },
+  // update status
+  updateStatus: async (productId, status) => {
+    return await Product.findByIdAndUpdate({ _id: productId }, { status }, { new: true });
+  },
+  // update is_deleted
+  updateDeleted: async (productId, is_deleted) => {
+    return await Product.findByIdAndUpdate({ _id: productId }, { is_deleted }, { new: true });
+  },
+  // update product
+  updateProduct: async (productId, body) => {
+    return await Product.findByIdAndUpdate({ _id: productId }, body, { new: true });
+  },
+  // add product_id to category
+  addProductToCategory: async (productId, categoryId) => {
+    return await Category.findByIdAndUpdate({ _id: categoryId }, { $addToSet: { products: productId } }, { new: true });
+  },
+  // add product_id to brand
+  addProductToBrand: async (productId, brandId) => {
+    return await Brand.findByIdAndUpdate({ _id: brandId }, { $addToSet: { products: productId } }, { new: true });
+  },
+  // remove product_id from category
+  removeProductFromCategory: async (productId, categoryId) => {
+    return await Category.findByIdAndUpdate({ _id: categoryId }, { $pull: { products: productId } }, { new: true });
+  },
+  // remove product_id from brand
+  removeProductFromBrand: async (productId, brandId) => {
+    return await Brand.findByIdAndUpdate({ _id: brandId }, { $pull: { products: productId } }, { new: true });
   },
 };
