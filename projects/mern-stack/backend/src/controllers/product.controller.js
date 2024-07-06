@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { HTTP_STATUS } from '../common/http-status.common.js';
 import { productService } from '../services/product.service.js';
 
@@ -53,6 +54,32 @@ export const productController = {
       populate: populateDefault,
     };
     return { option, query };
+  },
+  // check id product invalid
+  checkIdProductInvalid: async (req, res) => {
+    const { productId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(productId)) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Id product invalid', success: false });
+    }
+    return true;
+  },
+  // check product exist
+  checkProductExist: async (req, res) => {
+    const { productId } = req.params;
+
+    const productExist = await productService.getProductById(productId);
+    if (!productExist) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Product not found', success: false });
+    }
+    return productExist;
+  },
+  // xoá product_id trong category và brand cũ
+  removeProductFromCateAndBrand: async (productId, categoryId, brandId) => {
+    const [resultCategory, resultBrand] = await Promise.all([
+      productService.addProductToCategory(productId, categoryId),
+      productService.addProductToBrand(productId, brandId),
+    ]);
+    return { resultCategory, resultBrand };
   },
 
   // add product
@@ -155,16 +182,14 @@ export const productController = {
     const body = req.body;
 
     // check product exist
-    const productExist = await productService.getProductById(productId);
-    if (!productExist) {
-      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Product not found', success: false });
-    }
+    const productExist = await productController.checkProductExist(req, res);
 
     // xoas product_id trong category và brand cũ
-    await Promise.all([
-      productService.removeProductFromCategory(productId, productExist.category._id),
-      productService.removeProductFromBrand(productId, productExist.brand._id),
-    ]);
+    // await Promise.all([
+    //   productService.removeProductFromCategory(productId, productExist.category._id),
+    //   productService.removeProductFromBrand(productId, productExist.brand._id),
+    // ]);
+    await productController.removeProductFromCateAndBrand(productId, productExist.category._id, productExist.brand._id);
 
     // update product
     const product = await productService.updateProduct(productId, body);
@@ -179,5 +204,34 @@ export const productController = {
     ]);
 
     return res.status(HTTP_STATUS.OK).json({ message: 'Update product successfully', success: true, data: product });
+  },
+  // delete product
+  deleteProduct: async (req, res) => {
+    const { productId } = req.params;
+
+    // check id product invalid
+    await productController.checkIdProductInvalid(req, res);
+
+    // check product exist
+    const productExist = await productController.checkProductExist(req, res);
+
+    // xoas product_id trong category và brand cũ
+    const result = await productController.removeProductFromCateAndBrand(
+      productId,
+      productExist.category._id,
+      productExist.brand._id,
+    );
+
+    // delete product
+    if (!result) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Delete product failed', success: false });
+    }
+
+    const productDelete = await productService.deleteProduct(productId);
+    if (!productDelete) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Delete product failed', success: false });
+    }
+
+    return res.status(HTTP_STATUS.OK).json({ message: 'Delete product successfully', success: true });
   },
 };

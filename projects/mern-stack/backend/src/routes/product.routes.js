@@ -38,4 +38,12 @@ router.put(
   wrapRequestHandler(productController.updateProduct),
 );
 
+// router delete product
+router.delete(
+  '/product/:productId',
+  wrapRequestHandler(verifyToken),
+  wrapRequestHandler(checkPermission),
+  wrapRequestHandler(productController.deleteProduct),
+);
+
 export default router;

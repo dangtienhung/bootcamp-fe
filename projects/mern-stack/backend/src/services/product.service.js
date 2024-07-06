@@ -52,4 +52,8 @@ export const productService = {
   removeProductFromBrand: async (productId, brandId) => {
     return await Brand.findByIdAndUpdate({ _id: brandId }, { $pull: { products: productId } }, { new: true });
   },
+  // delete product
+  deleteProduct: async (productId) => {
+    return await Product.findByIdAndDelete(productId);
+  },
 };
