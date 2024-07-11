@@ -1,6 +1,7 @@
 import express from 'express';
 import { cartController } from '../controllers/cart.controller.js';
 import { addToCartMiddleware } from '../middlewares/cart.middleware.js';
+import { checkPermission } from '../middlewares/check-permission.middleware.js';
 import { verifyToken } from '../middlewares/verify-token.middleware.js';
 import { wrapRequestHandler } from '../utils/handlers.util.js';
 
@@ -16,5 +17,13 @@ router.post(
 
 // get carts by userId
 router.get('/cart', wrapRequestHandler(verifyToken), wrapRequestHandler(cartController.getCartByUserId));
+
+// get all carts
+router.get(
+  '/carts',
+  wrapRequestHandler(verifyToken),
+  wrapRequestHandler(checkPermission),
+  wrapRequestHandler(cartController.getAllCarts),
+);
 
 export default router;
