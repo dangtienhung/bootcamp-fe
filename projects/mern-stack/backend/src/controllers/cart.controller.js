@@ -335,4 +335,68 @@ export const cartController = {
       });
     }
   },
+
+  // delete product in cart
+  deleteProductInCart: async (req, res) => {
+    const { _id } = req.user;
+    const body = req.body;
+    const { userId, productIdInCart } = body;
+
+    // check userId gửi lên có trùng với userId trong token không
+    if (userId !== _id) {
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        message: 'Unauthorized',
+        success: false,
+      });
+    }
+
+    // lấy giỏ hàng của user
+    const result = await cartService.getCartsByUserId({
+      userId,
+    });
+    if (!result) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
+        message: 'Cart not found',
+        success: false,
+      });
+    }
+    const { carts } = result;
+
+    // check productInCart tồn tại trong giỏ hàng hay không
+    const productInCart = carts.find((item) => item._id.toString() === productIdInCart);
+    if (!productInCart) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message: 'Product in cart not found',
+        success: false,
+      });
+    }
+
+    // xóa sản phẩm khỏi giỏ hàng
+    result.carts = carts.filter((item) => item._id.toString() !== productIdInCart);
+
+    const productExist = await productService.getProductById(productInCart.productId);
+    if (!productExist) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message: 'Product not found',
+        success: false,
+      });
+    }
+
+    // tính tổng tiền
+    result.total =
+      productExist.sale > 0
+        ? result.total - (productExist.price - productExist.sale) * productInCart.quantity
+        : result.total - productExist.price * productInCart.quantity;
+    // nếu tổng tiền nhỏ hơn 0 thì gán bằng 0
+    if (result.total < 0) {
+      result.total = 0;
+    }
+
+    await result.save();
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Delete product in cart successfully',
+      success: true,
+    });
+  },
 };
