@@ -15,6 +15,14 @@ router.post(
   wrapRequestHandler(cartController.addCart),
 );
 
+// async to cart
+router.post(
+  '/cart/async',
+  wrapRequestHandler(verifyToken),
+  // wrapRequestHandler(addToCartMiddleware),
+  wrapRequestHandler(cartController.asyncToCart),
+);
+
 // get carts by userId
 router.get('/cart', wrapRequestHandler(verifyToken), wrapRequestHandler(cartController.getCartByUserId));
 
