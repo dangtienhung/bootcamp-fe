@@ -26,4 +26,7 @@ router.get(
   wrapRequestHandler(cartController.getAllCarts),
 );
 
+// update quantity product in cart
+router.patch('/cart', wrapRequestHandler(verifyToken), wrapRequestHandler(cartController.updateQuantityProductInCart));
+
 export default router;

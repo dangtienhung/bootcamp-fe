@@ -211,4 +211,128 @@ export const cartController = {
       ...result,
     });
   },
+
+  // update quantity product in cart
+  updateQuantityProductInCart: async (req, res) => {
+    const { _id } = req.user;
+    const body = req.body;
+    const { userId, productId, productIdInCart } = body;
+    const { status } = req.query;
+
+    // check userId gửi lên có trùng với userId trong token không
+    if (userId !== _id) {
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        message: 'Unauthorized',
+        success: false,
+      });
+    }
+
+    // check user tồn tại hay không
+    const userExist = await checkUserExist(userId);
+    if (!userExist) {
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        message: 'User not found',
+        success: false,
+      });
+    }
+    // check product tồn tại hay không
+    const productExist = await productService.getProductById(productId);
+    if (!productExist) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message: 'Product not found',
+        success: false,
+      });
+    }
+
+    // lấy giỏ hàng của user
+    const result = await cartService.getCartsByUserId({
+      userId,
+    });
+    if (!result) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
+        message: 'Cart not found',
+        success: false,
+      });
+    }
+    const { carts } = result;
+
+    // check productInCart tồn tại trong giỏ hàng hay không
+    const productInCart = carts.find((item) => item._id.toString() === productIdInCart);
+    if (!productInCart) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({
+        message: 'Product in cart not found',
+        success: false,
+      });
+    }
+
+    let isMaxQuantity = false;
+    if (!status || status === 'increase') {
+      // tăng số lượng sản phẩm trong giỏ hàng
+      carts.forEach((item) => {
+        if (item._id.toString() === productIdInCart) {
+          item.quantity += 1;
+
+          // nếu quantity sản phẩm lớn hơn số lượng tồn kho thì không cho tăng nữa
+          // lấy ra sizes có size và color giống với sản phẩm trong giỏ hàng
+          const sizeExist = productExist.sizes.find((size) => size.size === item.size && size.color === item.color);
+          if (sizeExist && sizeExist.quantity < item.quantity) {
+            // set lại quantity sản phẩm trong giỏ hàng
+            item.quantity -= 1;
+            isMaxQuantity = true;
+          }
+          if (!isMaxQuantity) {
+            // tính tổng tiền
+            result.total =
+              productExist.sale > 0
+                ? productExist.price - productExist.sale + result.total
+                : productExist.price + result.total;
+          }
+        }
+      });
+
+      if (isMaxQuantity) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({
+          message: 'The quantity of product is greater than the quantity in stock',
+          success: false,
+        });
+      }
+
+      await result.save();
+
+      return res.status(HTTP_STATUS.OK).json({
+        message: 'Increase quantity product in cart successfully',
+        success: true,
+      });
+    } else {
+      // giảm số lượng sản phẩm trong giỏ hàng
+      carts.forEach((item) => {
+        if (item._id.toString() === productIdInCart) {
+          item.quantity -= 1;
+
+          // quantity sản phẩm không thể nhỏ hơn 1
+          if (item.quantity < 1) {
+            // xóa sản phẩm khỏi giỏ hàng
+            result.carts = carts.filter((item) => item._id.toString() !== productIdInCart);
+          }
+
+          // tính tổng tiền
+          result.total =
+            productExist.sale > 0
+              ? result.total - (productExist.price - productExist.sale)
+              : result.total - productExist.price;
+          // nếu tổng tiền nhỏ hơn 0 thì gán bằng 0
+          if (result.total < 0) {
+            result.total = 0;
+          }
+        }
+      });
+
+      await result.save();
+
+      return res.status(HTTP_STATUS.OK).json({
+        message: 'Decrease quantity product in cart successfully',
+        success: true,
+      });
+    }
+  },
 };

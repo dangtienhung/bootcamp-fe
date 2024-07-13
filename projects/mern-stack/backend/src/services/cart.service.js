@@ -7,7 +7,7 @@ export const cartService = {
       return Cart.findOne({ userId: query.userId }).populate([
         {
           path: 'userId',
-          select: '_id email avatar fullname phone status',
+          select: '_id email avatar fullname phone',
           match: { status: query.status, _id: query.userId },
         },
         { path: 'carts.productId', select: '_id nameProduct price sale images is_deleted status' },
