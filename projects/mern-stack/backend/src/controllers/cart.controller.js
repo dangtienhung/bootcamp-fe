@@ -399,4 +399,80 @@ export const cartController = {
       success: true,
     });
   },
+
+  // async to cart
+  asyncToCart: async (req, res) => {
+    const { _id } = req.user;
+    const body = req.body;
+    const { userId, carts: cartLocalUser, total: totalLocalUser } = body;
+
+    // check userId gửi lên có trùng với userId trong token không
+    if (userId !== _id) {
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        message: 'Unauthorized',
+        success: false,
+      });
+    }
+
+    // check user tồn tại hay không
+    const userExist = await checkUserExist(userId);
+    if (!userExist) {
+      return res.status(HTTP_STATUS.UNAUTHORIZED).json({
+        message: 'User not found',
+        success: false,
+      });
+    }
+
+    // lấy giỏ hàng của user
+    const result = await cartService.getCartsByUserId({
+      userId,
+    });
+    if (!result) {
+      // tạo mới giỏ hàng
+      const newCart = await cartService.createCart(userId, []);
+
+      // thêm sản phẩm vào giỏ hàng
+      newCart.carts.push(...cartLocalUser);
+
+      // tính tổng tiền
+      newCart.total += totalLocalUser;
+
+      await newCart.save();
+      return res.status(HTTP_STATUS.OK).json({
+        message: 'Add to cart successfully',
+        success: true,
+      });
+    }
+
+    // lấy giỏ hàng của user nếu user đã có giỏ hàng
+    const { carts } = result;
+
+    // đang sai logic
+    // carts 1 array
+    // cartLocalUser 1 array
+    // kiểm tra xem sản phẩm trong giỏ hàng đã tồn tại chưa check productId và size và color
+    cartLocalUser.forEach((itemCartLocal) => {
+      const itemCartDb = carts.find((item) => item.productId.toString() === itemCartLocal.productId.toString());
+      if (itemCartDb) {
+        if (itemCartDb.size === itemCartLocal.size && itemCartDb.color === itemCartLocal.color) {
+          itemCartDb.quantity += itemCartLocal.quantity;
+        } else {
+          carts.push(itemCartLocal);
+        }
+      } else {
+        carts.push(itemCartLocal);
+      }
+    });
+
+    // tính tổng tiền
+    result.total += totalLocalUser;
+
+    // thêm sản phẩm vào giỏ hàng
+    await result.save();
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Add to cart successfully',
+      success: true,
+    });
+  },
 };
