@@ -3,13 +3,23 @@ import authRoutes from './auth.routes.js';
 import brandRoutes from './brand.routes.js';
 import cartRoutes from './cart.routes.js';
 import categoryRoutes from './category.routes.js';
+import orderRoutes from './order.routes.js';
 import productRoutes from './product.routes.js';
 import imageRoutes from './upload-image.routes.js';
 import userRoutes from './user.routes.js';
 
 const router = express.Router();
 
-const rootRoutes = [authRoutes, userRoutes, brandRoutes, categoryRoutes, imageRoutes, productRoutes, cartRoutes];
+const rootRoutes = [
+  authRoutes,
+  userRoutes,
+  brandRoutes,
+  categoryRoutes,
+  imageRoutes,
+  productRoutes,
+  cartRoutes,
+  orderRoutes,
+];
 
 rootRoutes.map((route) => {
   router.use(route);
