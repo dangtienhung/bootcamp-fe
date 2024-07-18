@@ -105,7 +105,107 @@ export const orderController = {
 
     return res.status(HTTP_STATUS.OK).json({ message: 'Lấy danh sách đơn hàng thành công!', success: true, ...orders });
   },
+
+  // check status
+  checkStatus: (previousStatus, currentStatus) => {
+    switch (currentStatus) {
+      case 'confirmed':
+        if (previousStatus === 'pending') {
+          return true;
+        }
+        return false;
+      case 'delivery':
+        if (previousStatus === 'confirmed') {
+          return true;
+        }
+        return false;
+      case 'completed':
+        if (previousStatus === 'delivery') {
+          return true;
+        }
+        return false;
+      case 'cancelled':
+        if (previousStatus === 'pending' || previousStatus === 'confirmed') {
+          return true;
+        }
+        return false;
+      default:
+        return false;
+    }
+  },
+
+  // cập nhật đơn hàng trạng thái đơn hàng
+  updateOrder: async (req, res) => {
+    const { _id } = req.user;
+    const { orderId } = req.params;
+    const { status, message } = req.body;
+
+    // lấy ra thông tin đơn hàng theo orderId
+    const order = await orderService.getOrderById(orderId);
+
+    // check xem có trường assignee không
+    if (!order.assignee && order.status === 'pending') {
+      // gán _id của user hiện tại vào trường assignee và cập nhật trạng thái đơn hàng => confirmed
+      const updateOrder = await orderService.updateOrder({ _id: orderId }, { assignee: _id, status });
+      if (!updateOrder) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Cập nhật đơn hàng thất bại!', success: false });
+      }
+      return res.status(HTTP_STATUS.OK).json({ message: 'Cập nhật đơn hàng thành công!', success: true });
+    }
+
+    // .find/ filter() => array method
+
+    // check xem có phải là người được gán đơn hàng không
+    if (order.assignee._id.toString() !== _id) {
+      return res
+        .status(HTTP_STATUS.FORBIDDEN)
+        .json({ message: 'Bạn không có quyền cập nhật đơn hàng này!', success: false });
+    }
+
+    // check xem trạng thái đơn hàng có hợp lệ không
+    const checkStatusInvalid = orderController.checkStatus(order.status, status);
+    if (!checkStatusInvalid) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Trạng thái đơn hàng không hợp lệ!', success: false });
+    }
+
+    // trim() => tác dụng xoá các khoảng trắng ở đầu và cuối chuỗi
+    // kiểm tra xem trạng thái đơn hàng có phải là cancelled không và message có giá trị không
+    if (status === 'cancelled' && (!message || message.trim() === '')) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Vui lòng nhập lý do hủy đơn hàng!', success: false });
+    }
+
+    if (status === 'cancelled' && message.trim() !== '') {
+      // cập nhật trạng thái đơn hàng và lý do hủy đơn hàng
+      const updateOrder = await orderService.updateOrder({ _id: orderId }, { status, reasonCancel: message });
+      if (!updateOrder) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Cập nhật đơn hàng thất bại!', success: false });
+      }
+      return res.status(HTTP_STATUS.OK).json({ message: 'Cập nhật đơn hàng thành công!', success: true });
+    }
+
+    // cập nhật trạng thái đơn hàng
+    const updateOrder = await orderService.updateOrder({ _id: orderId }, { status, reasonCancel: '' });
+    if (!updateOrder) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Cập nhật đơn hàng thất bại!', success: false });
+    }
+    return res.status(HTTP_STATUS.OK).json({ message: 'Cập nhật đơn hàng thành công!', success: true });
+  },
 };
 
 // date: dayjs, moment, date-fns
 // tìm kiếm đơn hàng dựa vào startDate, endDate & email
+// dd/mm/yy => 12/06/23
+// dd/mm/yyyy => 12/06/2023
+// yyyy/mm/dd => 2023/06/12
+// mm/dd/yyyy => 06/12/2023
+
+// người dùng gửi lên startDate, endDate: 12/06/2023 -> 15/06/2023, 06/12/2023
+// const startDate = dayjs('12/06/2023).toDate()
+// const endDate = dayjs('15/06/2023).toDate()
+// mongoose => $gte: startDate, $lte: endDate
+// const newOrder = await Order.find({
+//  createdAt: {
+//    $gte: startDate,
+//   $lte: endDate
+// }
+// })

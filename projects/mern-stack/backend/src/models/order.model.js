@@ -82,10 +82,14 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    // assignee: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'User',
-    // },
+    assignee: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    reasonCancel: {
+      type: String,
+      default: '',
+    },
   },
   {
     versionKey: false,
