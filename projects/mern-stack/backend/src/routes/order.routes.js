@@ -34,4 +34,11 @@ router.patch(
   wrapRequestHandler(orderController.updateOrder),
 );
 
+// router cancel order
+router.patch(
+  '/order/cancel/:orderId',
+  wrapRequestHandler(verifyToken),
+  wrapRequestHandler(orderController.cancelOrder),
+);
+
 export default router;
