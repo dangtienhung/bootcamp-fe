@@ -1,6 +1,8 @@
+import dayjs from 'dayjs';
 import { HTTP_STATUS } from '../common/http-status.common.js';
 import { orderService } from '../services/order.service.js';
 import { productService } from '../services/product.service.js';
+import { voucherService } from '../services/voucher.service.js';
 
 export const orderController = {
   optionOrder: (params) => {
@@ -48,7 +50,43 @@ export const orderController = {
 
     // check userId có trùng nhau hay không
     if (_id !== req.body.userId) {
-      return res.status(HTTP_STATUS.FORBIDDENư).json({ message: 'Bạn không đặt được đơn hàng này!', success: false });
+      return res.status(HTTP_STATUS.FORBIDDEN).json({ message: 'Bạn không đặt được đơn hàng này!', success: false });
+    }
+
+    // check xem nếu có voucher thì giảm số lượng của voucher đi 1 và trừ đi số tiền của voucher đó
+    if (req.body.voucher) {
+      // kiểm tra xem voucher có tồn tại không
+      const voucher = await voucherService.findVoucherById(req.body.voucher);
+      if (!voucher) {
+        return res
+          .status(HTTP_STATUS.BAD_REQUEST)
+          .json({ message: 'Voucher không tồn tại, Đặt hàng thất bại!', success: false });
+      }
+
+      // kiểm tra xem voucher có còn hạn không
+      const now = dayjs();
+      if (now.isAfter(voucher.endDate)) {
+        return res
+          .status(HTTP_STATUS.BAD_REQUEST)
+          .json({ message: 'Voucher đã hết hạn, Đặt hàng thất bại!', success: false });
+      }
+
+      // kiểm tra xem voucher có còn số lượng không
+      if (voucher.discount <= 0) {
+        return res
+          .status(HTTP_STATUS.BAD_REQUEST)
+          .json({ message: 'Voucher đã hết số lượng, Đặt hàng thất bại!', success: false });
+      }
+
+      // trừ đi số lượng của voucher
+      const updateVoucher = await voucherService.updateVoucher(req.body.voucher, { discount: voucher.discount - 1 });
+
+      if (!updateVoucher) {
+        return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Đặt hàng thất bại!', success: false });
+      }
+
+      // trừ đi số tiền của voucher
+      req.body.total = req.body.total - voucher.voucherPrice;
     }
 
     // thêm mới đơn hàng
