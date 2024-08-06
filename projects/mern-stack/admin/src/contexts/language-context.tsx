@@ -24,7 +24,7 @@ export const LanguageProvider = ({ children, languageLocal }: LanguageProviderPr
 
   const setLanguage = (language: LanguageType) => {
     setLanguageDefault(language)
-    i18n.changeLanguage(language)
+    i18n.changeLanguage(language) // thay đổi ngôn ngữ cho i18n
   }
 
   useEffect(() => {
