@@ -2,16 +2,19 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, persistStore } from 'redux-persist'
 
 import storage from 'redux-persist/lib/storage'
+import authReducer from './slices/auth.slice'
 import languageReducer from './slices/language.slice'
 
 const persistConfig = {
   key: 'root',
   version: 1,
-  storage
+  storage,
+  whitelist: ['auth', 'language']
 }
 
 const rootReducer = combineReducers({
-  language: languageReducer
+  language: languageReducer,
+  auth: authReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 
+import cors from 'cors';
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import connectDB from './configs/connect-db.config.js';
@@ -12,6 +13,12 @@ const app = express();
 
 /* middlawares */
 app.use(express.json());
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  }),
+);
 
 app.get('/', (_, res) => {
   res.send('Hello World');

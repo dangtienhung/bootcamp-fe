@@ -1,15 +1,19 @@
-import { LanguageProvider } from './contexts/language-context'
-import { RootState } from './stores/store'
 import { RouterProvider } from 'react-router-dom'
+import { AuthProvider } from './contexts/auth-context'
+import { LanguageProvider } from './contexts/language-context'
 import routes from './routes'
 import { useAppSelector } from './stores/hooks'
+import { RootState } from './stores/store'
 
 function App() {
   const { language } = useAppSelector((state: RootState) => state.language)
+  const { accessToken } = useAppSelector((state: RootState) => state.auth)
 
   return (
     <LanguageProvider languageLocal={language}>
-      <RouterProvider router={routes} />
+      <AuthProvider token={accessToken}>
+        <RouterProvider router={routes} />
+      </AuthProvider>
     </LanguageProvider>
   )
 }

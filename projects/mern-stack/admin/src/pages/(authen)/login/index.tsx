@@ -1,9 +1,44 @@
-import { Button, Form, Input } from 'antd'
+import { Button, Form, Input, message } from 'antd'
+import { Link, useNavigate } from 'react-router-dom'
+
+import { login } from '@/apis/auth/auth.api'
+import { useAppDispatch } from '@/stores/hooks'
+import { setAccessToken } from '@/stores/slices/auth.slice'
+import { TBodyLogin } from '@/types/auth/auth.type'
+import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
 
 const LoginPage = () => {
   const { t } = useTranslation()
+  const [form] = Form.useForm()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const dispatch = useAppDispatch()
+
+  const loginMutation = useMutation({
+    mutationKey: ['auth-login'],
+    mutationFn: (body: TBodyLogin) => login(body),
+    onSuccess: (data) => {
+      setIsLoading(false)
+      message.success('Login success')
+
+      // set token to local storage or cookie
+      dispatch(setAccessToken(data.accessToken))
+
+      // redirect to home page
+      navigate('/')
+    },
+    onError: () => {
+      setIsLoading(false)
+      message.error('Login failed')
+    }
+  })
+
+  const onSubmit = (values: TBodyLogin) => {
+    setIsLoading(true)
+    loginMutation.mutate(values)
+  }
 
   return (
     <div className='flex flex-col justify-center w-full h-full gap-2.5 md:w-2/3 lg:w-full'>
@@ -18,7 +53,7 @@ const LoginPage = () => {
         </p>
       </div>
 
-      <Form layout='vertical' className='mt-[35px]'>
+      <Form layout='vertical' className='mt-[35px]' onFinish={onSubmit} form={form}>
         <Form.Item
           name={'email'}
           label={<span className='font-semibold'>{t('form.email')}</span>}
@@ -43,7 +78,13 @@ const LoginPage = () => {
               </Link>
             </div>
           }
-          rules={[{ required: true, message: t('validate.required') }]}
+          rules={[
+            { required: true, message: t('validate.required') },
+            {
+              min: 6,
+              message: t('validate.min', { count: 6 })
+            }
+          ]}
         >
           <Input.Password placeholder='Password' className='h-[48px] w-full' />
         </Form.Item>
@@ -53,7 +94,7 @@ const LoginPage = () => {
           htmlType='submit'
           className='h-[48px] mt-5 w-full bg-[#4F46E5] hover:!bg-[#4F46E5] text-base'
         >
-          {t('form.login')}
+          {isLoading ? 'Loading...' : t('form.login')}
         </Button>
       </Form>
     </div>
@@ -61,3 +102,13 @@ const LoginPage = () => {
 }
 
 export default LoginPage
+
+/*
+
+b1. setup slice auth + context => lưu token vào store xuống local storage
+b2. khi đăng nhập thành công => lưu token vào store slice auth + context
+b3. khi đăng nhập thành công => check token có phải admin không => nếu không => thông báo lỗi
+b4. khi đăng nhập thành công => chuyển hướng về trang admin
+b5. guard check xem chúng ta đã đăng nhập chưa => nếu chưa => chuyển hướng về trang login
+
+*/
