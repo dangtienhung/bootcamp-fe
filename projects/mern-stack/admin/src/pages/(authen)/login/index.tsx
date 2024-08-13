@@ -31,7 +31,6 @@ const LoginPage = () => {
     },
     onError: () => {
       setIsLoading(false)
-      message.error('Login failed')
     }
   })
 
