@@ -4,8 +4,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { login } from '@/apis/auth/auth.api'
 import { useAppDispatch } from '@/stores/hooks'
 import { setAccessToken } from '@/stores/slices/auth.slice'
-import { TBodyLogin } from '@/types/auth/auth.type'
+import { PayloadLogin, TBodyLogin } from '@/types/auth/auth.type'
+import { ERole } from '@/types/enums/role.enum'
 import { useMutation } from '@tanstack/react-query'
+import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -20,9 +22,16 @@ const LoginPage = () => {
     mutationKey: ['auth-login'],
     mutationFn: (body: TBodyLogin) => login(body),
     onSuccess: (data) => {
+      const token = data.accessToken
+      // giải mã token để kiểm tra xem có phải là admin hay không
+      const decode = jwtDecode(token) as PayloadLogin
+      if (decode.role === ERole.CUSTORMER) {
+        message.error('Tài khoản hoặc mật khẩu không đúng')
+        return
+      }
+
       setIsLoading(false)
       message.success('Login success')
-
       // set token to local storage or cookie
       dispatch(setAccessToken(data.accessToken))
 
@@ -31,6 +40,7 @@ const LoginPage = () => {
     },
     onError: () => {
       setIsLoading(false)
+      message.error('Tài khoản hoặc mật khẩu không đúng')
     }
   })
 

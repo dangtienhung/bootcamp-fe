@@ -1,8 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
 
-import { PayloadLogin } from '@/types/auth/auth.type'
-import { ERole } from '@/types/enums/role.enum'
-import { message } from 'antd'
 import { jwtDecode } from 'jwt-decode'
 
 class Http {
@@ -22,21 +19,32 @@ class Http {
 
   requestInterceptor() {
     this.instance.interceptors.request.use((config) => {
+      const BearerToken = config.headers.Authorization
+      const token = BearerToken ? (BearerToken as string).split(' ')[1] : null
+
+      const date = new Date()
+      if (token) {
+        const decodeToken = jwtDecode(token)
+        if (decodeToken && decodeToken.exp! < date.getTime() / 1000) {
+          // navigate to login page
+          // window.location.href = '/auth/login'
+          console.log('object')
+          // console.log(decodeToken.exp - date.getTime() / 1000)
+        }
+      }
       return config
     })
   }
 
   responseInterceptor() {
-    this.instance.interceptors.response.use((response) => {
-      const token = response.data.accessToken
-      // giải mã token để kiểm tra xem có phải là admin hay không
-      const decode = jwtDecode(token) as PayloadLogin
-      if (decode.role === ERole.ADMIN || decode.role === ERole.STAFF) {
+    this.instance.interceptors.response.use(
+      async (response) => {
         return response
+      },
+      (error) => {
+        return Promise.reject(error)
       }
-      message.error('Tài khoản hoặc mật khẩu không đúng')
-      throw new Error('Tài khoản hoặc mật khẩu không đúng')
-    })
+    )
   }
 }
 

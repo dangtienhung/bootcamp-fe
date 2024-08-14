@@ -1,55 +1,29 @@
-import { Button, Space, Table } from 'antd'
-
-import useCounter from '@/contexts/counter-context'
-import { useProduct } from '@/contexts/product-context'
-import { TProduct } from '@/types/product.type'
-import { DeleteOutlined } from '@ant-design/icons'
+import { getProducts } from '@/apis/product.api'
+import { GlassesIcon } from '@/components/icons'
+import { useAuth } from '@/contexts/auth-context'
+import { useQuery } from '@tanstack/react-query'
+import { Input } from 'antd'
 
 const ProductPage = () => {
-  const { products, handleDeleteProduct } = useProduct()
-  const { counter } = useCounter()
+  const { accessToken } = useAuth()
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => getProducts(accessToken)
+  })
 
-  const columns = [
-    {
-      title: 'ID Sản phẩm',
-      dataIndex: 'id',
-      key: 'id'
-    },
-    {
-      title: 'Tên sản phẩm',
-      dataIndex: 'name',
-      key: 'name'
-    },
-    {
-      title: 'Giá sản phẩm',
-      dataIndex: 'price',
-      key: 'price'
-    },
-    {
-      title: false,
-      dataIndex: 'action',
-      key: 'action',
-      render: (_: undefined, product: TProduct & { key: string }) => {
-        return (
-          <Space>
-            <Button danger onClick={() => handleDeleteProduct(product.id)}>
-              <DeleteOutlined />
-            </Button>
-          </Space>
-        )
-      }
-    }
-  ]
-
-  const dataSource = products.map((product) => ({
-    ...product,
-    key: product.id
-  }))
+  console.log('🚀 ~ ProductPage ~ data:', data)
 
   return (
-    <div>
-      Counter: {counter}
-      <Table dataSource={dataSource} columns={columns} />
+    <div className='bg-gray-third py-[30px] px-[30px]'>
+      <div className='flex items-center justify-between w-full pb-7'>
+        <p className='font-bold text-black-second text-[32px] font-nunito-sans'>Product management</p>
+
+        <Input
+          className='h-[38px] rounded-[50px] w-[250px] border border-gray-six'
+          placeholder='Search for product'
+          prefix={<GlassesIcon hanging={16} width={16} />}
+        />
+      </div>
     </div>
   )
 }
