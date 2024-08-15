@@ -1,10 +1,10 @@
+import { PayloadLogin, TBodyLogin } from '@/types/auth/auth.type'
 import { Button, Form, Input, message } from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { login } from '@/apis/auth/auth.api'
 import { useAppDispatch } from '@/stores/hooks'
 import { setAccessToken } from '@/stores/slices/auth.slice'
-import { PayloadLogin, TBodyLogin } from '@/types/auth/auth.type'
 import { ERole } from '@/types/enums/role.enum'
 import { useMutation } from '@tanstack/react-query'
 import { jwtDecode } from 'jwt-decode'
@@ -23,6 +23,8 @@ const LoginPage = () => {
     mutationFn: (body: TBodyLogin) => login(body),
     onSuccess: (data) => {
       const token = data.accessToken
+      dispatch(setAccessToken(data.accessToken))
+
       // giải mã token để kiểm tra xem có phải là admin hay không
       const decode = jwtDecode(token) as PayloadLogin
       if (decode.role === ERole.CUSTORMER) {
@@ -33,7 +35,6 @@ const LoginPage = () => {
       setIsLoading(false)
       message.success('Login success')
       // set token to local storage or cookie
-      dispatch(setAccessToken(data.accessToken))
 
       // redirect to home page
       navigate('/')
