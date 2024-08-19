@@ -20,7 +20,20 @@ export type TImage = {
   _id: string
 }
 
+export type TResponseNoPagination<T> = {
+  success: boolean
+  message: string
+  data: T[]
+}
+
 export type TBaseResponseDelete = {
   message: string
   success: boolean
+}
+
+export type StatusModal = 'create' | 'update' | 'delete' | 'view' | null
+export type ModalType<T> = {
+  open: boolean
+  type: StatusModal
+  currentData?: T
 }

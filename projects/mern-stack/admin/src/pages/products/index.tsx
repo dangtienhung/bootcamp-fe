@@ -3,15 +3,22 @@ import { TImage, TResponse } from '@/types/common.type'
 import { TCategroyRefProduct, TProduct, TSize } from '@/types/product.type'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
-import { Button, Input, Modal, Table, Tooltip, notification } from 'antd'
+import { Table, Tooltip, notification } from 'antd'
 import { useEffect, useState } from 'react'
 
-import { GlassesIcon } from '@/components/icons'
+import Navbar from '@/components/navbar'
+import Modal from '@/components/ui/modal'
 import { useAuth } from '@/contexts/auth-context'
+import { styleLayoutContent } from '@/features/init'
+import FormProduct from '@/features/products/components/form-product'
+import { useModal } from '@/hooks/useOpenModal'
+import { cn } from '@/utils/cn'
 import type { TableColumnsType } from 'antd'
 
 const ProductPage = () => {
   const queryClient = new QueryClient()
+
+  const { open, handleOpenModal, handleCloseModal } = useModal<TProduct>()
 
   const { accessToken } = useAuth()
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false)
@@ -20,7 +27,7 @@ const ProductPage = () => {
 
   const [paginate, setPaginate] = useState({
     _page: 1,
-    _limit: 2,
+    _limit: 10,
     totalPages: 1
   })
   const [queryDelete, setQueryDelete] = useState<{ status: 'active' | 'inactive'; is_deleted: boolean }>({
@@ -188,16 +195,19 @@ const ProductPage = () => {
   ]
 
   return (
-    <div className='bg-gray-third py-[30px] px-[30px]'>
-      <div className='flex items-center justify-between w-full pb-7'>
-        <p className='font-bold text-black-second text-[32px] font-nunito-sans'>Product management</p>
-
-        <Input
-          className='h-[38px] rounded-[50px] w-[250px] border border-gray-six'
-          placeholder='Search for product'
-          prefix={<GlassesIcon hanging={16} width={16} />}
-        />
-      </div>
+    <div className={cn(styleLayoutContent)}>
+      <Navbar
+        btnAdd={{
+          title: 'Thêm sản phẩm',
+          className: 'bg-blue-500 text-white',
+          onClick: () => {
+            handleOpenModal('create')
+          },
+          size: 'large',
+          type: 'primary'
+        }}
+        title='Danh sách sản phẩm'
+      />
 
       <div className=''>
         <Table
@@ -223,37 +233,25 @@ const ProductPage = () => {
         />
       </div>
 
+      <FormProduct open={open.open} onClose={handleCloseModal} />
+
       <Modal
-        open={openModalDelete}
-        title={<p className='w-full text-2xl font-semibold text-center'>Xoá sản phẩm</p>}
-        onOk={() => {
-          setOpenModalDelete(false)
+        openModalDelete={openModalDelete}
+        setOpenModalDelete={setOpenModalDelete}
+        titleDelete='Xoá sản phẩm'
+        contentDelete='Bạn có chắc chắn muốn xoá sản phẩm này không? Hành động này không thể hoàn tác?'
+        btnCancel={{
+          title: 'Huỷ',
+          onClick: () => setOpenModalDelete(false)
         }}
-        closable={false}
-        onCancel={() => setOpenModalDelete(false)}
-        footer={
-          <div className='flex items-center justify-center gap-10 mt-10'>
-            <Button danger size='large' className='w-full max-w-[140px]' onClick={() => setOpenModalDelete(false)}>
-              Huỷ
-            </Button>
-            <Button
-              type='primary'
-              size='large'
-              className='w-full max-w-[140px]'
-              onClick={() => {
-                handelDeleteProduct()
-                setOpenModalDelete(false)
-              }}
-            >
-              Xoá sản phẩm
-            </Button>
-          </div>
-        }
-      >
-        <p className='text-center text-gray-500'>
-          Bạn có chắc chắn muốn xoá sản phẩm này không? Hành động này không thể hoàn tác?
-        </p>
-      </Modal>
+        btnDelete={{
+          title: 'Xoá sản phẩm',
+          onClick: () => {
+            handelDeleteProduct()
+            setOpenModalDelete(false)
+          }
+        }}
+      />
     </div>
   )
 }
