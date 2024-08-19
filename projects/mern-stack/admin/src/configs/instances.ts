@@ -5,22 +5,19 @@ class Http {
 
   constructor(url: string) {
     this.instance = axios.create({
-      baseURL: url,
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      baseURL: url
     })
 
     this.requestInterceptor()
-    this.responseInterceptor()
+    // this.responseInterceptor()
   }
 
   requestInterceptor() {
     this.instance.interceptors.request.use(async (config) => {
-      const BearerToken = config.headers.Authorization
-      const token = BearerToken ? (BearerToken as string).split(' ')[1] : null
+      // const BearerToken = config.headers.Authorization
+      // const token = BearerToken ? (BearerToken as string).split(' ')[1] : null
 
-      const date = new Date()
+      // const date = new Date()
 
       // // Kiểm tra nếu không có token
       // if (!token) {

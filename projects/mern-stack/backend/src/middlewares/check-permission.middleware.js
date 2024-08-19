@@ -2,6 +2,7 @@ import { TypeRole } from '../common/type.common.js';
 
 export const checkPermission = (req, res, next) => {
   const { user } = req;
+  console.log('🚀 ~ checkPermission ~ user:', user);
 
   // check permission
   switch (user.role) {

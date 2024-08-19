@@ -1,29 +1,56 @@
+import { getProducts, softDeleteProduct } from '@/apis/product.api'
 import { TImage, TResponse } from '@/types/common.type'
 import { TCategroyRefProduct, TProduct, TSize } from '@/types/product.type'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
-import { Input, Table, Tooltip } from 'antd'
+import { QueryClient, useMutation, useQuery } from '@tanstack/react-query'
+import { Button, Input, Modal, Table, Tooltip, notification } from 'antd'
 import { useEffect, useState } from 'react'
 
-import { getProducts } from '@/apis/product.api'
 import { GlassesIcon } from '@/components/icons'
 import { useAuth } from '@/contexts/auth-context'
-import { useQuery } from '@tanstack/react-query'
 import type { TableColumnsType } from 'antd'
 
 const ProductPage = () => {
+  const queryClient = new QueryClient()
+
   const { accessToken } = useAuth()
+  const [openModalDelete, setOpenModalDelete] = useState<boolean>(false)
   const [products, setProducts] = useState<TProduct[]>([])
+  const [id, setId] = useState<string>('')
 
   const [paginate, setPaginate] = useState({
     _page: 1,
     _limit: 2,
     totalPages: 1
   })
-  console.log('🚀 ~ ProductPage ~ paginate:', paginate)
+  const [queryDelete, setQueryDelete] = useState<{ status: 'active' | 'inactive'; is_deleted: boolean }>({
+    status: 'active',
+    is_deleted: true
+  })
 
-  const { data, isError, isLoading, isSuccess } = useQuery<TResponse<TProduct>>({
-    queryKey: ['products', paginate._page, paginate._limit],
-    queryFn: () => getProducts(accessToken, `?_page=${paginate._page}&_limit=${paginate._limit}`)
+  const deleteMutation = useMutation({
+    mutationKey: ['deleteProduct'],
+    mutationFn: () =>
+      softDeleteProduct(id, `?status=${queryDelete.status}&is_deleted=${queryDelete.is_deleted}`, accessToken),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products', paginate] })
+      notification.success({
+        message: 'Xoá sản phẩm thành công',
+        description: 'Sản phẩm đã được xoá vào thùng rác'
+      })
+    },
+    onError: () => {
+      notification.error({
+        message: 'Xoá sản phẩm thất bại',
+        description: 'Có lỗi xảy ra khi xoá sản phẩm'
+      })
+    }
+  })
+
+  const { data, isError, isLoading, isSuccess } = useQuery<TResponse<TProduct>, Error>({
+    queryKey: ['products', paginate],
+    queryFn: () => getProducts(accessToken, `?_page=${paginate._page}&_limit=${paginate._limit}`),
+    keepPreviousData: true
   })
 
   useEffect(() => {
@@ -36,6 +63,10 @@ const ProductPage = () => {
       })
     }
   }, [isSuccess, data])
+
+  const handelDeleteProduct = () => {
+    deleteMutation.mutate()
+  }
 
   if (isError) {
     return <div>Error</div>
@@ -81,7 +112,7 @@ const ProductPage = () => {
       title: 'Category',
       dataIndex: 'category',
       key: 'category',
-      render: (category: TCategroyRefProduct) => {
+      render: (category: TCategroyRefProduct, record, index) => {
         return category.nameCategory
       }
     },
@@ -91,6 +122,14 @@ const ProductPage = () => {
       key: 'brand',
       render: (brand: TCategroyRefProduct) => {
         return brand.nameBrand
+      }
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'is_deleted',
+      key: 'is_delete',
+      render: (id_delete: boolean) => {
+        return id_delete ? 'Đã xoá' : 'Đang hoạt động'
       }
     },
     {
@@ -131,9 +170,17 @@ const ProductPage = () => {
             <button className='h-8 px-4 border border-r-0 border-gray-400 rounded-r-none rounded-l-md '>
               <EditOutlined height={20} width={20} />
             </button>
-            <button className='h-8 px-4 border border-gray-400 rounded-l-none rounded-r-md '>
-              <DeleteOutlined height={20} width={20} className='text-red-600' />
-            </button>
+            <Tooltip title={'Xoá sản phẩm'}>
+              <button
+                className='h-8 px-4 border border-gray-400 rounded-l-none rounded-r-md '
+                onClick={() => {
+                  setOpenModalDelete(true)
+                  setId(record._id), setQueryDelete({ is_deleted: !record.is_deleted, status: record.status })
+                }}
+              >
+                <DeleteOutlined height={20} width={20} className='text-red-600' />
+              </button>
+            </Tooltip>
           </div>
         )
       }
@@ -154,17 +201,59 @@ const ProductPage = () => {
 
       <div className=''>
         <Table
+          rowKey={(record) => record._id}
           dataSource={products}
           columns={columns}
           pagination={{
-            pageSize: paginate._limit,
-            total: paginate.totalPages,
+            current: data.page,
+            pageSize: data.limit,
+            total: data.totalDocs,
             onChange: (page) => {
-              setPaginate({ ...paginate, _page: page })
+              setPaginate({ ...paginate, _page: page, _limit: paginate._limit })
+            },
+            // showing
+            showTotal(total, range) {
+              return (
+                <div className='flex items-center justify-between w-full mr-auto text-black-second'>
+                  Showing {range[0]}-{range[1]} of {total}
+                </div>
+              )
             }
           }}
         />
       </div>
+
+      <Modal
+        open={openModalDelete}
+        title={<p className='w-full text-2xl font-semibold text-center'>Xoá sản phẩm</p>}
+        onOk={() => {
+          setOpenModalDelete(false)
+        }}
+        closable={false}
+        onCancel={() => setOpenModalDelete(false)}
+        footer={
+          <div className='flex items-center justify-center gap-10 mt-10'>
+            <Button danger size='large' className='w-full max-w-[140px]' onClick={() => setOpenModalDelete(false)}>
+              Huỷ
+            </Button>
+            <Button
+              type='primary'
+              size='large'
+              className='w-full max-w-[140px]'
+              onClick={() => {
+                handelDeleteProduct()
+                setOpenModalDelete(false)
+              }}
+            >
+              Xoá sản phẩm
+            </Button>
+          </div>
+        }
+      >
+        <p className='text-center text-gray-500'>
+          Bạn có chắc chắn muốn xoá sản phẩm này không? Hành động này không thể hoàn tác?
+        </p>
+      </Modal>
     </div>
   )
 }

@@ -149,14 +149,14 @@ export const productController = {
     const { productId } = req.params;
     const { is_deleted, status } = req.query;
 
-    const deleted = is_deleted === 'true' ? true : false;
-    const statusProduct = status === 'active' ? 'active' : 'inactive';
-
-    if (is_deleted && status) {
+    if (!is_deleted || !status) {
       return res
         .status(HTTP_STATUS.BAD_REQUEST)
         .json({ message: 'Update is_deleted and status failed', success: false });
     }
+
+    const deleted = is_deleted === 'true' ? true : false;
+    const statusProduct = status === 'active' ? 'active' : 'inactive';
 
     if (is_deleted) {
       const product = await productService.updateDeleted(productId, deleted);

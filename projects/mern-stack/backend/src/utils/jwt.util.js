@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 dotenv.config();
 
 // generate token
-export const handleGenenateToken = async ({ payload, secretKey = process.env.SECRET_KEY, expiresIn = '60s' }) => {
+export const handleGenenateToken = async ({ payload, secretKey = process.env.SECRET_KEY, expiresIn = '1d' }) => {
   const token = jwt.sign(payload, secretKey, { expiresIn });
 
   return token;
