@@ -4,7 +4,7 @@ import { productService } from '../services/product.service.js';
 
 export const productController = {
   optionProduct: (params) => {
-    const { _limit = 10, _page = 1, q, populate, ...rest } = params;
+    const { _limit = 10, _page = 1, q, populate, rest } = params;
 
     let populateDefault = [
       {
@@ -102,11 +102,12 @@ export const productController = {
   },
   // get all product
   getAllProduct: async (req, res) => {
-    const { _limit = 10, _page = 1, q } = req.query;
+    const { _limit = 10, _page = 1, q, ...rest } = req.query;
     const { option, query } = productController.optionProduct({
       _limit,
       _page,
       q,
+      rest,
     });
 
     const products = await productService.getAllProduct(option, query);
