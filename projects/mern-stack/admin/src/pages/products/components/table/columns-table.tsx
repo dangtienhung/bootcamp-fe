@@ -4,7 +4,11 @@ import { TableColumnsType, Tag, Tooltip } from 'antd'
 
 import { TImage } from '@/types/common.type'
 
-const ColumnsTable = () => {
+interface Props {
+  setOpenModalDelete?: (value: any) => void
+}
+
+const ColumnsTable = ({ setOpenModalDelete }: Props) => {
   const columns: TableColumnsType<TProduct> = [
     {
       title: 'Thông tin sản phẩm',
@@ -110,10 +114,7 @@ const ColumnsTable = () => {
             <Tooltip title={'Xoá sản phẩm'}>
               <button
                 className='h-8 px-4 border border-gray-400 rounded-l-none rounded-r-md '
-                // onClick={() => {
-                //   setOpenModalDelete(true)
-                //   setId(record._id), setQueryDelete({ is_deleted: !record.is_deleted, status: record.status })
-                // }}
+                onClick={() => setOpenModalDelete && setOpenModalDelete(record)}
               >
                 <DeleteOutlined height={20} width={20} className='text-red-600' />
               </button>

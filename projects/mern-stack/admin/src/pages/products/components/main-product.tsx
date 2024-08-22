@@ -1,9 +1,8 @@
-import { Button, Modal, Table } from 'antd'
-
-import ColumnsTable from './table/columns-table'
-import { DeleteOutlined } from '@ant-design/icons'
+import DeleteTable from '@/components/delete-table'
 import { TProduct } from '@/types/product.type'
+import { Table } from 'antd'
 import { useState } from 'react'
+import ColumnsTable from './table/columns-table'
 
 interface MainProductProps {
   // columns: TableColumnsType<TProduct>
@@ -19,8 +18,6 @@ interface MainProductProps {
 const MainProduct = ({ products, paginate }: MainProductProps) => {
   const { _limit, _page, totalDocs, onChange } = paginate
 
-  const columns = ColumnsTable()
-
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false)
   const [rowSelections, setRowSelections] = useState<TProduct[]>([])
   console.log('🚀 ~ MainProduct ~ rowSelections:', rowSelections)
@@ -30,6 +27,17 @@ const MainProduct = ({ products, paginate }: MainProductProps) => {
       setRowSelections(selectedRows)
     }
   }
+
+  const handleOpenModalDelete = (value: any) => {
+    console.log('🚀 ~ handleOpenModalDelete ~ value:', value)
+    setOpenModalDelete(true)
+  }
+
+  const hanldeDelete = (value: any) => {
+    console.log('🚀 ~ hanldeDelete ~ value:', value)
+  }
+
+  const columns = ColumnsTable({ setOpenModalDelete: handleOpenModalDelete })
 
   return (
     <div className=''>
@@ -56,10 +64,17 @@ const MainProduct = ({ products, paginate }: MainProductProps) => {
         }}
       />
 
-      {rowSelections.length > 0 && (
+      <DeleteTable
+        rowSelections={rowSelections}
+        openModalDelete={openModalDelete}
+        setOpenModalDelete={setOpenModalDelete}
+        handleDelete={hanldeDelete}
+      />
+
+      {/* {rowSelections.length > 0 && (
         <div className='flex items-center justify-between'>
-          <button className='flex items-center gap-2' onClick={() => setOpenModalDelete(true)}>
-            <DeleteOutlined />
+          <button className='flex items-center gap-2 text-red-500' onClick={() => setOpenModalDelete(true)}>
+            <DeleteOutlined className='text-red-500' />
             Delete
           </button>
 
@@ -96,7 +111,7 @@ const MainProduct = ({ products, paginate }: MainProductProps) => {
         <p className='text-center text-gray-500'>
           Bạn có chắc chắn muốn xoá sản phẩm này không? Hành động này không thể hoàn tác?
         </p>
-      </Modal>
+      </Modal> */}
     </div>
   )
 }
