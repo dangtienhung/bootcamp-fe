@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 
 import Navbar from '@/components/navbar'
 import { useAuth } from '@/contexts/auth-context'
+import useDebounce from '@/hooks/useDebounce'
 import { TResponse } from '@/types/common.type'
 import { TProduct } from '@/types/product.type'
 import type { TabsProps } from 'antd'
@@ -25,6 +26,7 @@ const ProductPage = () => {
     _limit: 10,
     totalPages: 1
   })
+
   const [query, setQuery] = useState<string>(`?_page=${paginate._page}&_limit=${paginate._limit}`)
 
   const [queryDelete, setQueryDelete] = useState<{ status: 'active' | 'inactive'; is_deleted: boolean }>({
@@ -71,6 +73,16 @@ const ProductPage = () => {
   const handelDeleteProduct = () => {
     deleteMutation.mutate()
   }
+
+  const [inputValue, setInputValue] = useState<string>('')
+  const debouncedValue = useDebounce(inputValue, 1000)
+  console.log('🚀 ~ ProductPage ~ debouncedValue:', debouncedValue)
+
+  useEffect(() => {
+    if (debouncedValue) {
+      setQuery(`?q=${debouncedValue}&_page=${paginate._page}&_limit=${paginate._limit}`)
+    }
+  }, [debouncedValue])
 
   if (isError) {
     return <div>Error</div>
@@ -186,7 +198,8 @@ const ProductPage = () => {
           type: 'primary'
         }}
         input={{
-          placeholder: 'Search for product'
+          placeholder: 'Search for product',
+          onSearch: (value) => setInputValue(value)
         }}
       />
 
