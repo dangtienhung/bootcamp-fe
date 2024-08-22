@@ -3,8 +3,16 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { TableColumnsType, Tag, Tooltip } from 'antd'
 
 import { TImage } from '@/types/common.type'
+import { cn } from '@/utils/cn'
 
-const ColumnsTable = () => {
+interface ColumnsTableProps {
+  onDelete?: (record: TProduct) => void
+  onDetail?: (record: TProduct) => void
+  setOpenModalDelete?: (value: boolean) => void
+  rowSelections?: TProduct[]
+}
+
+const ColumnsTable = ({ onDelete, setOpenModalDelete, onDetail, rowSelections }: ColumnsTableProps) => {
   const columns: TableColumnsType<TProduct> = [
     {
       title: 'Thông tin sản phẩm',
@@ -109,11 +117,14 @@ const ColumnsTable = () => {
             </button>
             <Tooltip title={'Xoá sản phẩm'}>
               <button
-                className='h-8 px-4 border border-gray-400 rounded-l-none rounded-r-md '
-                // onClick={() => {
-                //   setOpenModalDelete(true)
-                //   setId(record._id), setQueryDelete({ is_deleted: !record.is_deleted, status: record.status })
-                // }}
+                disabled={rowSelections && rowSelections.length > 0}
+                className={cn('h-8 px-4 border border-gray-400 rounded-l-none rounded-r-md', {
+                  'cursor-not-allowed': rowSelections && rowSelections.length > 0
+                })}
+                onClick={() => {
+                  setOpenModalDelete && setOpenModalDelete(true)
+                  onDetail && onDetail(record)
+                }}
               >
                 <DeleteOutlined height={20} width={20} className='text-red-600' />
               </button>
