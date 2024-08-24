@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { HTTP_STATUS } from '../common/http-status.common.js';
+import Product from '../models/product.model.js';
 import { productService } from '../services/product.service.js';
 
 export const productController = {
@@ -234,5 +235,67 @@ export const productController = {
     }
 
     return res.status(HTTP_STATUS.OK).json({ message: 'Delete product successfully', success: true });
+  },
+
+  // delete mutiple
+  deleteMultiple: async (req, res) => {
+    const { id: ids } = req.query;
+
+    if (!ids || !ids.length) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Ids invalid', success: false });
+    }
+
+    // check id product invalid
+    const checkIds = ids.map((id) => {
+      return mongoose.Types.ObjectId.isValid(id);
+    });
+
+    // include
+    if (checkIds.includes(false)) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Ids invalid', success: false });
+    }
+
+    const result = await Product.deleteMany({ _id: { $in: ids } });
+    if (!result) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ message: 'Delete multiple failed', success: false, status: HTTP_STATUS.BAD_REQUEST });
+    }
+
+    return res
+      .status(HTTP_STATUS.OK)
+      .json({ message: 'Delete multiple successfully', success: true, status: HTTP_STATUS.OK });
+  },
+
+  // update many
+  updateManyProduct: async (req, res) => {
+    const { id: ids } = req.query;
+    if (!ids || !ids.length) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Ids invalid', success: false });
+    }
+
+    const idsArray = Array.isArray(ids) ? ids : [ids];
+
+    // check id product invalid
+    const checkIds = idsArray.map((id) => {
+      return mongoose.Types.ObjectId.isValid(id);
+    });
+    // include
+    if (checkIds.includes(false)) {
+      return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Ids invalid', success: false });
+    }
+
+    // update many id field is_deleted = true
+    const result = await Product.updateMany({ _id: { $in: idsArray } }, { is_deleted: true }, { new: true });
+
+    if (!result) {
+      return res
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .json({ message: 'Update many failed', success: false, status: HTTP_STATUS.BAD_REQUEST });
+    }
+
+    return res
+      .status(HTTP_STATUS.OK)
+      .json({ message: 'Update many successfully', success: true, status: HTTP_STATUS.OK });
   },
 };

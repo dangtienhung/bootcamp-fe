@@ -46,4 +46,20 @@ router.delete(
   wrapRequestHandler(productController.deleteProduct),
 );
 
+// xoá cứng nhiều sản phẩm
+router.delete(
+  `/product-delete-multiple`,
+  wrapRequestHandler(verifyToken),
+  wrapRequestHandler(checkPermission),
+  productController.deleteMultiple,
+);
+
+// xoá mềm nhiều sản phẩm
+router.patch(
+  `/product-delete-multiple`,
+  wrapRequestHandler(verifyToken),
+  wrapRequestHandler(checkPermission),
+  productController.updateManyProduct,
+);
+
 export default router;

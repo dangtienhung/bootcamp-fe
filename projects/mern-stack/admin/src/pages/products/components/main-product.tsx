@@ -1,6 +1,10 @@
+import { QueryClient, useMutation } from '@tanstack/react-query'
+import { Table, notification } from 'antd'
+
+import { softDeleteMultipleProduct } from '@/apis/product.api'
 import DeleteTable from '@/components/delete-table'
+import { useAuth } from '@/contexts/auth-context'
 import { TProduct } from '@/types/product.type'
-import { Table } from 'antd'
 import { useState } from 'react'
 import ColumnsTable from './table/columns-table'
 
@@ -13,20 +17,44 @@ interface MainProductProps {
     totalDocs: number
     onChange: (page: number) => void
   }
+  isLoading?: boolean
 }
 
-const MainProduct = ({ products, paginate }: MainProductProps) => {
+const MainProduct = ({ products, paginate, isLoading }: MainProductProps) => {
   const { _limit, _page, totalDocs, onChange } = paginate
+
+  const queryClient = new QueryClient()
+
+  const { accessToken } = useAuth()
 
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false)
   const [rowSelections, setRowSelections] = useState<TProduct[]>([])
   const [product, setProduct] = useState<TProduct>()
 
+  const deleteMultipleMutation = useMutation({
+    mutationKey: ['deleteMultipleProduct'],
+    mutationFn: (id: string) => softDeleteMultipleProduct(id, accessToken),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products', paginate] })
+      notification.success({
+        message: 'Xoá sản phẩm thành công',
+        description: 'Sản phẩm đã được xoá vào thùng rác'
+      })
+    },
+    onError: () => {
+      notification.error({
+        message: 'Xoá sản phẩm thất bại',
+        description: 'Có lỗi xảy ra khi xoá sản phẩm'
+      })
+    }
+  })
+
   const handleDelete = (values: TProduct[] | TProduct) => {
     if (Array.isArray(values)) {
-      console.log('Delete multiple', values)
+      const ids = values.map((item) => `&id=${item._id}`).join('')
+      deleteMultipleMutation.mutate(ids)
     } else {
-      console.log('Delete single', values)
+      deleteMultipleMutation.mutate(`&id=${values._id}`)
     }
   }
 
@@ -41,6 +69,7 @@ const MainProduct = ({ products, paginate }: MainProductProps) => {
   return (
     <div className=''>
       <Table
+        loading={isLoading}
         rowKey={(record) => record._id}
         dataSource={products}
         rowSelection={{
