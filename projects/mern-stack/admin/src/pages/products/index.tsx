@@ -1,4 +1,3 @@
-import { QueryClient, useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
@@ -8,14 +7,14 @@ import { useAuth } from '@/contexts/auth-context'
 import useDebounce from '@/hooks/useDebounce'
 import { TResponse } from '@/types/common.type'
 import { TProduct } from '@/types/product.type'
+import { useQuery } from '@tanstack/react-query'
 import type { TabsProps } from 'antd'
 import { Tabs } from 'antd'
+import FomrProduct from './components/form/form-product'
 import MainProduct from './components/main-product'
 import { handleChangeTab } from './utils/handle-change-tab'
 
 const ProductPage = () => {
-  const queryClient = new QueryClient()
-
   const { accessToken } = useAuth()
 
   // get status/deleted from url
@@ -31,6 +30,7 @@ const ProductPage = () => {
     _limit: 10,
     totalPages: 1
   })
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false)
 
   const [query, setQuery] = useState<string>(`?_page=${paginate._page}&_limit=${paginate._limit}`)
 
@@ -156,7 +156,8 @@ const ProductPage = () => {
         button={{
           title: 'Thêm sản phẩm',
           size: 'large',
-          type: 'primary'
+          type: 'primary',
+          onClick: () => setOpenDrawer(true)
         }}
         input={{
           placeholder: 'Search for product',
@@ -173,6 +174,9 @@ const ProductPage = () => {
           }}
         />
       </div>
+
+      {/* form add product */}
+      <FomrProduct open={openDrawer} onClose={() => setOpenDrawer(false)} />
     </div>
   )
 }
