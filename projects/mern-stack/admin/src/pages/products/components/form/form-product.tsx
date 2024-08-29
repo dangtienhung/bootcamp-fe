@@ -1,25 +1,49 @@
 import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
 import { Button, Col, Drawer, Form, Input, Row, Select, Space, Upload, UploadProps, message } from 'antd'
 
+import { getBrands } from '@/apis/brand.api'
 import { getCategories } from '@/apis/category.api'
 import { ArrowDownSmallIcon } from '@/components/icons'
 import { useAuth } from '@/contexts/auth-context'
+import { TModal } from '@/types/common.type'
+import { TProduct } from '@/types/product.type'
 import { useQuery } from '@tanstack/react-query'
 
 interface IFormProductProps {
-  open: boolean
+  currentData: TModal<TProduct>
   onClose: () => void
 }
 
 const { Dragger } = Upload
 
-const FomrProduct = ({ open, onClose }: IFormProductProps) => {
+const FomrProduct = ({ currentData, onClose }: IFormProductProps) => {
   const { accessToken } = useAuth()
 
   const props: UploadProps = {
     name: 'file',
     multiple: true,
-    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+    customRequest({ file, onSuccess, onError }) {
+      const formData = new FormData()
+      formData.append('images', file as Blob)
+
+      fetch('http://localhost:8080/api/v1/image/upload', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          onSuccess?.(data)
+          message.success(`${(file as File).name} file uploaded successfully.`)
+        })
+        .catch((error) => {
+          onError?.(error)
+          message.error(`${(file as File).name} file upload failed.`)
+        })
+    },
     onChange(info) {
       const { status } = info.file
       if (status !== 'uploading') {
@@ -36,18 +60,25 @@ const FomrProduct = ({ open, onClose }: IFormProductProps) => {
     }
   }
 
+  // categories
   const { data, isLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: () => getCategories(accessToken)
   })
   const categories = data?.data
-  console.log('🚀 ~ FomrProduct ~ categories:', categories)
+
+  // brand
+  const { data: dataBrand, isLoading: isLoadingBrand } = useQuery({
+    queryKey: ['brands'],
+    queryFn: () => getBrands(accessToken)
+  })
+  const brands = dataBrand?.data
 
   return (
     <Drawer
       title='Thêm sản phẩm'
       onClose={onClose}
-      open={open}
+      open={currentData.visiable}
       width={800}
       extra={
         <Space>
@@ -74,7 +105,16 @@ const FomrProduct = ({ open, onClose }: IFormProductProps) => {
           </Col>
           <Col span={12}>
             <Form.Item name={'brand'} label='Thương hiệu sản phẩm'>
-              <Input size='large' placeholder='Thương hiệu sản phẩm' />
+              <Select
+                loading={isLoadingBrand}
+                size='large'
+                suffixIcon={<ArrowDownSmallIcon />}
+                placeholder='Thương hiệu sản phẩm'
+                options={brands?.map((brand) => ({
+                  value: brand._id,
+                  label: brand.nameBrand
+                }))}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>

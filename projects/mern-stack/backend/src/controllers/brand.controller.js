@@ -27,7 +27,7 @@ export const getBrands = async (_, res) => {
     return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Get brands faild!', success: false });
   }
 
-  return res.status(HTTP_STATUS.OK).json({ message: 'Get brands success!', success: true, brands: result });
+  return res.status(HTTP_STATUS.OK).json({ message: 'Get brands success!', success: true, data: result });
 };
 
 // get brand by id

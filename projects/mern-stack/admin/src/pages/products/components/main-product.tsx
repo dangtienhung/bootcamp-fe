@@ -4,6 +4,7 @@ import { Table, notification } from 'antd'
 import { softDeleteMultipleProduct } from '@/apis/product.api'
 import DeleteTable from '@/components/delete-table'
 import { useAuth } from '@/contexts/auth-context'
+import { TModalType } from '@/types/common.type'
 import { TProduct } from '@/types/product.type'
 import { useState } from 'react'
 import ColumnsTable from './table/columns-table'
@@ -18,9 +19,10 @@ interface MainProductProps {
     onChange: (page: number) => void
   }
   isLoading?: boolean
+  getData?: (type: TModalType, data?: TProduct) => void
 }
 
-const MainProduct = ({ products, paginate, isLoading }: MainProductProps) => {
+const MainProduct = ({ products, paginate, isLoading, getData }: MainProductProps) => {
   const { _limit, _page, totalDocs, onChange } = paginate
 
   const queryClient = new QueryClient()
@@ -64,7 +66,13 @@ const MainProduct = ({ products, paginate, isLoading }: MainProductProps) => {
     }
   }
 
-  const columns = ColumnsTable({ onDelete: handleDelete, setOpenModalDelete, onDetail: setProduct, rowSelections })
+  const columns = ColumnsTable({
+    onDelete: handleDelete,
+    setOpenModalDelete,
+    onDetail: setProduct,
+    rowSelections,
+    getData
+  })
 
   return (
     <div className=''>

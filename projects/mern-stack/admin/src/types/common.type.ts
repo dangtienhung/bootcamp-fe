@@ -30,3 +30,12 @@ export type TBaseResponseDelete = {
   message: string
   success: boolean
 }
+
+// tạo 1 type cho modal để sử dụng trong useToggleModal
+export type TModalType = 'add' | 'edit' | 'delete' | 'view' | null
+
+export type TModal<T> = {
+  visiable: boolean
+  type: TModalType
+  currentData: T | null
+}

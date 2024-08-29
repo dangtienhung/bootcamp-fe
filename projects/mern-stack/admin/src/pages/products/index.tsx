@@ -5,6 +5,7 @@ import { getProducts } from '@/apis/product.api'
 import Navbar from '@/components/navbar'
 import { useAuth } from '@/contexts/auth-context'
 import useDebounce from '@/hooks/useDebounce'
+import { useToggleModal } from '@/hooks/useToggleModal'
 import { TResponse } from '@/types/common.type'
 import { TProduct } from '@/types/product.type'
 import { useQuery } from '@tanstack/react-query'
@@ -30,7 +31,8 @@ const ProductPage = () => {
     _limit: 10,
     totalPages: 1
   })
-  const [openDrawer, setOpenDrawer] = useState<boolean>(false)
+  const { currentModal, onCloseModal, onOpenModal } = useToggleModal<TProduct>()
+  console.log('🚀 ~ ProductPage ~ currentModal:', currentModal)
 
   const [query, setQuery] = useState<string>(`?_page=${paginate._page}&_limit=${paginate._limit}`)
 
@@ -83,6 +85,7 @@ const ProductPage = () => {
         <MainProduct
           isLoading={isFetching || isLoading}
           products={products}
+          getData={onOpenModal}
           paginate={{
             _page: paginate._page,
             _limit: paginate._limit,
@@ -157,7 +160,7 @@ const ProductPage = () => {
           title: 'Thêm sản phẩm',
           size: 'large',
           type: 'primary',
-          onClick: () => setOpenDrawer(true)
+          onClick: () => onOpenModal('add')
         }}
         input={{
           placeholder: 'Search for product',
@@ -176,7 +179,7 @@ const ProductPage = () => {
       </div>
 
       {/* form add product */}
-      <FomrProduct open={openDrawer} onClose={() => setOpenDrawer(false)} />
+      <FomrProduct currentData={currentModal} onClose={onCloseModal} />
     </div>
   )
 }
