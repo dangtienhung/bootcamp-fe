@@ -32,7 +32,6 @@ const ProductPage = () => {
     totalPages: 1
   })
   const { currentModal, onCloseModal, onOpenModal } = useToggleModal<TProduct>()
-  console.log('🚀 ~ ProductPage ~ currentModal:', currentModal)
 
   const [query, setQuery] = useState<string>(`?_page=${paginate._page}&_limit=${paginate._limit}`)
 

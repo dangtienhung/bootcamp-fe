@@ -4,10 +4,12 @@ import { Button, Col, Drawer, Form, Input, Row, Select, Space, Upload, UploadPro
 import { getBrands } from '@/apis/brand.api'
 import { getCategories } from '@/apis/category.api'
 import { ArrowDownSmallIcon } from '@/components/icons'
+import QuillEditor from '@/components/qill-editor'
 import { useAuth } from '@/contexts/auth-context'
 import { TModal } from '@/types/common.type'
 import { TProduct } from '@/types/product.type'
 import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 
 interface IFormProductProps {
   currentData: TModal<TProduct>
@@ -19,32 +21,21 @@ const { Dragger } = Upload
 const FomrProduct = ({ currentData, onClose }: IFormProductProps) => {
   const { accessToken } = useAuth()
 
+  const [value, setValue] = useState<string>('')
+
+  const handleUploadFile = (e: any) => {
+    const file = e.target.files
+    console.log(file)
+  }
+
   const props: UploadProps = {
     name: 'file',
     multiple: true,
     customRequest({ file, onSuccess, onError }) {
-      const formData = new FormData()
-      formData.append('images', file as Blob)
-
-      fetch('http://localhost:8080/api/v1/image/upload', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          onSuccess?.(data)
-          message.success(`${(file as File).name} file uploaded successfully.`)
-        })
-        .catch((error) => {
-          onError?.(error)
-          message.error(`${(file as File).name} file upload failed.`)
-        })
+      console.log(file)
     },
     onChange(info) {
+      console.log('🚀 ~ onChange ~ info:', info)
       const { status } = info.file
       if (status !== 'uploading') {
         console.log(info.file, info.fileList)
@@ -78,7 +69,7 @@ const FomrProduct = ({ currentData, onClose }: IFormProductProps) => {
     <Drawer
       title='Thêm sản phẩm'
       onClose={onClose}
-      open={currentData.visiable}
+      open={true}
       width={800}
       extra={
         <Space>
@@ -187,7 +178,7 @@ const FomrProduct = ({ currentData, onClose }: IFormProductProps) => {
           {/* desc */}
           <Col span={24}>
             <Form.Item name={'desc'} label='Mô tả sản phẩm'>
-              <Input.TextArea size='large' placeholder='Mô tả sản phẩm' />
+              <QuillEditor value={value} onChange={(value) => setValue(value)} />
             </Form.Item>
           </Col>
 
@@ -201,6 +192,10 @@ const FomrProduct = ({ currentData, onClose }: IFormProductProps) => {
                 <p className='ant-upload-text'>Click hoặc kéo thả hình ảnh</p>
               </Dragger>
             </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <input type='file' id={'images'} onChange={handleUploadFile} />
           </Col>
         </Row>
       </Form>
