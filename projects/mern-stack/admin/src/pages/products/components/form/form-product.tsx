@@ -1,13 +1,13 @@
-import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
 import { Button, Col, Drawer, Form, Input, Row, Select, Space, Upload, UploadProps, message } from 'antd'
+import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
 
-import { getBrands } from '@/apis/brand.api'
-import { getCategories } from '@/apis/category.api'
 import { ArrowDownSmallIcon } from '@/components/icons'
 import QuillEditor from '@/components/qill-editor'
-import { useAuth } from '@/contexts/auth-context'
 import { TModal } from '@/types/common.type'
 import { TProduct } from '@/types/product.type'
+import { getBrands } from '@/apis/brand.api'
+import { getCategories } from '@/apis/category.api'
+import { useAuth } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 
@@ -22,6 +22,7 @@ const FomrProduct = ({ currentData, onClose }: IFormProductProps) => {
   const { accessToken } = useAuth()
 
   const [value, setValue] = useState<string>('')
+  console.log('🚀 ~ FomrProduct ~ value:', value)
 
   const handleUploadFile = (e: any) => {
     const file = e.target.files
