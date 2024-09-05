@@ -7,6 +7,7 @@ import { TModal } from '@/types/common.type'
 import { TProduct } from '@/types/product.type'
 import { getBrands } from '@/apis/brand.api'
 import { getCategories } from '@/apis/category.api'
+import { uploadImage } from '@/apis/upload-image.api'
 import { useAuth } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -32,8 +33,11 @@ const FomrProduct = ({ currentData, onClose }: IFormProductProps) => {
   const props: UploadProps = {
     name: 'file',
     multiple: true,
-    customRequest({ file, onSuccess, onError }) {
-      console.log(file)
+    async customRequest({ file, onSuccess, onError }) {
+      const formData = new FormData()
+      formData.append('images', file)
+      const response = await uploadImage(formData, accessToken)
+      console.log(response)
     },
     onChange(info) {
       console.log('🚀 ~ onChange ~ info:', info)
