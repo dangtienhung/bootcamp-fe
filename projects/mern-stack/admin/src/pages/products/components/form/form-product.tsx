@@ -3,6 +3,7 @@ import { Button, Col, Drawer, Form, Input, Row, Select, Space, Upload, UploadPro
 
 import { getBrands } from '@/apis/brand.api'
 import { getCategories } from '@/apis/category.api'
+import { uploadImage } from '@/apis/upload-image.api'
 import { ArrowDownSmallIcon } from '@/components/icons'
 import QuillEditor from '@/components/qill-editor'
 import { useAuth } from '@/contexts/auth-context'
@@ -30,9 +31,15 @@ const FomrProduct = ({ currentData, onClose }: IFormProductProps) => {
 
   const props: UploadProps = {
     name: 'file',
-    multiple: true,
-    customRequest({ file, onSuccess, onError }) {
-      console.log(file)
+    multiple: false,
+    accept: 'image/*',
+    async customRequest({ file, onSuccess, onError }) {
+      const formData = new FormData()
+      formData.append('images', file)
+
+      const response = await uploadImage(formData, accessToken)
+      const url = response.data.urls[0].url
+      console.log('🚀 ~ customRequest ~ url:', url)
     },
     onChange(info) {
       console.log('🚀 ~ onChange ~ info:', info)
@@ -193,14 +200,14 @@ const FomrProduct = ({ currentData, onClose }: IFormProductProps) => {
               </Dragger>
             </Form.Item>
           </Col>
-
-          <Col span={24}>
-            <input type='file' id={'images'} onChange={handleUploadFile} />
-          </Col>
         </Row>
       </Form>
     </Drawer>
   )
 }
+
+/*
+const demo = document.querySelector('#demo')
+*/
 
 export default FomrProduct
