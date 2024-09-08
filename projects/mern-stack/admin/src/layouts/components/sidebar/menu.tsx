@@ -1,5 +1,5 @@
-import { DashboardIcon } from '@/components/icons'
 import { AppstoreOutlined } from '@ant-design/icons'
+import { DashboardIcon } from '@/components/icons'
 
 export const menus = [
   {
@@ -19,5 +19,17 @@ export const menus = [
     title: 'Sản phẩm',
     icon: <AppstoreOutlined />,
     link: '/products'
+  },
+  {
+    id: 4,
+    title: 'Danh mục sản phẩm',
+    icon: <AppstoreOutlined />,
+    link: '/category'
+  },
+  {
+    id: 5,
+    title: 'Thương hiệu sản phẩm',
+    icon: <AppstoreOutlined />,
+    link: '/brand'
   }
 ]
