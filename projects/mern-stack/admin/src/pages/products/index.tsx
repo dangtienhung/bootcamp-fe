@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { getProducts } from '@/apis/product.api'
-import Navbar from '@/components/navbar'
-import { useAuth } from '@/contexts/auth-context'
-import useDebounce from '@/hooks/useDebounce'
-import { useToggleModal } from '@/hooks/useToggleModal'
-import { TResponse } from '@/types/common.type'
-import { TProduct } from '@/types/product.type'
-import { useQuery } from '@tanstack/react-query'
-import type { TabsProps } from 'antd'
-import { Tabs } from 'antd'
 import FomrProduct from './components/form/form-product'
 import MainProduct from './components/main-product'
+import Navbar from '@/components/navbar'
+import { TProduct } from '@/types/product.type'
+import { TResponse } from '@/types/common.type'
+import { Tabs } from 'antd'
+import type { TabsProps } from 'antd'
+import { getProducts } from '@/apis/product.api'
 import { handleChangeTab } from './utils/handle-change-tab'
+import { useAuth } from '@/contexts/auth-context'
+import useDebounce from '@/hooks/useDebounce'
+import { useQuery } from '@tanstack/react-query'
+import { useToggleModal } from '@/hooks/useToggleModal'
 
 const ProductPage = () => {
   const { accessToken } = useAuth()
@@ -22,6 +22,7 @@ const ProductPage = () => {
   const [params] = useSearchParams()
   const status = params.get('status')
   const deleted = params.get('deleted')
+  const page = params.get('_page')
 
   const [products, setProducts] = useState<TProduct[]>([])
   const navigate = useNavigate()
@@ -33,9 +34,9 @@ const ProductPage = () => {
   })
   const { currentModal, onCloseModal, onOpenModal } = useToggleModal<TProduct>()
 
-  const [query, setQuery] = useState<string>(`?_page=${paginate._page}&_limit=${paginate._limit}`)
+  const [query, setQuery] = useState<string>(`?_page=${page}&_limit=${paginate._limit}`)
 
-  const { data, isError, isLoading, isSuccess, isFetching } = useQuery<TResponse<TProduct>, Error>({
+  const { data, isError, isLoading, isSuccess, isFetching, refetch } = useQuery<TResponse<TProduct>, Error>({
     queryKey: ['products', query],
     queryFn: () => getProducts(accessToken, query),
     keepPreviousData: true
@@ -43,7 +44,7 @@ const ProductPage = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      setProducts(data.docs)
+      setProducts(data.docs.reverse())
       setPaginate({
         _page: data.page,
         _limit: data.limit,
@@ -90,6 +91,7 @@ const ProductPage = () => {
             _limit: paginate._limit,
             totalDocs: data.totalDocs,
             onChange: (page) => {
+              console.log(page)
               setPaginate({ ...paginate, _page: page, _limit: paginate._limit })
             }
           }}
@@ -178,7 +180,7 @@ const ProductPage = () => {
       </div>
 
       {/* form add product */}
-      <FomrProduct currentData={currentModal} onClose={onCloseModal} />
+      <FomrProduct currentData={currentModal} onClose={onCloseModal} refetch={refetch} />
     </div>
   )
 }
