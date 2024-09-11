@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
-import { Space, Switch, Table, TableColumnsType, Tag, Tooltip, message } from 'antd'
-import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
+import { Image, Space, Switch, Table, TableColumnsType, Tag, Tooltip, message } from 'antd'
+import { createSearchParams, useNavigate } from 'react-router-dom'
 import { getCategories, updateCategory } from '@/apis/category.api'
 import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -12,18 +12,18 @@ import { TCategory } from '@/types/category.type'
 import { cn } from '@/utils/cn'
 import { styleLayoutContent } from '@/features/init'
 import { useAuth } from '@/contexts/auth-context'
+import { useQueryParams } from '@/hooks/useQueryParams'
 import { useToggleModal } from '@/hooks/useToggleModal'
 
 const CategoryPage = () => {
   const navigate = useNavigate()
-  const [params] = useSearchParams()
-  const page = params.get('page')
-  const limit = params.get('limit')
+  const queryParams = useQueryParams()
 
   const { accessToken } = useAuth()
   const queryClient = useQueryClient()
 
   const [openModalDelete, setOpenModalDelete] = useState<boolean>(false)
+
   const [categories, setCategories] = useState<TCategory[]>([])
   const [category, setCategory] = useState<TCategory>()
   const [rowSelections, setRowSelections] = useState<TCategory[]>([])
@@ -34,6 +34,7 @@ const CategoryPage = () => {
     mutationKey: ['updateCategory'],
     mutationFn: (data: TCategory) => updateCategory(accessToken, data),
     onSuccess: () => {
+      message.success('Cập nhật danh mục sản phẩm thành công')
       queryClient.invalidateQueries({ queryKey: ['categories'] })
     },
     onError: () => {
@@ -43,8 +44,8 @@ const CategoryPage = () => {
 
   // get categories
   const { data, isError, isLoading, isSuccess } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => getCategories(accessToken),
+    queryKey: ['categories', queryParams],
+    queryFn: () => getCategories(accessToken, queryParams.search),
     keepPreviousData: true
   })
 
@@ -57,7 +58,23 @@ const CategoryPage = () => {
     {
       title: 'Tên danh mục',
       dataIndex: 'nameCategory',
-      key: 'nameCategory'
+      key: 'nameCategory',
+      render: (nameCategory: string, render: TCategory) => {
+        return (
+          <div className='flex gap-3'>
+            <Image src={render.image} alt={nameCategory} width={50} height={50} className='object-cover rounded-md' />
+            <div className='flex flex-col'>
+              <p className='text-base font-medium text-black-second'>{nameCategory}</p>
+              <p
+                className='text-sm text-black-second'
+                dangerouslySetInnerHTML={{
+                  __html: render.desc
+                }}
+              ></p>
+            </div>
+          </div>
+        )
+      }
     },
     {
       title: 'Trạng thái',
@@ -89,7 +106,10 @@ const CategoryPage = () => {
               <EditOutlined height={20} width={20} />
             </button>
             <Tooltip title={'Xoá sản phẩm'}>
-              <button className='h-8 px-4 border border-gray-400 rounded-l-none rounded-r-md'>
+              <button
+                className='h-8 px-4 border border-gray-400 rounded-l-none rounded-r-md'
+                onClick={() => setOpenModalDelete(true)}
+              >
                 <DeleteOutlined height={20} width={20} className='text-red-600' />
               </button>
             </Tooltip>
@@ -98,6 +118,16 @@ const CategoryPage = () => {
       }
     }
   ]
+
+  const handleSearch = (value: string) => {
+    navigate({
+      pathname: '/category',
+      search: createSearchParams({
+        ...queryParams,
+        search: value
+      }).toString()
+    })
+  }
 
   const rowSelection = {
     onChange: (_: React.Key[], selectedRows: TCategory[]) => {
@@ -128,7 +158,8 @@ const CategoryPage = () => {
           onClick: () => onOpenModal('add')
         }}
         input={{
-          placeholder: 'Tìm kiếm...'
+          placeholder: 'Tìm kiếm...',
+          onKeyDown: (value) => handleSearch(value)
         }}
       />
 
@@ -141,9 +172,10 @@ const CategoryPage = () => {
           }}
           columns={columns}
           loading={isLoading}
+          scroll={{ y: 600 }}
           pagination={{
-            current: Number(page) || 1,
-            pageSize: Number(limit) || 10,
+            current: Number(queryParams.page) || 1,
+            pageSize: Number(queryParams.limit) || 8,
             total: categories.length,
             showTotal(total, range) {
               return (

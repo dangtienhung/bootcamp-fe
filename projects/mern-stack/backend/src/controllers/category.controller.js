@@ -1,5 +1,7 @@
 import {
   createCategoryService,
+  deleteCategoryService,
+  deleteMultipleCategoriesService,
   getAllCategories,
   getCategoryByIdService,
   updateCategoryService,
@@ -20,8 +22,10 @@ export const createCategory = async (req, res) => {
 };
 
 // get Categories
-export const getCategories = async (_, res) => {
-  const result = await getAllCategories();
+export const getCategories = async (req, res) => {
+  const { search } = req.query;
+
+  const result = await getAllCategories(search);
 
   if (!result) {
     return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Get categories faild!', success: false });
@@ -53,4 +57,30 @@ export const updateCategory = async (req, res) => {
   }
 
   return res.status(HTTP_STATUS.OK).json({ message: 'Update category success!', success: true, data: result });
+};
+
+// delete category
+export const deleteCategory = async (req, res) => {
+  const { id } = req.params;
+
+  const result = await deleteCategoryService(id);
+  if (!result) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Delete category faild!', success: false });
+  }
+
+  return res.status(HTTP_STATUS.OK).json({ message: 'Delete category success!', success: true, data: result });
+};
+
+// delete multiple categories
+export const deleteMultipleCategories = async (req, res) => {
+  const { ids } = req.body;
+
+  const result = await deleteMultipleCategoriesService(ids);
+  if (!result) {
+    return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Delete multiple categories faild!', success: false });
+  }
+
+  return res
+    .status(HTTP_STATUS.OK)
+    .json({ message: 'Delete multiple categories success!', success: true, data: result });
 };

@@ -11,6 +11,7 @@ interface DeleteTableProps<T> {
   text: {
     title: string
     content: string
+    buttonDelete?: string
   }
 }
 
@@ -42,7 +43,7 @@ const DeleteTable = <T,>({
 
       <Modal
         open={openModalDelete}
-        title={<p className='w-full text-2xl font-semibold text-center'>Xoá sản phẩm</p>}
+        title={<p className='w-full text-2xl font-semibold text-center'>{text.title}</p>}
         onOk={() => {
           setOpenModalDelete(false)
         }}
@@ -62,7 +63,7 @@ const DeleteTable = <T,>({
                 handleDelete(selectionSingle && rowSelections.length === 0 ? selectionSingle : rowSelections)
               }}
             >
-              {text.title}
+              {text.buttonDelete || 'Xoá'}
             </Button>
           </div>
         }

@@ -35,6 +35,9 @@ const FormCategory = ({ onClose, currentData }: FormCategoryProps) => {
     mutationKey: ['updateCategory'],
     mutationFn: (data: TCategory) => updateCategory(accessToken, data),
     onSuccess: () => {
+      message.success('Cập nhật danh mục sản phẩm thành công')
+      onClose()
+      form.resetFields()
       queryClient.invalidateQueries({ queryKey: ['categories'] })
     },
     onError: () => {
@@ -81,16 +84,22 @@ const FormCategory = ({ onClose, currentData }: FormCategoryProps) => {
     multiple: false, // chỉ cho phép upload 1 hình ảnh
     accept: 'image/*', // chỉ cho phép upload file có định dạng ảnh
     listType: 'picture', // kiểu hiển thị hình ảnh
-    defaultFileList:
-      currentData.type === 'edit' // nếu là edit thì hiển thị hình ảnh đã có
+    fileList:
+      currentData.type === 'edit'
         ? [
             {
-              uid: currentData.currentData?._id ?? '1',
-              name: currentData.currentData?.nameCategory ?? '',
-              url: currentData.currentData?.image ?? ''
+              uid: '1',
+              name: 'image',
+              url: contentCategory.thumbnail
             }
           ]
-        : [], // nếu không thì trả về mảng rỗng
+        : [
+            {
+              uid: '1',
+              name: 'image',
+              url: contentCategory.thumbnail
+            }
+          ],
     async customRequest({ file, onSuccess, onError }) {
       const formData = new FormData()
       formData.append('images', file)
@@ -110,6 +119,7 @@ const FormCategory = ({ onClose, currentData }: FormCategoryProps) => {
     },
     onChange(info) {
       const { status } = info.file
+      //loading
       if (status === 'error') {
         message.error(`${info.file.name} file upload failed.`)
       }

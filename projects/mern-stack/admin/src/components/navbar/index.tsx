@@ -1,8 +1,8 @@
 import { Button, Input } from 'antd'
 
-import { cn } from '@/utils/cn'
-import type { SizeType } from 'antd/es/config-provider/SizeContext'
 import { GlassesIcon } from '../icons'
+import type { SizeType } from 'antd/es/config-provider/SizeContext'
+import { cn } from '@/utils/cn'
 
 interface NavbarProps {
   button: {
@@ -16,12 +16,13 @@ interface NavbarProps {
     placeholder?: string
     className?: string
     onSearch?: (value: string) => void
+    onKeyDown?: (value: string) => void
   }
 }
 
 const Navbar = ({ button, input }: NavbarProps) => {
   const { title, size, type, className, onClick, ...restButton } = button
-  const { placeholder, className: inputClassName, onSearch, ...restInput } = input
+  const { placeholder, className: inputClassName, onSearch, onKeyDown, ...restInput } = input
   return (
     <div className='flex items-center justify-between w-full pb-7'>
       <Button size={size} type={type} {...restButton} className={cn(className)} onClick={onClick}>
@@ -34,6 +35,11 @@ const Navbar = ({ button, input }: NavbarProps) => {
         prefix={<GlassesIcon hanging={16} width={16} />}
         {...restInput}
         onChange={(e) => onSearch && onSearch(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            onKeyDown && onKeyDown((e.target as HTMLInputElement).value)
+          }
+        }}
       />
     </div>
   )
