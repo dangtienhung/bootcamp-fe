@@ -53,6 +53,7 @@ export const productController = {
       limit: parseInt(_limit),
       page: parseInt(_page),
       populate: populateDefault,
+      sort: { createdAt: -1 },
     };
     return { option, query };
   },

@@ -1,73 +1,113 @@
-import { useEffect, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { memo, useEffect, useState } from 'react'
+import { createSearchParams, useNavigate } from 'react-router-dom'
 
+import { getProducts } from '@/apis/product.api'
+import Navbar from '@/components/navbar'
+import { useAuth } from '@/contexts/auth-context'
+import { useQueryParams } from '@/hooks/useQueryParams'
+import { useToggleModal } from '@/hooks/useToggleModal'
+import { TResponse } from '@/types/common.type'
+import { TProduct } from '@/types/product.type'
+import { useQuery } from '@tanstack/react-query'
+import type { TabsProps } from 'antd'
+import { Tabs } from 'antd'
 import FomrProduct from './components/form/form-product'
 import MainProduct from './components/main-product'
-import Navbar from '@/components/navbar'
-import { TProduct } from '@/types/product.type'
-import { TResponse } from '@/types/common.type'
-import { Tabs } from 'antd'
-import type { TabsProps } from 'antd'
-import { getProducts } from '@/apis/product.api'
-import { handleChangeTab } from './utils/handle-change-tab'
-import { useAuth } from '@/contexts/auth-context'
-import useDebounce from '@/hooks/useDebounce'
-import { useQuery } from '@tanstack/react-query'
-import { useToggleModal } from '@/hooks/useToggleModal'
 
 const ProductPage = () => {
   const { accessToken } = useAuth()
 
-  // get status/deleted from url
-  const [params] = useSearchParams()
-  const status = params.get('status')
-  const deleted = params.get('deleted')
-  const page = params.get('_page')
+  // lấy ra các dữ liệu trên url
+  const queryParams = useQueryParams()
 
   const [products, setProducts] = useState<TProduct[]>([])
   const navigate = useNavigate()
 
-  const [paginate, setPaginate] = useState({
-    _page: 1,
-    _limit: 10,
-    totalPages: 1
-  })
   const { currentModal, onCloseModal, onOpenModal } = useToggleModal<TProduct>()
 
-  const [query, setQuery] = useState<string>(`?_page=${page}&_limit=${paginate._limit}`)
-
   const { data, isError, isLoading, isSuccess, isFetching, refetch } = useQuery<TResponse<TProduct>, Error>({
-    queryKey: ['products', query],
-    queryFn: () => getProducts(accessToken, query),
+    queryKey: ['products', queryParams],
+    queryFn: () => getProducts(accessToken, queryParams),
     keepPreviousData: true
   })
 
   useEffect(() => {
     if (isSuccess) {
-      setProducts(data.docs.reverse())
-      setPaginate({
-        _page: data.page,
-        _limit: data.limit,
-        totalPages: data.totalPages
-      })
+      setProducts(data.docs)
     }
   }, [isSuccess, data])
 
   const [inputValue, setInputValue] = useState<string>('')
-  const debouncedValue = useDebounce(inputValue, 1000)
+
+  const handleSearch = (value: string) => {
+    setInputValue(value)
+    navigate({
+      pathname: '/products',
+      search: createSearchParams({
+        ...queryParams,
+        _page: '1',
+        q: value
+      }).toString()
+    })
+  }
+
+  // xử lý xử kiện khi click vào tab
+  const handleChangeTab = (key: string) => {
+    switch (key) {
+      case '1':
+        navigate({
+          pathname: '/products',
+          search: createSearchParams({
+            _page: '1',
+            _limit: '8',
+            tab: key
+          }).toString()
+        })
+        break
+      case '2':
+        navigate({
+          pathname: '/products',
+          search: createSearchParams({
+            ...queryParams,
+            _page: '1',
+            status: 'active',
+            deleted: 'false',
+            tab: key
+          }).toString()
+        })
+        break
+      case '3':
+        navigate({
+          pathname: '/products',
+          search: createSearchParams({
+            ...queryParams,
+            _page: '1',
+            status: 'inactive',
+            deleted: 'false',
+            tab: key
+          }).toString()
+        })
+        break
+      default:
+        navigate({
+          pathname: '/products',
+          search: createSearchParams({
+            ...queryParams,
+            _page: '1',
+            deleted: 'true',
+            tab: key
+          }).toString()
+        })
+        break
+    }
+  }
 
   useEffect(() => {
-    if (debouncedValue) {
-      let query = `?_page=${paginate._page}&_limit=${paginate._limit}${inputValue !== '' && `&q=${debouncedValue}`}`
-      if (status) {
-        query += `&status=${status}`
-      }
-      if (deleted) {
-        query += `&deleted=${deleted}`
-      }
-      setQuery(query)
+    if (queryParams.q) {
+      setInputValue(queryParams.q)
     }
-  }, [debouncedValue, status, deleted, paginate, inputValue])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (isError) {
     return <div>Error</div>
@@ -83,74 +123,27 @@ const ProductPage = () => {
       label: 'Tất cả sản phẩm',
       children: (
         <MainProduct
+          totalDocs={data.totalDocs}
           isLoading={isFetching || isLoading}
           products={products}
           getData={onOpenModal}
-          paginate={{
-            _page: paginate._page,
-            _limit: paginate._limit,
-            totalDocs: data.totalDocs,
-            onChange: (page) => {
-              console.log(page)
-              setPaginate({ ...paginate, _page: page, _limit: paginate._limit })
-            }
-          }}
         />
       )
     },
     {
       key: '2',
       label: 'Sản phẩm đang hoạt động',
-      children: (
-        <MainProduct
-          isLoading={isFetching || isLoading}
-          products={products}
-          paginate={{
-            _page: paginate._page,
-            _limit: paginate._limit,
-            totalDocs: data.totalDocs,
-            onChange: (page) => {
-              setPaginate({ ...paginate, _page: page, _limit: paginate._limit })
-            }
-          }}
-        />
-      )
+      children: <MainProduct totalDocs={data.totalDocs} isLoading={isFetching || isLoading} products={products} />
     },
     {
       key: '3',
       label: 'Sản phẩm không hoạt động',
-      children: (
-        <MainProduct
-          isLoading={isFetching || isLoading}
-          products={products}
-          paginate={{
-            _page: paginate._page,
-            _limit: paginate._limit,
-            totalDocs: data.totalDocs,
-            onChange: (page) => {
-              setPaginate({ ...paginate, _page: page, _limit: paginate._limit })
-            }
-          }}
-        />
-      )
+      children: <MainProduct totalDocs={data.totalDocs} isLoading={isFetching || isLoading} products={products} />
     },
     {
       key: '4',
       label: 'Sản phẩm đã xoá',
-      children: (
-        <MainProduct
-          isLoading={isFetching || isLoading}
-          products={products}
-          paginate={{
-            _page: paginate._page,
-            _limit: paginate._limit,
-            totalDocs: data.totalDocs,
-            onChange: (page) => {
-              setPaginate({ ...paginate, _page: page, _limit: paginate._limit })
-            }
-          }}
-        />
-      )
+      children: <MainProduct totalDocs={data.totalDocs} isLoading={isFetching || isLoading} products={products} />
     }
   ]
 
@@ -165,18 +158,14 @@ const ProductPage = () => {
         }}
         input={{
           placeholder: 'Search for product',
-          onSearch: (value) => setInputValue(value)
+          onSearch: (value) => handleSearch(value),
+          value: inputValue,
+          onChange: (value) => setInputValue(value)
         }}
       />
 
       <div>
-        <Tabs
-          defaultActiveKey='1'
-          items={items}
-          onChange={(value) => {
-            handleChangeTab({ keyTab: value, paginate, setQuery, navigate })
-          }}
-        />
+        <Tabs defaultActiveKey={queryParams.tab || '1'} items={items} onChange={(value) => handleChangeTab(value)} />
       </div>
 
       {/* form add product */}
@@ -185,4 +174,8 @@ const ProductPage = () => {
   )
 }
 
-export default ProductPage
+export default memo(ProductPage)
+
+// const demo = (value1: string) => (value2: string) => {
+//   console.log(value1, value2)
+// }

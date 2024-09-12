@@ -1,3 +1,14 @@
+import { TModal, TResponse } from '@/types/common.type'
+import { TProduct, TProductForm } from '@/types/product.type'
+import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  QueryClient,
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  useMutation,
+  useQuery
+} from '@tanstack/react-query'
 import {
   Button,
   Col,
@@ -13,25 +24,15 @@ import {
   UploadProps,
   message
 } from 'antd'
-import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
-import {
-  QueryClient,
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query'
-import { TModal, TResponse } from '@/types/common.type'
-import { TProduct, TProductForm } from '@/types/product.type'
 
-import { ArrowDownSmallIcon } from '@/components/icons'
-import QuillEditor from '@/components/qill-editor'
-import { addProduct } from '@/apis/product.api'
 import { getBrands } from '@/apis/brand.api'
 import { getCategories } from '@/apis/category.api'
+import { addProduct } from '@/apis/product.api'
 import { uploadImage } from '@/apis/upload-image.api'
+import { ArrowDownSmallIcon } from '@/components/icons'
+import QuillEditor from '@/components/qill-editor'
 import { useAuth } from '@/contexts/auth-context'
+import { useQueryParams } from '@/hooks/useQueryParams'
 import { useState } from 'react'
 
 interface IFormProductProps {
@@ -51,16 +52,9 @@ const { Dragger } = Upload
 
 const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
   const { accessToken } = useAuth()
-
+  const queryParams = useQueryParams()
   const [form] = Form.useForm<TProductForm>()
   const queryClient = new QueryClient()
-
-  const [paginate, setPaginate] = useState({
-    _page: 1,
-    _limit: 10,
-    totalPages: 1
-  })
-  const [query, setQuery] = useState<string>(`?_page=${paginate._page}&_limit=${paginate._limit}`)
 
   const createProductMutation = useMutation({
     mutationKey: ['createProduct'],
@@ -72,7 +66,7 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
       setImage({ url: '', public_id: '' })
       setValue('')
       refetch()
-      queryClient.invalidateQueries({ queryKey: ['products', query] })
+      queryClient.invalidateQueries({ queryKey: ['products', queryParams] })
     },
     onError: () => {
       message.error('Thêm sản phẩm thất bại')
@@ -130,14 +124,16 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
   // categories
   const { data, isLoading } = useQuery({
     queryKey: ['categories'],
-    queryFn: () => getCategories(accessToken)
+    queryFn: () => getCategories(accessToken),
+    enabled: currentData.visiable
   })
   const categories = data?.data
 
   // brand
   const { data: dataBrand, isLoading: isLoadingBrand } = useQuery({
     queryKey: ['brands'],
-    queryFn: () => getBrands(accessToken)
+    queryFn: () => getBrands(accessToken),
+    enabled: currentData.visiable
   })
   const brands = dataBrand?.data
 
@@ -333,9 +329,5 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
     </Drawer>
   )
 }
-
-/*
-const demo = document.querySelector('#demo')
-*/
 
 export default FomrProduct

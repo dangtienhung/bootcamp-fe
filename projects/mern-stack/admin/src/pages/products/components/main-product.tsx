@@ -1,31 +1,28 @@
+import { TModalType, TQueryParams } from '@/types/common.type'
 import { QueryClient, useMutation } from '@tanstack/react-query'
 import { Table, notification } from 'antd'
 import { createSearchParams, useNavigate } from 'react-router-dom'
 
-import ColumnsTable from './table/columns-table'
-import DeleteTable from '@/components/delete-table'
-import { TModalType } from '@/types/common.type'
-import { TProduct } from '@/types/product.type'
 import { softDeleteMultipleProduct } from '@/apis/product.api'
+import DeleteTable from '@/components/delete-table'
 import { useAuth } from '@/contexts/auth-context'
+import { useQueryParams } from '@/hooks/useQueryParams'
+import { TProduct } from '@/types/product.type'
 import { useState } from 'react'
+import ColumnsTable from './table/columns-table'
 
 interface MainProductProps {
-  // columns: TableColumnsType<TProduct>
   products: TProduct[]
-  paginate: {
-    _page: number
-    _limit: number
-    totalDocs: number
-    onChange: (page: number) => void
-  }
+  totalDocs: number
   isLoading?: boolean
   getData?: (type: TModalType, data?: TProduct) => void
 }
 
-const MainProduct = ({ products, paginate, isLoading, getData }: MainProductProps) => {
+const MainProduct = ({ products, isLoading, getData, totalDocs }: MainProductProps) => {
   const navigate = useNavigate()
-  const { _limit, _page, totalDocs, onChange } = paginate
+
+  const queryParams: TQueryParams = useQueryParams()
+  const { _limit, _page } = queryParams
 
   const queryClient = new QueryClient()
 
@@ -39,7 +36,6 @@ const MainProduct = ({ products, paginate, isLoading, getData }: MainProductProp
     mutationKey: ['deleteMultipleProduct'],
     mutationFn: (id: string) => softDeleteMultipleProduct(id, accessToken),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products', paginate] })
       notification.success({
         message: 'Xoá sản phẩm thành công',
         description: 'Sản phẩm đã được xoá vào thùng rác'
@@ -88,12 +84,10 @@ const MainProduct = ({ products, paginate, isLoading, getData }: MainProductProp
         }}
         columns={columns}
         pagination={{
-          current: _page,
-          pageSize: _limit,
+          current: Number(_page) || 1,
+          pageSize: Number(_limit) || 8,
           total: totalDocs,
           onChange: (page, pageSize) => {
-            console.log('🚀 ~ MainProduct ~ page:', page)
-            // onChange(page),
             navigate({
               pathname: '/products',
               search: createSearchParams({
