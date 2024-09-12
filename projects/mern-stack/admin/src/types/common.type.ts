@@ -39,3 +39,16 @@ export type TModal<T> = {
   type: TModalType
   currentData: T | null
 }
+
+export type TQueryParams = {
+  _page?: number
+  _limit?: number
+  search?: string
+  status?: string
+  deleted?: string
+  q?: string
+}
+
+export type QueryConfig<T> = {
+  [key in keyof T]: T[key]
+}

@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
 import { HTTP_STATUS } from '../common/http-status.common.js';
 import Product from '../models/product.model.js';
+import mongoose from 'mongoose';
 import { productService } from '../services/product.service.js';
 
 export const productController = {
@@ -49,6 +49,7 @@ export const productController = {
       };
     }
 
+    // trả dữ liệu về từ mới - cũ
     const option = {
       limit: parseInt(_limit),
       page: parseInt(_page),

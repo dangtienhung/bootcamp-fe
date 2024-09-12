@@ -9,7 +9,10 @@ export const productService = {
   },
   // get all product
   getAllProduct: async (option, query) => {
-    return await Product.paginate(query, option);
+    return await Product.paginate(query, {
+      ...option,
+      sort: { createdAt: -1 },
+    });
   },
   // get product by id
   getProductById: async (id) => {
