@@ -1,19 +1,14 @@
+import { addProduct, editProduct } from '@/apis/product.api'
 import { TModal, TResponse } from '@/types/common.type'
 import { TProduct, TProductForm } from '@/types/product.type'
 import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
-import {
-  QueryClient,
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query'
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useMutation, useQuery } from '@tanstack/react-query'
 import {
   Button,
   Col,
   Drawer,
   Form,
+  Image,
   Input,
   InputNumber,
   Row,
@@ -24,16 +19,14 @@ import {
   UploadProps,
   message
 } from 'antd'
+import { useEffect, useState } from 'react'
 
 import { getBrands } from '@/apis/brand.api'
 import { getCategories } from '@/apis/category.api'
-import { addProduct } from '@/apis/product.api'
 import { uploadImage } from '@/apis/upload-image.api'
 import { ArrowDownSmallIcon } from '@/components/icons'
 import QuillEditor from '@/components/qill-editor'
 import { useAuth } from '@/contexts/auth-context'
-import { useQueryParams } from '@/hooks/useQueryParams'
-import { useState } from 'react'
 
 interface IFormProductProps {
   currentData: TModal<TProduct>
@@ -46,15 +39,14 @@ interface IFormProductProps {
 interface Image {
   url: string
   public_id: string
+  isPreview?: boolean
 }
 
 const { Dragger } = Upload
 
 const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
   const { accessToken } = useAuth()
-  const queryParams = useQueryParams()
   const [form] = Form.useForm<TProductForm>()
-  const queryClient = new QueryClient()
 
   const createProductMutation = useMutation({
     mutationKey: ['createProduct'],
@@ -66,16 +58,32 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
       setImage({ url: '', public_id: '' })
       setValue('')
       refetch()
-      queryClient.invalidateQueries({ queryKey: ['products', queryParams] })
     },
     onError: () => {
       message.error('Thêm sản phẩm thất bại')
     }
   })
 
+  // edit product Mutation
+  const editProductMutation = useMutation({
+    mutationKey: ['editProduct'],
+    mutationFn: (product: TProductForm & { _id: string }) => editProduct(product, accessToken),
+    onSuccess: () => {
+      message.success('Sửa sản phẩm')
+      onClose()
+      form.resetFields()
+      setImage({ url: '', public_id: '' })
+      setValue('')
+      refetch()
+    },
+    onError: () => {
+      message.error('Sửa phẩm thất bại')
+    }
+  })
+
   // lưu trữ văn bản từ text editor
   const [value, setValue] = useState<string>('')
-  const [image, setImage] = useState<Image>({ url: '', public_id: '' })
+  const [image, setImage] = useState<Image>({ url: '', public_id: '', isPreview: false })
 
   const props: UploadProps = {
     name: 'file',
@@ -150,12 +158,38 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
       images: [image]
     }
 
-    createProductMutation.mutate(dataProduct)
+    if (currentData.type === 'add') {
+      createProductMutation.mutate(dataProduct)
+    }
+    if (currentData.type === 'edit') {
+      editProductMutation.mutate({ ...dataProduct, _id: currentData.currentData!._id })
+    }
   }
+
+  useEffect(() => {
+    if (currentData.currentData) {
+      const { currentData: dataProduct } = currentData
+      form.setFieldsValue({
+        nameProduct: dataProduct.nameProduct,
+        price: dataProduct.price,
+        brand: dataProduct.brand._id,
+        category: dataProduct.category._id,
+        sale: dataProduct.sale,
+        status: dataProduct.status,
+        sizes: dataProduct.sizes,
+        desc: dataProduct.desc
+      })
+      setImage({
+        public_id: dataProduct.images[0].public_id,
+        url: dataProduct.images[0].url,
+        isPreview: true
+      })
+    }
+  }, [currentData, form])
 
   return (
     <Drawer
-      title='Thêm sản phẩm'
+      title={currentData.type === 'edit' ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}
       onClose={onClose}
       open={currentData.visiable}
       width={800}
@@ -171,7 +205,7 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
             disabled={createProductMutation.isLoading}
             loading={createProductMutation.isLoading}
           >
-            Thêm sản phẩm
+            {currentData.type === 'edit' ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}
           </Button>
         </Space>
       }
@@ -323,6 +357,10 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
                 <p className='ant-upload-text'>Click hoặc kéo thả hình ảnh</p>
               </Dragger>
             </Form.Item>
+
+            {currentData.type === 'edit' && image.isPreview && (
+              <Image src={image.url} alt={image.public_id} className='!w-24 !h-24 rounded-lg' />
+            )}
           </Col>
         </Row>
       </Form>

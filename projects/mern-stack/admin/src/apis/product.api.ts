@@ -69,3 +69,14 @@ export const addProduct = async (data: TProductForm, token: string) => {
 
   return response.data
 }
+
+// sửa sản phẩm
+export const editProduct = async (data: TProductForm & { _id: string }, token: string) => {
+  const response = await api.put<TResponse<TProduct>>(`/product/${data._id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+
+  return response.data
+}
