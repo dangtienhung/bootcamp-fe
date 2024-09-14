@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
 import { HTTP_STATUS } from '../common/http-status.common.js';
 import Product from '../models/product.model.js';
+import mongoose from 'mongoose';
 import { productService } from '../services/product.service.js';
 
 export const productController = {
@@ -270,7 +270,7 @@ export const productController = {
 
   // update many
   updateManyProduct: async (req, res) => {
-    const { id: ids } = req.query;
+    const { id: ids, deleted } = req.query;
     if (!ids || !ids.length) {
       return res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Ids invalid', success: false });
     }
@@ -287,7 +287,7 @@ export const productController = {
     }
 
     // update many id field is_deleted = true
-    const result = await Product.updateMany({ _id: { $in: idsArray } }, { is_deleted: true }, { new: true });
+    const result = await Product.updateMany({ _id: { $in: idsArray } }, { is_deleted: deleted ?? true }, { new: true });
 
     if (!result) {
       return res
