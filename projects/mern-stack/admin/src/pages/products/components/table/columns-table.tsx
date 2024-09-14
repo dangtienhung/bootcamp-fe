@@ -1,13 +1,13 @@
-import { TCategroyRefProduct, TProduct, TSize } from '@/types/product.type'
 import { ClearOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { TCategroyRefProduct, TProduct, TSize } from '@/types/product.type'
+import { TImage, TModalType } from '@/types/common.type'
 import { TableColumnsType, Tag, Tooltip } from 'antd'
 
 import { ArrowRestoreIcon } from '@/components/icons'
-import { TImage, TModalType } from '@/types/common.type'
 import { cn } from '@/utils/cn'
 
 interface ColumnsTableProps {
-  onDelete?: (record: TProduct) => void
+  onDelete?: (record: TProduct, deleted?: boolean) => void
   onDetail?: (record: TProduct) => void
   setOpenModalDelete?: (value: boolean) => void
   rowSelections?: TProduct[]
@@ -116,7 +116,10 @@ const ColumnsTable = ({ onDelete, setOpenModalDelete, onDetail, rowSelections, g
             {record.is_deleted ? (
               <>
                 <Tooltip title={'Khôi phục sản phẩm'}>
-                  <button className='h-8 px-4 border border-r-0 border-gray-400 rounded-r-none rounded-l-md '>
+                  <button
+                    className='h-8 px-4 border border-r-0 border-gray-400 rounded-r-none rounded-l-md '
+                    onClick={() => onDelete && onDelete(record, false)}
+                  >
                     <ArrowRestoreIcon />
                   </button>
                 </Tooltip>

@@ -1,13 +1,13 @@
 import { TModalType, TQueryParams } from '@/types/common.type'
 import { Table, notification } from 'antd'
 import { createSearchParams, useNavigate } from 'react-router-dom'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import ColumnsTable from './table/columns-table'
 import DeleteTable from '@/components/delete-table'
 import { TProduct } from '@/types/product.type'
 import { softDeleteMultipleProduct } from '@/apis/product.api'
 import { useAuth } from '@/contexts/auth-context'
-import { useMutation } from '@tanstack/react-query'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { useState } from 'react'
 
@@ -23,6 +23,7 @@ const MainProduct = ({ products, isLoading, getData, totalDocs }: MainProductPro
 
   const queryParams: TQueryParams = useQueryParams()
   const { _limit, _page } = queryParams
+  const queryClient = useQueryClient()
 
   const { accessToken } = useAuth()
 
@@ -32,12 +33,15 @@ const MainProduct = ({ products, isLoading, getData, totalDocs }: MainProductPro
 
   const deleteMultipleMutation = useMutation({
     mutationKey: ['deleteMultipleProduct'],
-    mutationFn: (id: string) => softDeleteMultipleProduct(id, accessToken),
+    mutationFn: (params: { id: string[] | string; deleted?: boolean }) =>
+      softDeleteMultipleProduct(params, accessToken),
     onSuccess: () => {
       notification.success({
         message: 'Xoá sản phẩm thành công',
         description: 'Sản phẩm đã được xoá vào thùng rác'
       })
+      queryClient.invalidateQueries({ queryKey: ['products', queryParams] })
+      setRowSelections([])
     },
     onError: () => {
       notification.error({
@@ -47,12 +51,12 @@ const MainProduct = ({ products, isLoading, getData, totalDocs }: MainProductPro
     }
   })
 
-  const handleDelete = (values: TProduct[] | TProduct) => {
+  const handleDelete = (values: TProduct[] | TProduct, deleted?: boolean) => {
     if (Array.isArray(values)) {
-      const ids = values.map((item) => `&id=${item._id}`).join('')
-      deleteMultipleMutation.mutate(ids)
+      const ids = values.map((item) => item._id)
+      deleteMultipleMutation.mutate({ id: ids, deleted })
     } else {
-      deleteMultipleMutation.mutate(`&id=${values._id}`)
+      deleteMultipleMutation.mutate({ id: values._id, deleted })
     }
   }
 
