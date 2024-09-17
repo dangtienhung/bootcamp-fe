@@ -1,18 +1,19 @@
-import { memo, useEffect, useState } from 'react'
 import { createSearchParams, useNavigate } from 'react-router-dom'
+import { memo, useEffect, useState } from 'react'
 
-import { getProducts } from '@/apis/product.api'
-import Navbar from '@/components/navbar'
-import { useAuth } from '@/contexts/auth-context'
-import { useQueryParams } from '@/hooks/useQueryParams'
-import { useToggleModal } from '@/hooks/useToggleModal'
-import { TResponse } from '@/types/common.type'
-import { TProduct } from '@/types/product.type'
-import { useQuery } from '@tanstack/react-query'
-import type { TabsProps } from 'antd'
-import { Tabs } from 'antd'
 import FomrProduct from './components/form/form-product'
 import MainProduct from './components/main-product'
+import Navbar from '@/components/navbar'
+import { TProduct } from '@/types/product.type'
+import { TResponse } from '@/types/common.type'
+import { Tabs } from 'antd'
+import type { TabsProps } from 'antd'
+import _ from 'lodash'
+import { getProducts } from '@/apis/product.api'
+import { useAuth } from '@/contexts/auth-context'
+import { useQuery } from '@tanstack/react-query'
+import { useQueryParams } from '@/hooks/useQueryParams'
+import { useToggleModal } from '@/hooks/useToggleModal'
 
 const ProductPage = () => {
   const { accessToken } = useAuth()
@@ -84,6 +85,18 @@ const ProductPage = () => {
             _page: '1',
             status: 'inactive',
             deleted: 'false',
+            tab: key
+          }).toString()
+        })
+        break
+      case '4':
+        const newQueryParams = _.omit(queryParams, 'status')
+        navigate({
+          pathname: '/products',
+          search: createSearchParams({
+            ...newQueryParams,
+            _page: '1',
+            deleted: 'true',
             tab: key
           }).toString()
         })

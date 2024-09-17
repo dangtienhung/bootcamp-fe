@@ -1,17 +1,21 @@
 import { Button, Modal } from 'antd'
 
+import { ArrowRestoreIcon } from '../icons'
 import { DeleteOutlined } from '@ant-design/icons'
+import { cn } from '@/utils/cn'
+import { useMemo } from 'react'
 
 interface DeleteTableProps<T> {
   rowSelections: T[]
   setOpenModalDelete: (value: boolean) => void
   openModalDelete: boolean
-  handleDelete: (values: T[] | T) => void
+  handleDelete: (values: T[] | T, is_deleted?: boolean) => void
   selectionSingle?: T
   text: {
     title: string
     content: string
   }
+  type?: 'delete' | 'restore'
 }
 
 const DeleteTable = <T,>({
@@ -20,20 +24,34 @@ const DeleteTable = <T,>({
   rowSelections,
   selectionSingle,
   setOpenModalDelete,
-  text
+  text,
+  type
 }: DeleteTableProps<T>) => {
+  console.log('🚀 ~ type:', type)
+  const checkStatus = useMemo(() => rowSelections.every((item) => item.is_deleted), [rowSelections])
+  console.log('🚀 ~ checkStatus:', checkStatus)
+
   return (
     <>
       {rowSelections.length > 0 && (
-        <div className='flex items-center justify-between'>
+        <div className={cn('flex items-center justify-between')}>
           <button
             className='flex items-center gap-2 text-red-500'
             onClick={() => {
               setOpenModalDelete(true)
             }}
           >
-            <DeleteOutlined />
-            Delete
+            {!checkStatus && type === 'delete' ? (
+              <>
+                <DeleteOutlined />
+                Delete
+              </>
+            ) : (
+              <>
+                <ArrowRestoreIcon />
+                Restore
+              </>
+            )}
           </button>
 
           <span className=''>{rowSelections.length} Selected</span>
@@ -59,7 +77,10 @@ const DeleteTable = <T,>({
               className='w-full max-w-[140px]'
               onClick={() => {
                 setOpenModalDelete(false)
-                handleDelete(selectionSingle && rowSelections.length === 0 ? selectionSingle : rowSelections)
+                handleDelete(
+                  selectionSingle && rowSelections.length === 0 ? selectionSingle : rowSelections,
+                  checkStatus && type === 'restore' ? false : true
+                )
               }}
             >
               {text.title}
