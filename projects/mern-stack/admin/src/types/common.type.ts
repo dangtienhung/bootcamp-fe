@@ -20,6 +20,14 @@ export type TResponseNoPagination<Data> = {
   data: Data[]
 }
 
+export type TResponseDetail<Data> = {
+  message: string
+  success: boolean
+  data: Data
+}
+
+// export type TResponseDetail<T> = Omit<TResponseNoPagination<T>, 'data'> & { data: T }
+
 export type TImage = {
   url: string
   public_id: string

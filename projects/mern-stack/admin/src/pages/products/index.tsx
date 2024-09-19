@@ -188,7 +188,3 @@ const ProductPage = () => {
 }
 
 export default memo(ProductPage)
-
-// const demo = (value1: string) => (value2: string) => {
-//   console.log(value1, value2)
-// }

@@ -5,7 +5,7 @@ import { DeleteOutlined } from '@ant-design/icons'
 import { cn } from '@/utils/cn'
 import { useMemo } from 'react'
 
-interface DeleteTableProps<T> {
+interface DeleteTableProps<T extends { is_deleted?: boolean }> {
   rowSelections: T[]
   setOpenModalDelete: (value: boolean) => void
   openModalDelete: boolean
@@ -18,7 +18,7 @@ interface DeleteTableProps<T> {
   type?: 'delete' | 'restore'
 }
 
-const DeleteTable = <T,>({
+const DeleteTable = <T extends { is_deleted?: boolean }>({
   handleDelete,
   openModalDelete,
   rowSelections,
@@ -27,9 +27,7 @@ const DeleteTable = <T,>({
   text,
   type
 }: DeleteTableProps<T>) => {
-  console.log('🚀 ~ type:', type)
   const checkStatus = useMemo(() => rowSelections.every((item) => item.is_deleted), [rowSelections])
-  console.log('🚀 ~ checkStatus:', checkStatus)
 
   return (
     <>
@@ -79,7 +77,7 @@ const DeleteTable = <T,>({
                 setOpenModalDelete(false)
                 handleDelete(
                   selectionSingle && rowSelections.length === 0 ? selectionSingle : rowSelections,
-                  checkStatus && type === 'restore' ? false : true
+                  checkStatus ? false : true
                 )
               }}
             >

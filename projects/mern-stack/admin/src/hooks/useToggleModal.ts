@@ -19,6 +19,7 @@ export const useToggleModal = <T>() => {
         })
         break
       case 'edit':
+      case 'view':
         setCurrentModal({
           type,
           visiable: true,
