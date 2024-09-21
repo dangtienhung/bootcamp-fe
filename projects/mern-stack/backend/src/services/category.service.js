@@ -8,7 +8,7 @@ export const createCategoryService = async (body) => {
 
 // get all categories
 export const getAllCategories = async () => {
-  const categories = await Category.find();
+  const categories = await Category.find().sort({ createdAt: -1 });
 
   return categories;
 };

@@ -1,9 +1,9 @@
 import { ArrowRestoreIcon, EyeIcon } from '@/components/icons'
-import { ClearOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
-import { Link, useNavigate } from 'react-router-dom'
-import { TCategroyRefProduct, TProduct, TSize } from '@/types/product.type'
 import { TImage, TModalType } from '@/types/common.type'
+import { TCategroyRefProduct, TProduct, TSize } from '@/types/product.type'
+import { ClearOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import { TableColumnsType, Tag, Tooltip } from 'antd'
+import { Link } from 'react-router-dom'
 
 import { cn } from '@/utils/cn'
 
@@ -24,7 +24,7 @@ const ColumnsTable = ({
   getData,
   onOpenModal
 }: ColumnsTableProps) => {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const columns: TableColumnsType<TProduct> = [
     {
       title: 'Thông tin sản phẩm',

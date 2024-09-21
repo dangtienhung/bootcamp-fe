@@ -1,17 +1,17 @@
 import { TModalType, TQueryParams } from '@/types/common.type'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Table, notification } from 'antd'
 import { createSearchParams, useNavigate } from 'react-router-dom'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import ColumnsTable from './table/columns-table'
-import DeleteTable from '@/components/delete-table'
-import FomrProduct from './form/form-product'
-import { TProduct } from '@/types/product.type'
 import { softDeleteMultipleProduct } from '@/apis/product.api'
+import DeleteTable from '@/components/delete-table'
 import { useAuth } from '@/contexts/auth-context'
 import { useQueryParams } from '@/hooks/useQueryParams'
-import { useState } from 'react'
 import { useToggleModal } from '@/hooks/useToggleModal'
+import { TProduct } from '@/types/product.type'
+import { useState } from 'react'
+import FomrProduct from './form/form-product'
+import ColumnsTable from './table/columns-table'
 
 interface MainProductProps {
   products: TProduct[]
@@ -33,7 +33,6 @@ const MainProduct = ({ products, isLoading, getData, totalDocs }: MainProductPro
   const [rowSelections, setRowSelections] = useState<TProduct[]>([])
   const [product, setProduct] = useState<TProduct>()
   const { currentModal, onCloseModal, onOpenModal } = useToggleModal<TProduct>()
-  console.log('🚀 ~ MainProduct ~ product:', product)
 
   const deleteMultipleMutation = useMutation({
     mutationKey: ['deleteMultipleProduct'],

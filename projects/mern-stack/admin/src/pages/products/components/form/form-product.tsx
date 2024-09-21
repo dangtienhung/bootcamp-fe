@@ -1,3 +1,15 @@
+import { addProduct, editProduct } from '@/apis/product.api'
+import { Image as ImageType, TModal, TResponse } from '@/types/common.type'
+import { TProduct, TProductForm, TProductFormEdit } from '@/types/product.type'
+import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
+import {
+  QueryClient,
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  useMutation,
+  useQuery
+} from '@tanstack/react-query'
 import {
   Button,
   Col,
@@ -14,25 +26,13 @@ import {
   UploadProps,
   message
 } from 'antd'
-import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
-import {
-  QueryClient,
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query'
-import { TModal, TResponse } from '@/types/common.type'
-import { TProduct, TProductForm, TProductFormEdit } from '@/types/product.type'
-import { addProduct, editProduct } from '@/apis/product.api'
 import { useEffect, useState } from 'react'
 
-import { ArrowDownSmallIcon } from '@/components/icons'
-import QuillEditor from '@/components/qill-editor'
 import { getBrands } from '@/apis/brand.api'
 import { getCategories } from '@/apis/category.api'
 import { uploadImage } from '@/apis/upload-image.api'
+import { ArrowDownSmallIcon } from '@/components/icons'
+import QuillEditor from '@/components/qill-editor'
 import { useAuth } from '@/contexts/auth-context'
 import { useQueryParams } from '@/hooks/useQueryParams'
 
@@ -42,12 +42,6 @@ interface IFormProductProps {
   refetch?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TResponse<TProduct>, Error>>
-}
-
-interface Image {
-  url: string
-  public_id: string
-  visiable: boolean
 }
 
 const { Dragger } = Upload
@@ -95,7 +89,7 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
 
   // lưu trữ văn bản từ text editor
   const [value, setValue] = useState<string>('')
-  const [image, setImage] = useState<Image>({ url: '', public_id: '', visiable: false })
+  const [image, setImage] = useState<ImageType>({ url: '', public_id: '', visiable: false })
 
   const props: UploadProps = {
     name: 'file',
@@ -108,7 +102,7 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
       formData.append('images', file)
 
       const response = await uploadImage(formData, accessToken)
-      const urlInfo: Image = response.data.urls[0]
+      const urlInfo: ImageType = response.data.urls[0]
 
       if (urlInfo) {
         setImage({

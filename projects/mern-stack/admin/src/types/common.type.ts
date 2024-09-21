@@ -34,6 +34,12 @@ export type TImage = {
   _id: string
 }
 
+export interface Image {
+  url: string
+  public_id: string
+  visiable: boolean
+}
+
 export type TBaseResponseDelete = {
   message: string
   success: boolean
@@ -55,3 +61,7 @@ export type TQueryParams = {
   status?: string
   deleted?: string
 }
+
+// int abc = 5 => abc = 'ahihi'
+// let exampleJs = 5 => exampleJs = 'ahihi'
+// let abc: string = 'abc'
