@@ -34,7 +34,7 @@ export type TImage = {
   _id: string
 }
 
-export interface Image {
+export interface ImageType {
   url: string
   public_id: string
   visiable: boolean

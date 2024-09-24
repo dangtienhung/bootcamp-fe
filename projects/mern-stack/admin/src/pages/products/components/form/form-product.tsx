@@ -1,15 +1,3 @@
-import { addProduct, editProduct } from '@/apis/product.api'
-import { Image as ImageType, TModal, TResponse } from '@/types/common.type'
-import { TProduct, TProductForm, TProductFormEdit } from '@/types/product.type'
-import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
-import {
-  QueryClient,
-  QueryObserverResult,
-  RefetchOptions,
-  RefetchQueryFilters,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query'
 import {
   Button,
   Col,
@@ -26,14 +14,26 @@ import {
   UploadProps,
   message
 } from 'antd'
+import { CloseOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons'
+import { ImageType, TModal, TResponse } from '@/types/common.type'
+import {
+  QueryClient,
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+  useMutation,
+  useQuery
+} from '@tanstack/react-query'
+import { TProduct, TProductForm, TProductFormEdit } from '@/types/product.type'
+import { addProduct, editProduct } from '@/apis/product.api'
 import { useEffect, useState } from 'react'
 
-import { getBrands } from '@/apis/brand.api'
-import { getCategories } from '@/apis/category.api'
-import { uploadImage } from '@/apis/upload-image.api'
 import { ArrowDownSmallIcon } from '@/components/icons'
 import QuillEditor from '@/components/qill-editor'
+import { getBrands } from '@/apis/brand.api'
+import { uploadImage } from '@/apis/upload-image.api'
 import { useAuth } from '@/contexts/auth-context'
+import { useGetCategory } from '@/pages/category/hooks/useCategory'
 import { useQueryParams } from '@/hooks/useQueryParams'
 
 interface IFormProductProps {
@@ -47,7 +47,6 @@ interface IFormProductProps {
 const { Dragger } = Upload
 
 const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
-  console.log('🚀 ~ FomrProduct ~ currentData:', currentData)
   const { accessToken } = useAuth()
   const queryParams = useQueryParams()
   const [form] = Form.useForm()
@@ -136,11 +135,7 @@ const FomrProduct = ({ currentData, onClose, refetch }: IFormProductProps) => {
   }
 
   // categories
-  const { data, isLoading } = useQuery({
-    queryKey: ['categories'],
-    queryFn: () => getCategories(accessToken),
-    enabled: currentData.visiable
-  })
+  const { data, isLoading } = useGetCategory({ enable: currentData.visiable })
   const categories = data?.data
 
   // brand

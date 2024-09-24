@@ -1,10 +1,10 @@
 import { ArrowRestoreIcon, EyeIcon } from '@/components/icons'
-import { TImage, TModalType } from '@/types/common.type'
-import { TCategroyRefProduct, TProduct, TSize } from '@/types/product.type'
 import { ClearOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { TCategroyRefProduct, TProduct, TSize } from '@/types/product.type'
+import { TImage, TModalType } from '@/types/common.type'
 import { TableColumnsType, Tag, Tooltip } from 'antd'
-import { Link } from 'react-router-dom'
 
+import { Link } from 'react-router-dom'
 import { cn } from '@/utils/cn'
 
 interface ColumnsTableProps {
@@ -41,7 +41,7 @@ const ColumnsTable = ({
 
             <div className='flex flex-col'>
               <div className='flex items-center gap-2'>
-                <p className='!text-lg font-medium text-black-second'>{record.nameProduct}</p>
+                <p className='!text-lg font-medium text-black-second'>{record?.nameProduct}</p>
                 {record.sale > 0 && (
                   <div className='!text-xs bg-red-400 text-white rounded-sm p-0.5 px-2'>
                     Sale: {record.sale.toLocaleString()}đ
@@ -62,7 +62,7 @@ const ColumnsTable = ({
       dataIndex: 'category',
       key: 'category',
       render: (category: TCategroyRefProduct) => {
-        return category.nameCategory
+        return category?.nameCategory
       }
     },
     {

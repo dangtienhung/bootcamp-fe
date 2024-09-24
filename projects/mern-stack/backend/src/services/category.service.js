@@ -31,3 +31,8 @@ export const updateCategoryService = async (id, body) => {
   const category = await Category.findByIdAndUpdate({ _id: id }, body, { new: true });
   return category;
 };
+
+export const deleteCategoryService = async (id) => {
+  const category = await Category.findByIdAndDelete({ _id: id });
+  return category;
+};
