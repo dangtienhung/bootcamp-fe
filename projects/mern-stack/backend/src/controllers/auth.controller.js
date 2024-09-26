@@ -113,3 +113,7 @@ export const resetPasswordController = async (req, res) => {
     success: true,
   });
 };
+
+// login
+// const {password, ...userInfo} = user => return userInfo => resfull api
+// const {} =>

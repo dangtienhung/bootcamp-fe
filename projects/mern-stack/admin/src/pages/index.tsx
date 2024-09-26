@@ -1,20 +1,47 @@
-import useCounter from '@/contexts/counter-context'
+import { useEffect, useState } from 'react'
+
 import { Button } from 'antd'
-import { useTranslation } from 'react-i18next'
+import { io } from 'socket.io-client'
 
 const HomePage = () => {
-  // useContext là gì? Tại sao phải sử dụng nó?
-  // useContext giúp chúng ta truy cập vào các giá trị của context mà không cần sử dụng Provider
-  const { counter, handleDecrement, handleIncrement } = useCounter()
-  const { t } = useTranslation()
+  const [socketClient, setSocketClient] = useState<any>(null)
+
+  useEffect(() => {
+    const newSocket = io('http://localhost:8080')
+    setSocketClient(newSocket)
+  }, [])
+
+  // emit
+  // useEffect(() => {
+  //   if (!socketClient) return
+  //   socketClient.emit('messengers')
+  // }, [socketClient])
+
+  useEffect(() => {
+    if (!socketClient) return
+    socketClient.on('send-data', (data: any) => {
+      console.log('🚀 ~ socketClient.on ~ data:', data)
+    })
+  }, [socketClient])
+  useEffect(() => {
+    if (!socketClient) return
+    socketClient.on('add-product', (data: any) => {
+      console.log('🚀 ~ socketClient.on ~ data:', data)
+    })
+  }, [socketClient])
+
+  const handleAddProduct = () => {
+    const data = {
+      id: 1,
+      name: 'product ' + Math.round(Math.random() + 1000)
+    }
+
+    socketClient.emit('add-product', data)
+  }
 
   return (
     <div>
-      HomePage
-      <p className='px-10'>Counter: {counter}</p>
-      <p>{t('title')}</p>
-      <Button onClick={() => handleIncrement()}>Increament</Button>
-      <Button onClick={() => handleDecrement()}>Decreament</Button>
+      <Button onClick={handleAddProduct}>Add Product</Button>
     </div>
   )
 }

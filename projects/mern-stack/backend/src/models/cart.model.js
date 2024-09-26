@@ -49,3 +49,18 @@ const Cart = mongoose.model('Cart', cartSchema);
 export default Cart;
 
 // findByIdAndUpdate, updateMany
+/*
+
+{
+  "_id": string
+  "nameBrand":string
+  "image": string
+  "status"string
+  "country":string
+  "desc": string
+  "createdAt": string
+  "updatedAt": string
+}
+  => {_id, image, nameBrand, status}
+
+*/
