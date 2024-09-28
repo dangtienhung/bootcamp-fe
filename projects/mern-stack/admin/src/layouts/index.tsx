@@ -1,7 +1,8 @@
+import { FloatButton, Layout } from 'antd'
+import { Link, Outlet } from 'react-router-dom'
+
 import { CounterProvider } from '@/contexts/counter-context'
 import Header from './components/header'
-import { Layout } from 'antd'
-import { Outlet } from 'react-router-dom'
 import Sidebar from './components/sidebar'
 
 const RootLayout = () => {
@@ -17,6 +18,9 @@ const RootLayout = () => {
         <Layout.Content>
           <CounterProvider>
             <Outlet />
+            <Link to={`/messagers`}>
+              <FloatButton tooltip={<div>Documents</div>} />
+            </Link>
           </CounterProvider>
         </Layout.Content>
       </Layout>

@@ -1,11 +1,12 @@
-import express from 'express';
 import authRoutes from './auth.routes.js';
 import brandRoutes from './brand.routes.js';
 import cartRoutes from './cart.routes.js';
 import categoryRoutes from './category.routes.js';
+import express from 'express';
+import imageRoutes from './upload-image.routes.js';
 import orderRoutes from './order.routes.js';
 import productRoutes from './product.routes.js';
-import imageRoutes from './upload-image.routes.js';
+import roomRoutes from './room.routes.js';
 import userRoutes from './user.routes.js';
 import voucherRoutes from './voucher.routes.js';
 
@@ -21,6 +22,7 @@ const rootRoutes = [
   cartRoutes,
   orderRoutes,
   voucherRoutes,
+  roomRoutes,
 ];
 
 rootRoutes.map((route) => {
