@@ -4,12 +4,12 @@ import './styles/index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { persistor, store } from './stores/store.tsx'
 
+import App from './App.tsx'
 import { ConfigProvider } from 'antd'
+import { PersistGate } from 'redux-persist/integration/react'
+import { Provider } from 'react-redux'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { Provider } from 'react-redux'
-import { PersistGate } from 'redux-persist/integration/react'
-import App from './App.tsx'
 import theme from './styles/them-antd.ts'
 
 // Create a client
