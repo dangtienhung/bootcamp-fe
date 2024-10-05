@@ -1,21 +1,23 @@
-import { Button, Empty, message } from 'antd'
-import { createMessage, getAllMessagers } from '@/apis/message.api'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { BodySendMessage, Message } from '@/types/message.type'
+import { Button, Empty } from 'antd'
 
-import { BodySendMessage } from '@/types/message.type'
 import QuillEditor from '@/components/qill-editor'
 import { cn } from '@/utils/cn'
 import dayjs from 'dayjs'
 import { getMeInfo } from '@/apis/profile.api'
 import { useAuth } from '@/contexts/auth-context'
+import { useQuery } from '@tanstack/react-query'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { useState } from 'react'
 
-const Content = () => {
+interface Props {
+  onSendMessage: (data: BodySendMessage) => void
+  messagers: Message[]
+}
+
+const Content = ({ onSendMessage, messagers }: Props) => {
   const { accessToken } = useAuth()
   const { roomId } = useQueryParams()
-  const queryClient = useQueryClient()
-
   // get me
   const { data: dataInfo } = useQuery({
     queryKey: ['me'],
@@ -23,34 +25,15 @@ const Content = () => {
   })
   const userInfo = dataInfo?.data
 
-  // get all messagers
-  const { data: dataMessagers } = useQuery({
-    queryKey: ['messagers'],
-    queryFn: () => getAllMessagers(roomId, accessToken),
-    enabled: !!roomId
-  })
-  const messagers = dataMessagers?.docs
-
-  // crate question
-  const createMesage = useMutation({
-    mutationKey: ['create-message'],
-    mutationFn: (body: BodySendMessage) => createMessage(body, accessToken),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['messagers'] })
-    },
-    onError: () => {
-      message.error('Vui lòng thử lại sau!')
-    }
-  })
-
   // value
   const [valueInput, setValueInput] = useState<string>('')
 
+  // handle send message
   const handleSendMessage = () => {
-    createMesage.mutate({
+    onSendMessage({
       content: valueInput,
-      sender: userInfo?._id,
-      room: roomId
+      room: roomId,
+      sender: userInfo._id
     })
   }
 
