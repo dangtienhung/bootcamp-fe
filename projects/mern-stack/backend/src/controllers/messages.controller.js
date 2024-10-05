@@ -5,10 +5,9 @@ export const messageApi = {
   // get all messsage by room id
   getAllMessageByRoomId: async (req, res) => {
     const { search, _limit, _page, roomId } = req.params;
-    console.log('🚀 ~ getAllMessageByRoomId: ~ roomId:', roomId);
 
     const options = {
-      limit: Number(_limit),
+      limit: Number(_limit) || 1000,
       page: Number(_page),
       // sort: { createdAt: -1 },
       populate: [

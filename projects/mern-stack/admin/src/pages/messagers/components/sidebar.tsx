@@ -29,6 +29,7 @@ const Sidebar = () => {
                   roomId: room._id
                 }).toString()
               }}
+              // onClick={() => onJoinRoom(room._id)}
               className='flex items-center gap-3 p-3 border-b rounded cursor-pointer hover:bg-gray-200'
               key={`${room._id}`}
             >

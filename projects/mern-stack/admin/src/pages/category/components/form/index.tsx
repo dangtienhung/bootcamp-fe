@@ -1,14 +1,14 @@
-import { Button, Drawer, Form, Image, Input, Space, Upload, UploadProps, message } from 'antd'
-import { ImageType, TModal } from '@/types/common.type'
-import { TCategory, TFormCategory } from '@/types/category.type'
 import { createCategory, updateCategory } from '@/apis/category.api'
-import { useEffect, useState } from 'react'
+import { TCategory, TFormCategory } from '@/types/category.type'
+import { ImageType, TModal } from '@/types/common.type'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Button, Drawer, Form, Image, Input, Space, Upload, UploadProps, message } from 'antd'
+import { useEffect, useState } from 'react'
 
-import { InboxOutlined } from '@ant-design/icons'
-import QuillEditor from '@/components/qill-editor'
 import { uploadImage } from '@/apis/upload-image.api'
+import QuillEditor from '@/components/qill-editor'
 import { useAuth } from '@/contexts/auth-context'
+import { InboxOutlined } from '@ant-design/icons'
 import { useForm } from 'antd/es/form/Form'
 
 interface IFormCategory {
