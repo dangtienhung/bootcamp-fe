@@ -1,13 +1,13 @@
 import * as dotenv from 'dotenv';
 
-import Message from './models/message.model.js';
-import { Server } from 'socket.io';
-import apiDocumention from './docs/apidoc.doc.js';
-import connectDB from './configs/connect-db.config.js';
 import cors from 'cors';
 import express from 'express';
-import rootRoutes from './routes/index.js';
+import { Server } from 'socket.io';
 import swaggerUi from 'swagger-ui-express';
+import connectDB from './configs/connect-db.config.js';
+import apiDocumention from './docs/apidoc.doc.js';
+import Message from './models/message.model.js';
+import rootRoutes from './routes/index.js';
 
 dotenv.config();
 
@@ -17,7 +17,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'http://localhost:4200'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   }),
 );

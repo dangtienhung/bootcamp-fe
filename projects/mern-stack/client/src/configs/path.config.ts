@@ -6,6 +6,7 @@ const path = {
 	login: '/login',
 	checkout: '/checkout',
 	register: '/register',
+	forgotPassword: '/forgot-password',
 };
 
 export default path;
