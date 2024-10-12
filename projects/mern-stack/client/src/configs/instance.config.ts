@@ -1,5 +1,5 @@
-import { getAccessTokenFromLS, setAccessTokenToLS } from '@/utils/auth.util';
 import axios, { AxiosInstance } from 'axios';
+import { getAccessTokenFromLS, setAccessTokenToLS } from '@/utils/auth.util';
 
 import { AuthResponse } from '@/types/auth.type';
 import path from './path.config';
@@ -21,6 +21,11 @@ class Http {
 		// add request interceptors
 		this.instance.interceptors.request.use(
 			(response) => {
+				if (this.accessToken) {
+					const token = this.accessToken;
+					response.headers.Authorization = `Bearer ${token}`;
+					return response;
+				}
 				return response;
 			},
 			(error) => {
@@ -31,7 +36,6 @@ class Http {
 		// add response interceptor
 		this.instance.interceptors.response.use(
 			(response) => {
-				console.log('🚀 ~ Http ~ constructor ~ response:', response);
 				const { url } = response.config;
 				if (url === path.login) {
 					const data = response.data as AuthResponse;

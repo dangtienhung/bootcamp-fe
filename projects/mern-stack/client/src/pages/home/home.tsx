@@ -1,7 +1,11 @@
 import Aside from './components/aside';
 import Card from './components/card';
+import { useAuth } from '@/contexts/auth.context';
 
 const HomePage = () => {
+	const { isAuthenticated } = useAuth();
+	console.log("🚀 ~ HomePage ~ isAuthenticated:", isAuthenticated)
+
 	return (
 		<main className="container flex flex-grow px-4 py-8 mx-auto">
 			<Aside />
