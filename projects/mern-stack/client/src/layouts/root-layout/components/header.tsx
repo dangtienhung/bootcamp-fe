@@ -8,20 +8,22 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Search, ShoppingCart } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import path from '@/configs/path.config';
-import { removeAccessTokenFromLS } from '@/utils/auth.util';
-import { useAuth } from '@/contexts/auth.context';
-import { useQuery } from '@tanstack/react-query';
 import { userApi } from '@/api/user.api';
+import { Button } from '@/components/ui/button';
+import path from '@/configs/path.config';
+import { useAuth } from '@/contexts/auth.context';
+import { removeAccessTokenFromLS } from '@/utils/auth.util';
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 
 const HeaderLayout = () => {
 	const { isAuthenticated, setIsAuthenticated } = useAuth();
 
-	const { data, isLoading, isError } = useQuery({
+	const { data, isLoading, isError, error } = useQuery({
 		queryKey: ['me'],
 		queryFn: () => userApi.getProfile(),
+		retry: false,
+		enabled: isAuthenticated,
 	});
 	const myInfo = data?.data;
 
@@ -32,7 +34,7 @@ const HeaderLayout = () => {
 	};
 
 	return (
-		<header className="bg-white shadow-md">
+		<header className="bg-white shadow-md sticky top-0 right-0 left-0 z-50">
 			<div className="container flex items-center justify-between px-4 py-4 mx-auto">
 				<div className="flex items-center space-x-4">
 					<h2>Logo</h2>

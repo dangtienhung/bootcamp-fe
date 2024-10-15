@@ -1,7 +1,11 @@
-import axios, { AxiosInstance } from 'axios';
-import { getAccessTokenFromLS, setAccessTokenToLS } from '@/utils/auth.util';
-
 import { AuthResponse } from '@/types/auth.type';
+import {
+	getAccessTokenFromLS,
+	removeAccessTokenFromLS,
+	setAccessTokenToLS,
+} from '@/utils/auth.util';
+import axios, { AxiosInstance } from 'axios';
+import { toast } from 'sonner';
 import path from './path.config';
 
 class Http {
@@ -29,6 +33,7 @@ class Http {
 				return response;
 			},
 			(error) => {
+				console.log(error);
 				return Promise.reject(error);
 			}
 		);
@@ -45,6 +50,13 @@ class Http {
 				return response;
 			},
 			(error) => {
+				// console.log(error);
+				if (!error.response.data.success) {
+					const message = error.response.data.message || error.message;
+					toast(message);
+					this.accessToken = '';
+					removeAccessTokenFromLS();
+				}
 				return Promise.reject(error);
 			}
 		);

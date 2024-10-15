@@ -5,7 +5,6 @@ import { useAuth } from '@/contexts/auth.context';
 
 export const ProtectedRoute = () => {
 	const { isAuthenticated } = useAuth();
-	console.log('🚀 ~ ProtectedRoute ~ isAuthenticated:', isAuthenticated);
 
 	return isAuthenticated ? <Outlet /> : <Navigate to={path.login} />;
 };
