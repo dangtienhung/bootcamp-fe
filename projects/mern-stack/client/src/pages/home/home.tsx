@@ -1,13 +1,16 @@
-import { productApi } from '@/api/product.api';
-import { useQuery } from '@tanstack/react-query';
-import Aside from './components/aside';
-import Card from './components/card';
+import { productApi } from "@/api/product.api";
+import { useQueryParams } from "@/hooks/useQueryParams";
+import { useQuery } from "@tanstack/react-query";
+import Aside from "./components/aside";
+import Card from "./components/card";
 
 const HomePage = () => {
+	const params = useQueryParams();
+
 	const { data } = useQuery({
-		queryKey: ['products'],
+		queryKey: ["products", params],
 		queryFn: () =>
-			productApi.getProducts({ deleted: 'false', status: 'active' }),
+			productApi.getProducts({ ...params, deleted: "false", status: "active" }),
 	});
 	const products = data?.docs;
 
@@ -22,6 +25,7 @@ const HomePage = () => {
 						products.map((product) => {
 							return <Card key={product._id} product={product} />;
 						})}
+					{!products || (products.length === 0 && <div>No Product</div>)}
 				</div>
 			</section>
 		</main>

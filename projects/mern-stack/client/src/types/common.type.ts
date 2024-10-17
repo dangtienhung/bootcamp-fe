@@ -44,7 +44,7 @@ export type TBaseResponseDelete = {
 };
 
 // tạo 1 type cho modal để sử dụng trong useToggleModal
-export type TModalType = 'add' | 'edit' | 'delete' | 'view' | null;
+export type TModalType = "add" | "edit" | "delete" | "view" | null;
 
 export type TModal<T> = {
 	visiable: boolean;
@@ -58,4 +58,6 @@ export type TQueryParams = {
 	q?: string;
 	status?: string;
 	deleted?: string;
+	category?: string;
+	brand?: string;
 };

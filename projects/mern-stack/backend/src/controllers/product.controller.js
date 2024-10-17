@@ -1,6 +1,6 @@
+import mongoose from 'mongoose';
 import { HTTP_STATUS } from '../common/http-status.common.js';
 import Product from '../models/product.model.js';
-import mongoose from 'mongoose';
 import { productService } from '../services/product.service.js';
 
 export const productController = {
@@ -46,6 +46,20 @@ export const productController = {
       query = {
         ...query,
         is_deleted: rest.deleted === 'true' ? true : false,
+      };
+    }
+    // filter category
+    if (rest.category) {
+      query = {
+        ...query,
+        category: rest.category,
+      };
+    }
+    // filter brand
+    if (rest.brand) {
+      query = {
+        ...query,
+        brand: rest.brand,
       };
     }
 
@@ -295,12 +309,10 @@ export const productController = {
         .json({ message: 'Update many failed', success: false, status: HTTP_STATUS.BAD_REQUEST });
     }
 
-    return res
-      .status(HTTP_STATUS.OK)
-      .json({
-        message: deleted ? 'Restore product success!' : 'Update many successfully',
-        success: true,
-        status: HTTP_STATUS.OK,
-      });
+    return res.status(HTTP_STATUS.OK).json({
+      message: deleted ? 'Restore product success!' : 'Update many successfully',
+      success: true,
+      status: HTTP_STATUS.OK,
+    });
   },
 };
