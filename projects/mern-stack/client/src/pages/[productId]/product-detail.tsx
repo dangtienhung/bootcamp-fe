@@ -1,16 +1,17 @@
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronRight, CreditCard, ShoppingCart, Star } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChevronRight, CreditCard, ShoppingCart, Star } from "lucide-react";
 
-import { productApi } from '@/api/product.api';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import path from '@/configs/path.config';
-import { formatCurrency } from '@/utils/format-currency.util';
-import { getProductIdFromQueryString } from '@/utils/utils';
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { productApi } from "@/api/product.api";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import path from "@/configs/path.config";
+import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/utils/format-currency.util";
+import { getProductIdFromQueryString } from "@/utils/utils";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 const ProductDetail = () => {
 	const { productId } = useParams();
@@ -19,56 +20,86 @@ const ProductDetail = () => {
 	);
 
 	const { data } = useQuery({
-		queryKey: ['product-detail'],
+		queryKey: ["product-detail"],
 		queryFn: () => productApi.getProductById(productIdFromQueryString),
 		enabled: !!productIdFromQueryString,
 	});
 	const product = data?.data;
-	console.log(product);
 
-	const [mainImage, setMainImage] = useState('https://picsum.photos/536/354');
-	const [selectedColor, setSelectedColor] = useState('black');
-	const [selectedSize, setSelectedSize] = useState('m');
+	const [mainImage, setMainImage] = useState("https://picsum.photos/536/354");
+	const [selectedColor, setSelectedColor] = useState("black");
+	const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
-	const productImages = [
-		'https://picsum.photos/536/354',
-		'https://picsum.photos/536/354',
-		'https://picsum.photos/536/354',
-		'https://picsum.photos/536/354',
+	// push array
+	const arrays = [
+		{
+			size: "XL",
+			quantity: 1090,
+			color: "#fff",
+			_id: "66e05e3694bf780643d0fd2e",
+		},
+		{
+			size: "L",
+			quantity: 120,
+			color: "#000",
+			_id: "66e05e3694bf780643d0fd2f",
+		},
+		{
+			size: "M",
+			quantity: 123,
+			color: "#fff",
+			_id: "67112061017347bc7b6a2074",
+		},
+		{
+			size: "XL",
+			quantity: 123,
+			color: "#000",
+			_id: "67112061017347bc7b6a2075",
+		},
+		{
+			size: "XXL",
+			quantity: 10,
+			color: "#000",
+			_id: "67112061017347bc7b6a2076",
+		},
 	];
-
-	const colors = [
-		{ name: 'Black', value: 'black' },
-		{ name: 'White', value: 'white' },
-		{ name: 'Blue', value: 'blue' },
-	];
-
-	const sizes = ['xs', 's', 'm', 'l', 'xl'];
+	console.log("🚀 ~ ProductDetail ~ arrays:", arrays);
+	const seenSizes = new Set();
+	console.log("🚀 ~ ProductDetail ~ seenSizes:", seenSizes);
+	const result = arrays.filter((item) => {
+		if (seenSizes.has(item.size)) {
+			return false; // loại bỏ phần tử trùng lặp nếu size đã xuất hiện
+		} else {
+			seenSizes.add(item.size);
+			return true;
+		}
+	});
+	console.log("🚀 ~ result ~ result:", result);
 
 	const relatedProducts = [
 		{
 			id: 1,
-			name: 'Related Product 1',
+			name: "Related Product 1",
 			price: 89.99,
-			image: '/placeholder.svg?height=200&width=200',
+			image: "/placeholder.svg?height=200&width=200",
 		},
 		{
 			id: 2,
-			name: 'Related Product 2',
+			name: "Related Product 2",
 			price: 79.99,
-			image: '/placeholder.svg?height=200&width=200',
+			image: "/placeholder.svg?height=200&width=200",
 		},
 		{
 			id: 3,
-			name: 'Related Product 3',
+			name: "Related Product 3",
 			price: 99.99,
-			image: '/placeholder.svg?height=200&width=200',
+			image: "/placeholder.svg?height=200&width=200",
 		},
 		{
 			id: 4,
-			name: 'Related Product 4',
+			name: "Related Product 4",
 			price: 69.99,
-			image: '/placeholder.svg?height=200&width=200',
+			image: "/placeholder.svg?height=200&width=200",
 		},
 	];
 
@@ -80,6 +111,7 @@ const ProductDetail = () => {
 
 	return (
 		<div className="flex flex-col h-full">
+			{/* breadcrumb */}
 			<nav className="py-2 bg-gray-100">
 				<div className="container px-4 mx-auto">
 					<div className="flex items-center space-x-2 text-sm text-gray-600">
@@ -100,11 +132,11 @@ const ProductDetail = () => {
 				<div className="grid gap-8 mb-12 md:grid-cols-2">
 					<div className="space-y-4">
 						<img
-							src={mainImage}
+							src={product.images[0].url}
 							alt="Product"
-							className="w-full h-auto rounded-lg"
+							className="w-full h-auto max-h-[450px] object-cover rounded-lg"
 						/>
-						<div className="flex space-x-2">
+						{/* <div className="flex space-x-2">
 							{productImages.map((img, index) => (
 								<button
 									key={index}
@@ -118,11 +150,12 @@ const ProductDetail = () => {
 									/>
 								</button>
 							))}
-						</div>
+						</div> */}
 					</div>
+
 					<div className="space-y-6">
 						<h1 className="text-3xl font-medium flex items-center gap-4">
-							{product?.nameProduct}{' '}
+							{product?.nameProduct}{" "}
 							{discount > 0 && (
 								<span className="text-xs rounded-lg px-3 py-1 bg-primary text-white">
 									-{discount}%
@@ -135,7 +168,7 @@ const ProductDetail = () => {
 									<Star
 										key={i}
 										className="w-5 h-5 text-yellow-400"
-										fill={i < 4 ? 'currentColor' : 'none'}
+										fill={i < 4 ? "currentColor" : "none"}
 									/>
 								))}
 							</div>
@@ -156,6 +189,37 @@ const ProductDetail = () => {
 						</div>
 
 						<div className="space-y-4">
+							<div>
+								<h3 className="mb-2 text-lg font-semibold">Size</h3>
+								<RadioGroup
+									value={selectedSize ?? ""}
+									onValueChange={setSelectedSize}
+									className="flex space-x-2"
+								>
+									{product.sizes.map((size) => (
+										<div key={size._id}>
+											<RadioGroupItem
+												value={size._id}
+												id={`size-${size._id}`}
+												className="sr-only peer"
+											/>
+											<Label
+												htmlFor={`size-${size._id}`}
+												className={cn(
+													"flex items-center justify-center w-10 h-10 bg-white border-2 border-gray-200 rounded-md cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50",
+													{
+														"border-2 border-blue-500":
+															selectedSize === size._id,
+													}
+												)}
+											>
+												{size.size}
+											</Label>
+										</div>
+									))}
+								</RadioGroup>
+							</div>
+
 							<div>
 								<h3 className="mb-2 text-lg font-semibold">Color</h3>
 								<RadioGroup
@@ -181,33 +245,7 @@ const ProductDetail = () => {
 									))}
 								</RadioGroup>
 							</div>
-
-							<div>
-								<h3 className="mb-2 text-lg font-semibold">Size</h3>
-								<RadioGroup
-									value={selectedSize}
-									onValueChange={setSelectedSize}
-									className="flex space-x-2"
-								>
-									{product.sizes.map((size) => (
-										<div key={size._id}>
-											<RadioGroupItem
-												value={size._id}
-												id={`size-${size._id}`}
-												className="sr-only peer"
-											/>
-											<Label
-												htmlFor={`size-${size._id}`}
-												className="flex items-center justify-center w-10 h-10 bg-white border-2 border-gray-200 rounded-md cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50"
-											>
-												{size.size}
-											</Label>
-										</div>
-									))}
-								</RadioGroup>
-							</div>
 						</div>
-
 						<div className="flex space-x-4">
 							<Button className="flex-1">
 								<ShoppingCart className="w-4 h-4 mr-2" /> Add to Cart
@@ -254,7 +292,7 @@ const ProductDetail = () => {
 						{relatedProducts.map((product) => (
 							<div key={product.id} className="p-4 border rounded-lg">
 								<img
-									src={'https://picsum.photos/536/354'}
+									src={"https://picsum.photos/536/354"}
 									alt={product.name}
 									className="object-cover w-full h-48 mb-4 rounded-md"
 								/>
