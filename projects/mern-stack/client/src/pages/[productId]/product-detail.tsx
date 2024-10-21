@@ -1,17 +1,16 @@
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronRight, CreditCard, ShoppingCart, Star } from "lucide-react";
 
 import { productApi } from "@/api/product.api";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import path from "@/configs/path.config";
-import { cn } from "@/lib/utils";
+import { TSize } from "@/types/product.type";
 import { formatCurrency } from "@/utils/format-currency.util";
 import { getProductIdFromQueryString } from "@/utils/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import ProductSize from "./components/product-size";
 
 const ProductDetail = () => {
 	const { productId } = useParams();
@@ -19,62 +18,15 @@ const ProductDetail = () => {
 		productId as string
 	);
 
+	const [selectedVariant, setSelectedVariant] = useState<TSize | null>(null);
+	const [selectedQuantity, setSelectedQuantity] = useState(1);
+
 	const { data } = useQuery({
 		queryKey: ["product-detail"],
 		queryFn: () => productApi.getProductById(productIdFromQueryString),
 		enabled: !!productIdFromQueryString,
 	});
 	const product = data?.data;
-
-	const [mainImage, setMainImage] = useState("https://picsum.photos/536/354");
-	const [selectedColor, setSelectedColor] = useState("black");
-	const [selectedSize, setSelectedSize] = useState<string | null>(null);
-
-	// push array
-	const arrays = [
-		{
-			size: "XL",
-			quantity: 1090,
-			color: "#fff",
-			_id: "66e05e3694bf780643d0fd2e",
-		},
-		{
-			size: "L",
-			quantity: 120,
-			color: "#000",
-			_id: "66e05e3694bf780643d0fd2f",
-		},
-		{
-			size: "M",
-			quantity: 123,
-			color: "#fff",
-			_id: "67112061017347bc7b6a2074",
-		},
-		{
-			size: "XL",
-			quantity: 123,
-			color: "#000",
-			_id: "67112061017347bc7b6a2075",
-		},
-		{
-			size: "XXL",
-			quantity: 10,
-			color: "#000",
-			_id: "67112061017347bc7b6a2076",
-		},
-	];
-	console.log("🚀 ~ ProductDetail ~ arrays:", arrays);
-	const seenSizes = new Set();
-	console.log("🚀 ~ ProductDetail ~ seenSizes:", seenSizes);
-	const result = arrays.filter((item) => {
-		if (seenSizes.has(item.size)) {
-			return false; // loại bỏ phần tử trùng lặp nếu size đã xuất hiện
-		} else {
-			seenSizes.add(item.size);
-			return true;
-		}
-	});
-	console.log("🚀 ~ result ~ result:", result);
 
 	const relatedProducts = [
 		{
@@ -103,8 +55,25 @@ const ProductDetail = () => {
 		},
 	];
 
+	const handleVariantSelect = (variant: TSize | null, quantity: number) => {
+		setSelectedVariant(variant);
+		setSelectedQuantity(quantity);
+	};
+
+	const handleAddToCart = () => {
+		if (selectedVariant) {
+			console.log("🚀 ~ handleAddToCart ~ selectedVariant:", selectedVariant);
+			console.log("🚀 ~ handleAddToCart ~ selectedQuantity:", selectedQuantity);
+
+			// Here you would typically dispatch an action or call a function to add the item to the cart
+		} else {
+			console.log("Please select a size and color before adding to cart");
+		}
+	};
+
 	if (!product) return <div>Loading...</div>;
 
+	// calculate discount
 	const discount = Math.round(
 		100 - ((product.price - product.sale) * 100) / product.price
 	);
@@ -136,21 +105,6 @@ const ProductDetail = () => {
 							alt="Product"
 							className="w-full h-auto max-h-[450px] object-cover rounded-lg"
 						/>
-						{/* <div className="flex space-x-2">
-							{productImages.map((img, index) => (
-								<button
-									key={index}
-									onClick={() => setMainImage(img)}
-									className="focus:outline-none"
-								>
-									<img
-										src={img}
-										alt={`Product view ${index + 1}`}
-										className="object-cover w-20 h-20 rounded-md"
-									/>
-								</button>
-							))}
-						</div> */}
 					</div>
 
 					<div className="space-y-6">
@@ -188,66 +142,14 @@ const ProductDetail = () => {
 							)}
 						</div>
 
-						<div className="space-y-4">
-							<div>
-								<h3 className="mb-2 text-lg font-semibold">Size</h3>
-								<RadioGroup
-									value={selectedSize ?? ""}
-									onValueChange={setSelectedSize}
-									className="flex space-x-2"
-								>
-									{product.sizes.map((size) => (
-										<div key={size._id}>
-											<RadioGroupItem
-												value={size._id}
-												id={`size-${size._id}`}
-												className="sr-only peer"
-											/>
-											<Label
-												htmlFor={`size-${size._id}`}
-												className={cn(
-													"flex items-center justify-center w-10 h-10 bg-white border-2 border-gray-200 rounded-md cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50",
-													{
-														"border-2 border-blue-500":
-															selectedSize === size._id,
-													}
-												)}
-											>
-												{size.size}
-											</Label>
-										</div>
-									))}
-								</RadioGroup>
-							</div>
+						{/* refactor product size */}
+						<ProductSize
+							variants={product.sizes}
+							onVariantSelect={handleVariantSelect}
+						/>
 
-							<div>
-								<h3 className="mb-2 text-lg font-semibold">Color</h3>
-								<RadioGroup
-									value={selectedColor}
-									onValueChange={setSelectedColor}
-									className="flex space-x-2"
-								>
-									{product.sizes.map((color) => (
-										<div key={color._id}>
-											<RadioGroupItem
-												value={color._id}
-												id={`color-${color._id}`}
-												className="sr-only peer"
-											/>
-											<Label
-												htmlFor={`color-${color._id}`}
-												className="flex items-center justify-center w-8 h-8 bg-white border-2 border-gray-200 rounded-full cursor-pointer peer-checked:border-blue-500"
-												style={{ backgroundColor: color.color }}
-											>
-												<span className="sr-only">{color.size}</span>
-											</Label>
-										</div>
-									))}
-								</RadioGroup>
-							</div>
-						</div>
 						<div className="flex space-x-4">
-							<Button className="flex-1">
+							<Button className="flex-1" onClick={handleAddToCart}>
 								<ShoppingCart className="w-4 h-4 mr-2" /> Add to Cart
 							</Button>
 							<Button variant="secondary" className="flex-1">
