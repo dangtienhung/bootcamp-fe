@@ -33,7 +33,6 @@ const HeaderLayout = () => {
 		queryFn: () => cartApi.getAllCarts(),
 	});
 	const carts = responseCarts?.data;
-	console.log("🚀 ~ HeaderLayout ~ carts:", carts);
 
 	// logout
 	const handleLogout = () => {
@@ -45,7 +44,9 @@ const HeaderLayout = () => {
 		<header className="bg-white shadow-md sticky top-0 right-0 left-0 z-50">
 			<div className="container flex items-center justify-between px-4 py-4 mx-auto">
 				<div className="flex items-center space-x-4">
-					<h2>Logo</h2>
+					<Link to={path.home}>
+						<h2>Logo</h2>
+					</Link>
 					<div className="relative">
 						<input
 							type="text"
@@ -56,13 +57,15 @@ const HeaderLayout = () => {
 					</div>
 				</div>
 				<div className="flex items-center space-x-4">
-					<Button variant="ghost" size="icon" className="relative">
-						<ShoppingCart className="w-6 h-6" />
+					<Link to={path.cart}>
+						<Button variant="ghost" size="icon" className="relative">
+							<ShoppingCart className="w-6 h-6" />
 
-						<div className="absolute size-5 rounded-full top-0 right-0 bg-blue-500 text-white flex items-center justify-center text-xs">
-							{carts?.carts?.length ?? 0}
-						</div>
-					</Button>
+							<div className="absolute size-5 rounded-full top-0 right-0 bg-blue-500 text-white flex items-center justify-center text-xs">
+								{carts?.carts?.length ?? 0}
+							</div>
+						</Button>
+					</Link>
 
 					{isAuthenticated ? (
 						<DropdownMenu>
