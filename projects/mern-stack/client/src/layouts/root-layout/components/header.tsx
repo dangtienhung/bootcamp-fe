@@ -5,27 +5,35 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Search, ShoppingCart } from 'lucide-react';
+} from "@/components/ui/dropdown-menu";
+import { Search, ShoppingCart } from "lucide-react";
 
-import { userApi } from '@/api/user.api';
-import { Button } from '@/components/ui/button';
-import path from '@/configs/path.config';
-import { useAuth } from '@/contexts/auth.context';
-import { removeAccessTokenFromLS } from '@/utils/auth.util';
-import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { cartApi } from "@/api/cart.api";
+import { userApi } from "@/api/user.api";
+import { Button } from "@/components/ui/button";
+import path from "@/configs/path.config";
+import { useAuth } from "@/contexts/auth.context";
+import { removeAccessTokenFromLS } from "@/utils/auth.util";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 const HeaderLayout = () => {
 	const { isAuthenticated, setIsAuthenticated } = useAuth();
 
 	const { data, isLoading, isError, error } = useQuery({
-		queryKey: ['me'],
+		queryKey: ["me"],
 		queryFn: () => userApi.getProfile(),
 		retry: false,
 		enabled: isAuthenticated,
 	});
 	const myInfo = data?.data;
+	// get all cars
+	const { data: responseCarts } = useQuery({
+		queryKey: ["carts"],
+		queryFn: () => cartApi.getAllCarts(),
+	});
+	const carts = responseCarts?.data;
+	console.log("🚀 ~ HeaderLayout ~ carts:", carts);
 
 	// logout
 	const handleLogout = () => {
@@ -48,15 +56,19 @@ const HeaderLayout = () => {
 					</div>
 				</div>
 				<div className="flex items-center space-x-4">
-					<Button variant="ghost" size="icon">
+					<Button variant="ghost" size="icon" className="relative">
 						<ShoppingCart className="w-6 h-6" />
+
+						<div className="absolute size-5 rounded-full top-0 right-0 bg-blue-500 text-white flex items-center justify-center text-xs">
+							{carts?.carts?.length ?? 0}
+						</div>
 					</Button>
 
 					{isAuthenticated ? (
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button
-									variant={'ghost'}
+									variant={"ghost"}
 									className="bg-transparent hover:bg-transparent"
 								>
 									<img
@@ -86,7 +98,7 @@ const HeaderLayout = () => {
 								</DropdownMenuItem>
 								<DropdownMenuItem>
 									<Button
-										variant={'ghost'}
+										variant={"ghost"}
 										className="justify-start w-full p-0 text-left h-fit hover:bg-transparent"
 										onClick={handleLogout}
 									>

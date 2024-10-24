@@ -3,6 +3,7 @@ import Cart from '../models/cart.model.js';
 export const cartService = {
   // get carts by userId
   getCartsByUserId: async (query, params) => {
+    console.log(query.userId);
     if (params) {
       return Cart.findOne({ userId: query.userId }).populate([
         {
@@ -13,6 +14,7 @@ export const cartService = {
         { path: 'carts.productId', select: '_id nameProduct price sale images is_deleted status' },
       ]);
     }
+    // lấy giỏ hàng của user
     return Cart.findOne({ userId: query.userId });
   },
   // createCart
